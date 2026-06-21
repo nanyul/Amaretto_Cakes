@@ -1,0 +1,75 @@
+﻿<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href=@Url.Action("Index","Home")>Librería</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" asp-controller="Libro" asp-action="Index">Catalogo</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fs-4 bi-wrench"></i> Menús
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-controller="MenuProducto" asp-action="Index" class="dropdown-item"> Menu Producto </a></li>
+
+                        <li><a asp-controller="MenuCombo" asp-action="Index" class="dropdown-item">Menu Combo </a></li>
+                    </ul>
+                </li>
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fs-4 bi-wrench"></i> Mantenimiento
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-controller="Combo" asp-action="Index" class="dropdown-item"> Combos </a></li>
+
+                        <li><a asp-controller="Producto" asp-action="Index" class="dropdown-item">Productos </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fs-4 bi-gear-fill"></i> Proceso
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-controller="Combo" asp-action="Index" class="dropdown-item"> Combos </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fs-4 bi-bar-chart-fill"></i> Reportes
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-controller="Reporte" asp-action="GraficoVentas" class="dropdown-item"> Gráfico Ventas </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fs-4 bi-people"></i> Seguridad
+                    </a>
+                    @if(User.IsInRole("Admnistrador") == true )
+                    {
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("Index", "Usuario")" class="dropdown-item"> Usuario </a></li>
+                        </ul>
+                    }
+                    
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img class="rounded-circle mx-2 mt-1" src="~/images/profile.png" alt=@User.Identity!.Name width="32px" height="32px" />
+                        <span class="d-none d-sm-inline mx-1">@User.Identity!.Name</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-controller="Login" asp-action="LogOff">Salir</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

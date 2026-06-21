@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+@{
+    if (@ViewBag.ErrorMessages != null)
+    {
+        
+        <div class="card">
+            <div class="card-header ">
+                 Se ha presentado un Error 
+            </div>
+            <div class="card-body">
+                <h5>Event Id: @ViewBag.ErrorMessages.IdEvent</h5>
+                @foreach (var item in @ViewBag.ErrorMessages.ListMessages)
+                {
+                    <p class="card-text">@item</p>
+                }
+            </div>
+        </div>
+    }
+}
+

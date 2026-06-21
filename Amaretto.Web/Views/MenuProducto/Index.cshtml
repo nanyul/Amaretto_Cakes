@@ -1,0 +1,43 @@
+﻿@model List<Amaretto.Application.DTOs.MenuProductoDTO>
+
+@{
+    ViewData["Title"] = "Menus";
+}
+
+<div class="container">
+
+    <h1 class="mb-4">Menús de Productos</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var menu in Model.OrderByDescending(x => x.FechaInicio))
+            {
+                <tr>
+                    <td>@menu.Nombre</td>
+                    <td>@menu.Descripcion</td>
+                    <td>@menu.FechaFin.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @(menu.Estado ? "Disponible" : "No disponible")
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-sm"
+                           href="@Url.Action("Details", "MenuProducto", new { id = menu.IdMenuProducto })">
+                            Ver menú
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

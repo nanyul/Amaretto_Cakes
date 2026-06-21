@@ -1,0 +1,74 @@
+﻿@model Amaretto.Application.DTOs.MenuComboDTO
+
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+<div class="container">
+
+    <!-- Encabezado del menú -->
+    <div class="text-center mb-5">
+        <h1>@Model.Nombre</h1>
+
+        <p class="lead">
+            @Model.Descripcion
+        </p>
+    </div>
+
+    <!-- Disponibilidad -->
+    <div class="alert alert-info text-center mb-4">
+
+        <strong>Disponibilidad:</strong>
+        @Model.DiasDisponibles
+
+        <br />
+
+        <strong>Fechas:</strong>
+        @Model.FechaInicio.ToString("dd/MM/yyyy")
+        -
+        @Model.FechaFin.ToString("dd/MM/yyyy")
+
+    </div>
+
+    <!-- Combos -->
+    <div class="mb-5">
+
+        <h2 class="border-bottom pb-2">
+            Combos
+        </h2>
+
+        @foreach (var item in Model.MenuDetalleCombo
+                .Where(x => x.IdComboNavigation != null))
+        {
+            <div class="row mb-3">
+
+                <!-- Información del combo -->
+                <div class="col-md-9">
+
+                    <strong>
+                        @item.IdComboNavigation.Nombre
+                    </strong>
+
+                    <br />
+
+                    <small class="text-muted">
+                        @item.IdComboNavigation.Descripcion
+                    </small>
+
+                </div>
+
+                <!-- Precio -->
+                <div class="col-md-3 text-end">
+
+                    <strong>
+                        ₡@item.IdComboNavigation.Precio.ToString("N2")
+                    </strong>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

@@ -1,0 +1,79 @@
+﻿@model Amaretto.Application.DTOs.MenuProductoDTO
+
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+<div class="container">
+
+    <!-- Encabezado del menú -->
+    <div class="text-center mb-5">
+        <h1>@Model.Nombre</h1>
+
+        <p class="lead">
+            @Model.Descripcion
+        </p>
+    </div>
+
+    <!-- Disponibilidad -->
+    <div class="alert alert-info text-center mb-4">
+
+        <strong>Disponibilidad:</strong>
+        @Model.DiasDisponibles
+
+        <br />
+
+        <strong>Fechas:</strong>
+        @Model.FechaInicio.ToString("dd/MM/yyyy")
+        -
+        @Model.FechaFin.ToString("dd/MM/yyyy")
+
+        <br />
+
+    </div>
+
+    <!-- Categorías -->
+    @foreach (var categoria in Model.MenuDetalleProducto
+        .Where(x => x.IdProductoNavigation != null)
+        .GroupBy(x => x.IdProductoNavigation.IdCategoriaNavigation.Nombre))
+    {
+        <div class="mb-5">
+
+            <h2 class="border-bottom pb-2">
+                @categoria.Key
+            </h2>
+
+            <!-- Productos -->
+            @foreach (var item in categoria)
+            {
+                <div class="row mb-3">
+
+                    <!-- Información del producto -->
+                    <div class="col-md-9">
+
+                        <strong>
+                            @item.IdProductoNavigation.Nombre
+                        </strong>
+
+                        <br />
+
+                        <small class="text-muted">
+                            @item.IdProductoNavigation.Descripcion
+                        </small>
+
+                    </div>
+
+                    <!-- Precio -->
+                    <div class="col-md-3 text-end">
+                        <strong>
+                            ₡@item.IdProductoNavigation.Precio.ToString("N2")
+                        </strong>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
