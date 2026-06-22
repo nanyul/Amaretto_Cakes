@@ -1,79 +1,62 @@
 ﻿@model IEnumerable<Amaretto.Application.DTOs.ComboDTO>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Listado de Combos";
 }
 
-<h1>Index</h1>
+<h1>Listado de Combos</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Crear nuevo</a>
 </p>
-<table class="table">
-    <thead>
+
+<table class="table table-hover align-middle">
+    <thead class="table-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCombo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Imagen1)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Imagen2)
-            </th>
-            <th></th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Imagen</th>
+            <th>Acciones</th>
         </tr>
     </thead>
+
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdCombo)
+                    <strong>@item.Nombre</strong>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
+
+                <td style="max-width: 300px;">
+                    @item.Descripcion
                 </td>
+
                 <td>
-                    @Html.DisplayFor(modelItem => item.Descripcion)
+                    ₡@item.Precio
                 </td>
+
                 <td>
-                    @Html.DisplayFor(modelItem => item.Precio)
+                    @(item.Estado ? "Activo" : "Inactivo")
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Estado)
+
+                <td style="width:120px;">
+                    <img src="@item.Imagen1"
+                         style="width:80px; height:80px; object-fit:cover; border-radius:8px;"
+                         alt="Combo imagen" />
                 </td>
+
                 <td>
-                    <img class="w-100 h-100 object-fit-cover transition-transform hover-scale"
-                         src="@item.Imagen1"
-                         alt="No se encontro la imagen"
-                         loading="lazy" />
-                </td>
-                <td>
-                    <img class="w-100 h-100 object-fit-cover transition-transform hover-scale"
-                         src="@item.Imagen2"
-                         alt="No se encontro la imagen"
-                         loading="lazy" />
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                     <a asp-action="Details"
                        asp-route-id="@item.IdCombo"
-                       class="btn btn-info">Detalle</a>
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                       class="btn btn-info btn-sm">
+                        Detalle
+                    </a>
                 </td>
+
             </tr>
         }
     </tbody>
