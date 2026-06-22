@@ -1,0 +1,57 @@
+﻿@model Amaretto.Application.DTOs.CocinaOrdenDTO
+
+
+@{
+    ViewData["Title"] = "Detalle Proceso";
+
+    string nombreProducto = "";
+
+    if (Model.IdDetalleNavigation?.IdProductoNavigation != null)
+    {
+        nombreProducto =
+            Model.IdDetalleNavigation.IdProductoNavigation.Nombre;
+    }
+    else if (Model?.IdDetalleNavigation?.IdComboNavigation != null)
+    {
+        nombreProducto =
+            Model.IdDetalleNavigation.IdComboNavigation.Nombre;
+    }
+}
+
+<div class="container">
+
+    <h1>Detalle Proceso de Preparación</h1>
+
+    <hr />
+
+    <div class="mb-4">
+        <h4>Producto</h4>
+        <p>@nombreProducto</p>
+    </div>
+
+    <h4>Estaciones del Proceso</h4>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Orden</th>
+                <th>Estación</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+                <tr>
+                    <td>@Model?.OrdenPaso</td>
+                    <td>@Model?.IdEstacionNavigation.Nombre</td>
+                    <td>@Model?.Estado</td>
+                </tr>
+        </tbody>
+    </table>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Volver
+    </a>
+
+</div>

@@ -1,0 +1,46 @@
+﻿@model List<Amaretto.Application.DTOs.CocinaOrdenDTO>
+
+@{
+    ViewData["Title"] = "Menus";
+}
+
+<div class="container">
+
+    <h1 class="mb-4">Menús de Combos</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cantidad de Pasos</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var menu in Model)
+            {
+                <tr>
+                    <td>
+                         @if (menu.IdDetalleNavigation.IdProductoNavigation != null)
+                        {
+                            @menu.IdDetalleNavigation.IdProductoNavigation.Nombre
+                        }
+                        else if (menu.IdDetalleNavigation.IdComboNavigation != null)
+                        {
+                            @menu.IdDetalleNavigation.IdComboNavigation.Nombre
+                        } 
+                    </td>
+                    <td>@menu.OrdenPaso</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm"
+                           href="@Url.Action("Details", "CocinaOrden", new { id = menu.IdCocinaOrden })">
+                            Ver menú
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

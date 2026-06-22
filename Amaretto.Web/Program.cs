@@ -31,6 +31,7 @@ builder.Services.AddTransient<IRepositoryProducto, RepositoryProducto>();
 builder.Services.AddTransient<IRepositoryCategoria, RepositoryCategoria>();
 builder.Services.AddTransient<IRepositoryMenuProducto, RepositoryMenuProducto>();
 builder.Services.AddTransient<IRepositoryMenuCombo, RepositoryMenuCombo>();
+builder.Services.AddTransient<IRepositoryCocinaOrden, RepositoryCocinaOrden>();
 
 
 //Services
@@ -39,6 +40,7 @@ builder.Services.AddTransient<IServiceProducto, ServiceProducto>();
 builder.Services.AddTransient<IServiceCategoria, ServiceCategoria>();
 builder.Services.AddTransient<IServiceMenuProducto, ServiceMenuProducto>();
 builder.Services.AddTransient<IServiceMenuCombo, ServiceMenuCombo>();
+builder.Services.AddTransient<IServiceCocinaOrden, ServiceCocinaOrden>();
 
 //Seguridad
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -65,6 +67,7 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile<MenuProductoProfile>();
     config.AddProfile<MenuDetalleProductoProfile>();
     config.AddProfile<MenuComboProfile>();
+    config.AddProfile<CocinaOrdenProfile>();
 });
 // Configuar Conexión a la Base de Datos SQL
 builder.Services.AddDbContext<AmarettoContext>(options =>
