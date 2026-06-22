@@ -13,9 +13,7 @@ public partial class CocinaOrden
 
     public string Estado { get; set; } = null!;
 
-    public int OrdenPaso { get; set; }
-
-    public int IdEstacion { get; set;  
+    public int OrdenPaso { get; set; } 
 
     public DateTime? FechaInicio { get; set; }
 

@@ -30,7 +30,6 @@ namespace Amaretto.Infraestructure.Repository.Implementations
         {
             var entity = await _context.Set<Combo>()
                 .Include(x => x.IdProducto)
-                   .ThenInclude(cp => cp.IdProducto)
                 .Where(x => x.IdCombo == id)
                 .FirstOrDefaultAsync();
 

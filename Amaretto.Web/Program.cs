@@ -68,6 +68,8 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile<MenuDetalleProductoProfile>();
     config.AddProfile<MenuComboProfile>();
     config.AddProfile<CocinaOrdenProfile>();
+    config.AddProfile<IngredienteProfile>();
+    config.AddProfile<ProductoIngredienteProfile>();
 });
 // Configuar Conexión a la Base de Datos SQL
 builder.Services.AddDbContext<AmarettoContext>(options =>
