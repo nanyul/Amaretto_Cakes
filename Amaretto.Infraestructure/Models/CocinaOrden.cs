@@ -15,6 +15,8 @@ public partial class CocinaOrden
 
     public int OrdenPaso { get; set; }
 
+    public int IdEstacion { get; set;  
+
     public DateTime? FechaInicio { get; set; }
 
     public DateTime? FechaFin { get; set; }

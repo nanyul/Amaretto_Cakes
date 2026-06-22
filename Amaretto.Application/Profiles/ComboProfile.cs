@@ -14,7 +14,7 @@ namespace Amaretto.Application.Profiles
         public ComboProfile()
         {
             CreateMap<ComboDTO, Combo>().ReverseMap();
-
+            CreateMap<Combo, ComboDTO>().ForMember(dest => dest.Producto, orig => orig.MapFrom(o => o.IdProducto));
         }
 
     }

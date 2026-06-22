@@ -21,12 +21,6 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
         public async Task<ICollection<Combo>> ListAsync()
         {
-            //var collection = await _context.Set<Combo>()
-            //    .AsNoTracking()
-            //    //.Where(x => x.Estado)
-            //    .OrderBy(x => x.Nombre)
-            //    .ToListAsync();
-
             var collection = await _context.Set<Combo>().ToListAsync();
             return collection;
 
@@ -35,8 +29,8 @@ namespace Amaretto.Infraestructure.Repository.Implementations
         public async Task<Combo> FindByIdAsync(string id)
         {
             var entity = await _context.Set<Combo>()
-                //.Include(x => x.ComboProducto)
-                //    .ThenInclude(cp => cp.IdProductoNavigation)
+                .Include(x => x.IdProducto)
+                   .ThenInclude(cp => cp.IdProducto)
                 .Where(x => x.IdCombo == id)
                 .FirstOrDefaultAsync();
 

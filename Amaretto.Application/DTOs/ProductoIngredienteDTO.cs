@@ -23,8 +23,6 @@ namespace Amaretto.Application.DTOs
 
         public decimal Cantidad { get; set; }
 
-        public virtual CategoriaDTO IdIngredienteNavigation { get; set; } = null!;
-
-        public virtual ProductoDTO IdProductoNavigation { get; set; } = null!;
+        public virtual IngredienteDTO IdIngredienteNavigation { get; set; } = null!;
     }
 }

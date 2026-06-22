@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Amaretto.Application.Profiles
 {
-    public class IngredienteProfile : Profile
+    public class ProductoIngredienteProfile : Profile
     {
-        public IngredienteProfile()
+        public ProductoIngredienteProfile()
         {
-            CreateMap<Ingrediente, IngredienteDTO>().ReverseMap();
+            CreateMap<ProductoIngrediente, ProductoIngredienteDTO>().ReverseMap();
         }
     }
 }
