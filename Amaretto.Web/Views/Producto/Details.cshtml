@@ -1,72 +1,61 @@
 ﻿@model Amaretto.Application.DTOs.ProductoDTO
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle Producto";
 }
 
-<h1>Details</h1>
+<h2>Detalle del Producto</h2>
 
-<div>
-    <h4>ProductoDTO</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdProducto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdProducto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCategoria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCategoria)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Precio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Precio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EsPersonalizable)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EsPersonalizable)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Imagen1)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Imagen1)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Imagen2)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Imagen2)
-        </dd>
-    </dl>
+<div class="card">
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <img src="@Model.Imagen1"
+                     class="img-fluid rounded"
+                     alt="@Model.Nombre" />
+            </div>
+
+            <div class="col-md-8">
+
+                <h3>@Model.Nombre</h3>
+
+                <p>
+                    <strong>Descripción:</strong><br />
+                    @Model.Descripcion
+                </p>
+
+                <p>
+                    <strong>Categoría:</strong>
+                    @Model.IdCategoriaNavigation.Nombre
+                </p>
+
+                <p>
+                    <strong>Precio:</strong>
+                    ₡@Model.Precio
+                </p>
+
+                <p>
+                    <strong>Ingredientes:</strong>
+                </p>
+
+                <ul>
+                    @foreach (var item in Model.ProductoIngrediente)
+                    {
+                        <li>@item.IdIngredienteNavigation.Nombre</li>
+                    }
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">
+        Regresar
+    </a>
 </div>

@@ -10,47 +10,62 @@
     <h4>ComboDTO</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdCombo)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IdCombo)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Nombre)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Nombre)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Descripcion)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Descripcion)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Precio)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Precio)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Estado)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Estado)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Imagen1)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Imagen1)
+        <dd class="col-sm-10">
+            <img class="w-100 h-100 object-fit-cover transition-transform hover-scale"
+                 src="@Model.Imagen1"
+                 alt="No se encontro la imagen"
+                 loading="lazy" />
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Imagen2)
+        <dt class="col-sm-2">
+            <img class="w-100 h-100 object-fit-cover transition-transform hover-scale"
+                 src="@Model.Imagen2"
+                 alt="No se encontro la imagen"
+                 loading="lazy" />
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Imagen2)
+        </dd>
+        <dt class="col-sm-2">Productos</dt>
+        <dd class="col-sm-10">
+            <ul>
+                @foreach (var producto in Model.Producto)
+                {
+                    <li>@producto.Nombre</li>
+                }
+            </ul>
         </dd>
     </dl>
 </div>

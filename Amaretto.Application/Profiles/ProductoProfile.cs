@@ -14,8 +14,6 @@ namespace Amaretto.Application.Profiles
         public ProductoProfile()
         {
             CreateMap<ProductoDTO, Producto>().ReverseMap();
-            CreateMap<Producto, ProductoDTO>().ReverseMap();
-
         }
     }
 }
