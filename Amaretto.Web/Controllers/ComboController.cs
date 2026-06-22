@@ -44,4 +44,9 @@ public class ComboController : Controller
             throw new Exception(ex.Message);
         }
     }
+    public async Task<IActionResult> Catalogo()
+    {
+        var lista = await _serviceCombo.ListAsync();
+        return View(lista);
+    }
 }
