@@ -14,10 +14,7 @@ namespace Amaretto.Application.Profiles
         public MenuComboProfile()
         {
             CreateMap<MenuCombo, MenuComboDTO>().ReverseMap();
-
             CreateMap<MenuDetalleCombo, MenuDetalleComboDTO>().ReverseMap();
-
-            CreateMap<Combo, ComboDTO>().ReverseMap();
 
         }
 

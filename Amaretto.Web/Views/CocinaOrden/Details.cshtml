@@ -39,13 +39,23 @@
                 <th>Estado</th>
             </tr>
         </thead>
-
         <tbody>
+            @foreach (var estacion in ViewBag.Estaciones)
+            {
                 <tr>
-                    <td>@Model?.OrdenPaso</td>
-                    <td>@Model?.IdEstacionNavigation.Nombre</td>
-                    <td>@Model?.Estado</td>
+                    <td>@estacion.Nombre</td>
+                    <td>@estacion.Descripcion</td>
+
+                    @if (estacion.IdEstacion <= Model.IdEstacion)
+                    {
+                        <td class="text-success">Completada</td>
+                    }
+                    else
+                    {
+                        <td class="text-warning">En Proceso</td>
+                    }
                 </tr>
+            }
         </tbody>
     </table>
 

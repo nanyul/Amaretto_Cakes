@@ -7,10 +7,12 @@ namespace Amaretto.Web.Controllers
     public class CocinaOrdenController : Controller
     {
         private readonly IServiceCocinaOrden _serviceCocinaOrden;
+        private readonly IServiceEstacion _serviceEstacion;
 
-        public CocinaOrdenController(IServiceCocinaOrden serviceCocinaOrden)
+        public CocinaOrdenController(IServiceCocinaOrden serviceCocinaOrden, IServiceEstacion serviceEstacion)
         {
             _serviceCocinaOrden = serviceCocinaOrden;
+            _serviceEstacion = serviceEstacion;
         }
 
         [HttpGet]
@@ -37,6 +39,8 @@ namespace Amaretto.Web.Controllers
                     throw new Exception("Libro no existente");
 
                 }
+
+                ViewBag.Estaciones = await _serviceEstacion.ListAsync();
 
                 return View(@object);
 
