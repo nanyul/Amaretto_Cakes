@@ -45,8 +45,8 @@ namespace Amaretto.Application.DTOs
 
         //public virtual List<PedidoDetalle> PedidoDetalle { get; set; } = new List<PedidoDetalle>();
 
-        //[Display(Name = "Producto")]
-        //[ValidateNever]
-        //public virtual List<ComboProductoDTO> ComboProductos { get; set; } = new();
+        [Display(Name = "Productos")]
+        [ValidateNever]
+        public virtual List<ProductoDTO> Producto { get; set; } = new();
     }
 }

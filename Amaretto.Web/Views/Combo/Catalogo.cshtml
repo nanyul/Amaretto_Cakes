@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Amaretto.Application.DTOs.ComboDTO>
+
+@{
+    ViewData["Title"] = "Combos";
+}
+
+<div class="container">
+    <h2 class="text-center mb-4">Nuestros Combos</h2>
+
+    <div class="row">
+
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+
+                <div class="card h-100 shadow">
+
+                    <img src="@item.Imagen1"
+                         class="card-img-top"
+                         style="height:250px; object-fit:cover;"
+                         alt="@item.Nombre">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            @item.Nombre
+                        </h5>
+
+                        <p class="card-text">
+                            ₡@item.Precio.ToString("N2")
+                        </p>
+
+                        @if (item.Estado)
+                        {
+                            <span class="badge bg-success">
+                                Disponible
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Inactivo
+                            </span>
+                        }
+
+                    </div>
+
+                    <div class="card-footer text-center">
+
+                        <a asp-action="Details"
+                           asp-route-id="@item.IdCombo"
+                           class="btn btn-primary">
+                            Ver Detalle
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>

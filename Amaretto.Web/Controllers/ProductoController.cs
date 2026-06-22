@@ -34,7 +34,7 @@ namespace Amaretto.Web.Controllers
 
                 if (@object == null)
                 {
-                    throw new Exception("Libro no existente");
+                    throw new Exception("Producto no existente");
 
                 }
 
@@ -45,6 +45,11 @@ namespace Amaretto.Web.Controllers
             {
                 throw new Exception(ex.Message);
             }
+        }
+        public async Task<IActionResult> Catalogo()
+        {
+            var lista = await _serviceProducto.ListAsync();
+            return View(lista);
         }
     }
 }
