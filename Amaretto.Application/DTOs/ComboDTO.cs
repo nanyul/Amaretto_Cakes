@@ -41,10 +41,6 @@ namespace Amaretto.Application.DTOs
         [Required(ErrorMessage = "{0} es un dato requerido")]
         public string Imagen2 { get; set; } = null!;
 
-        //public virtual List<MenuDetalleCombo> MenuDetalleCombo { get; set; } = new List<MenuDetalleCombo>();
-
-        //public virtual List<PedidoDetalle> PedidoDetalle { get; set; } = new List<PedidoDetalle>();
-
         [Display(Name = "Productos")]
         [ValidateNever]
         public virtual List<ProductoDTO> Producto { get; set; } = new();

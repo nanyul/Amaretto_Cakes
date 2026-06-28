@@ -35,5 +35,33 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
             return entity!;
         }
+
+        public async Task<ICollection<Combo>> FilterAsync(string? estado, decimal? precioMax, List<int>? categoriaIds, string? ordenarPor)
+        {
+            var query = _context.Set<Combo>()
+                .Include(x => x.IdProducto)
+                    .ThenInclude(p => p.IdCategoriaNavigation)
+                .AsNoTracking()
+                .AsQueryable();
+
+            if (estado == "disponible") query = query.Where(c => c.Estado == true);
+            else if (estado == "inactivo") query = query.Where(c => c.Estado == false);
+
+            if (precioMax.HasValue)
+                query = query.Where(c => c.Precio <= precioMax.Value);
+
+            if (categoriaIds != null && categoriaIds.Any())
+                query = query.Where(c => c.IdProducto.Any(p => categoriaIds.Contains(p.IdCategoria)));
+
+            query = ordenarPor switch
+            {
+                "precio_asc" => query.OrderBy(c => c.Precio),
+                "precio_desc" => query.OrderByDescending(c => c.Precio),
+                "nombre" => query.OrderBy(c => c.Nombre),
+                _ => query.OrderBy(c => c.Nombre)
+            };
+
+            return await query.ToListAsync();
+        }
     }
 }

@@ -7,10 +7,11 @@ namespace Amaretto.Web.Controllers
     public class ProductoController : Controller
     {
         private readonly IServiceProducto _serviceProducto;
-
-        public ProductoController(IServiceProducto serviceProducto)
+        private readonly IServiceCategoria _serviceCategoria;
+        public ProductoController(IServiceProducto serviceProducto, IServiceCategoria serviceCategoria  )
         {
             _serviceProducto = serviceProducto;
+            _serviceCategoria = serviceCategoria;
         }
 
         [HttpGet]
@@ -49,7 +50,26 @@ namespace Amaretto.Web.Controllers
         public async Task<IActionResult> Catalogo()
         {
             var lista = await _serviceProducto.ListAsync();
+            ViewBag.Categorias = await _serviceCategoria.ListAsync();
             return View(lista);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Filtrar(string? estado, decimal? precioMax, List<int>? categoriaIds, string? ordenarPor)
+        {
+            var productos = await _serviceProducto.FilterAsync(estado, precioMax, categoriaIds, ordenarPor);
+
+            var model = productos.Select(p => new
+            {
+                idProducto = p.IdProducto,
+                nombre = p.Nombre,
+                precio = p.Precio,
+                esPersonalizable = p.EsPersonalizable,
+                imagen1 = p.Imagen1,
+                imagen2 = p.Imagen2
+            });
+
+            return Json(model);
         }
     }
 }

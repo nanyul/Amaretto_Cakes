@@ -1,52 +1,59 @@
-﻿using Amaretto.Application.DTOs;
-using Amaretto.Application.Services.Interfaces;
+﻿using Amaretto.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-public class ComboController : Controller
+namespace Amaretto.Web.Controllers
 {
-    private readonly IServiceCombo _serviceCombo;
-
-    public ComboController(IServiceCombo serviceCombo)
+    public class ComboController : Controller
     {
-        _serviceCombo = serviceCombo;
-    }
+        private readonly IServiceCombo _serviceCombo;
+        private readonly IServiceCategoria _serviceCategoria;
 
-    [HttpGet]
-    public async Task<ActionResult> Index()
-    {
-        var collection = await _serviceCombo.ListAsync();
-
-        return View(collection);
-    }
-
-    public async Task<ActionResult> Details(string? id)
-    {
-        try
+        public ComboController(IServiceCombo serviceCombo, IServiceCategoria serviceCategoria)
         {
-            if (id == null)
-            {
-                return RedirectToAction("Index");
-            }
+            _serviceCombo = serviceCombo;
+            _serviceCategoria = serviceCategoria;
+        }
 
+        public async Task<ActionResult> Index()
+        {
+            var collection = await _serviceCombo.ListAsync();
+            return View(collection);
+        }
+
+        public async Task<ActionResult> Details(string? id)
+        {
+            if (id == null) return RedirectToAction("Index");
             var @object = await _serviceCombo.FindByIdAsync(id);
-
-            if (@object == null)
-            {
-                throw new Exception("Libro no existente");
-
-            }
-
+            if (@object == null) throw new Exception("Combo no existente");
             return View(@object);
+        }
 
-        }
-        catch (Exception ex)
+        public async Task<IActionResult> Catalogo()
         {
-            throw new Exception(ex.Message);
+            var lista = await _serviceCombo.ListAsync();
+            ViewBag.Categorias = await _serviceCategoria.ListAsync();
+            return View(lista);
         }
-    }
-    public async Task<IActionResult> Catalogo()
-    {
-        var lista = await _serviceCombo.ListAsync();
-        return View(lista);
+
+        [HttpGet]
+        public async Task<IActionResult> Filtrar(string? estado, decimal? precioMax, List<int>? categoriaIds, string? ordenarPor)
+        {
+            var combos = await _serviceCombo.FilterAsync(estado, precioMax, categoriaIds, ordenarPor);
+
+            var model = combos.Select(c => new
+            {
+                idCombo = c.IdCombo,
+                nombre = c.Nombre,
+                precio = c.Precio,
+                estado = c.Estado,
+                imagen1 = c.Imagen1,
+                imagen2 = c.Imagen2
+            });
+
+            return Json(model);
+        }
     }
 }

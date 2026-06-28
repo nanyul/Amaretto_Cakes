@@ -39,5 +39,12 @@ public class ServiceProducto : IServiceProducto
             var entity = await _repository.FindByIdAsync(id);
             return _mapper.Map<ProductoDTO>(entity);
         }
+
+        //FILTRAR
+        public async Task<ICollection<ProductoDTO>> FilterAsync(string? estado, decimal? precioMax, List<int>? categoriaIds, string? ordenarPor)
+        {
+            var list = await _repository.FilterAsync(estado, precioMax, categoriaIds, ordenarPor);
+            return _mapper.Map<ICollection<ProductoDTO>>(list);
+        }
     }
 }

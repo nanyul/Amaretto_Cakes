@@ -11,5 +11,7 @@ namespace Amaretto.Application.Services.Interfaces
     {
         Task<ICollection<ProductoDTO>> ListAsync();
         Task<ProductoDTO> FindByIdAsync(string id);
+        Task<ICollection<ProductoDTO>> FilterAsync(string? estado, decimal? precioMax, List<int>? categoriaIds, string? ordenarPor);
+  
     }
 }
