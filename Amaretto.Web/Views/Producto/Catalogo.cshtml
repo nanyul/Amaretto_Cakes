@@ -1,52 +1,93 @@
 ﻿@model IEnumerable<Amaretto.Application.DTOs.ProductoDTO>
-
 @{
     ViewData["Title"] = "Catálogo de Productos";
 }
 
-<div class="container">
-    <h2 class="text-center mb-4">Nuestros Productos</h2>
+<!--  ENCABEZADO  -->
+<section class="catalog-header">
+    <div class="container">
+        <span class="catalog-badge">✦ Pastelería artesanal ✦</span>
+        <h1 class="catalog-title">
+            Nuestros <span>Productos</span>
+        </h1>
+        <p class="catalog-subtitle">
+            Pasteles y postres artesanales elaborados con ingredientes de calidad,
+            listos para endulzar cualquier ocasión.
+        </p>
+    </div>
+</section>
 
-    <div class="row">
-        @foreach (var item in Model)
+<!--  CATÁLOGO  -->
+<section class="catalog-section">
+    <div class="container">
+
+        @if (!Model.Any())
         {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow">
-
-                    <img src="@item.Imagen1"
-                         class="card-img-top"
-                         style="height:250px; object-fit:cover;"
-                         alt="@item.Nombre">
-
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Nombre</h5>
-
-                        <p class="card-text">
-                            @item.Descripcion
-                        </p>
-
-                        <h4 class="text-success">
-                            ₡@item.Precio.ToString("N2")
-                        </h4>
-
-                        @if (item.EsPersonalizable)
-                        {
-                            <span class="badge bg-primary">
-                                Personalizable
-                            </span>
-                        }
-                    </div>
-
-                    <div class="card-footer text-center">
-                        <a asp-action="Details"
-                           asp-route-id="@item.IdProducto"
-                           class="btn btn-info">
-                            Ver Detalle
-                        </a>
-                    </div>
-
-                </div>
+            <div class="catalog-empty">
+                <i class="bi bi-cup-hot"></i>
+                <p>Por el momento no hay productos disponibles. Vuelve pronto.</p>
             </div>
         }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var item in Model)
+                {
+                    var hasSecondImage = !string.IsNullOrWhiteSpace(item.Imagen2);
+                    var carouselId = $"carousel-prod-{item.IdProducto}";
+                    <div class="col-lg-4 col-md-6">
+                        <div class="catalog-card">
+                            <div class="catalog-card-img @(hasSecondImage ? "" : "single-image")">
+                                <div id="@carouselId" class="carousel slide" data-bs-ride="false">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img src="@item.Imagen1" alt="@item.Nombre">
+                                        </div>
+                                        @if (hasSecondImage)
+                                        {
+                                            <div class="carousel-item">
+                                                <img src="@item.Imagen2" alt="@item.Nombre">
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (hasSecondImage)
+                                    {
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button>
+                                        <div class="carousel-indicators">
+                                            <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="0" class="active"></button>
+                                            <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="1"></button>
+                                        </div>
+                                    }
+                                </div>
+                                @if (item.EsPersonalizable)
+                                {
+                                    <span class="catalog-card-badge is-custom">
+                                        <i class="bi bi-stars me-1"></i>Personalizable
+                                    </span>
+                                }
+                            </div>
+                            <div class="catalog-card-body">
+                                <h5>@item.Nombre</h5>
+                                <p class="catalog-card-desc">@item.Descripcion</p>
+                                <p class="catalog-card-price">₡@item.Precio.ToString("N2")</p>
+                            </div>
+                            <div class="catalog-card-footer">
+                                <a asp-action="Details"
+                                   asp-route-id="@item.IdProducto"
+                                   class="btn btn-pill btn-catalog">
+                                    Ver detalle <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
     </div>
-</div>
+</section>

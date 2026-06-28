@@ -1,64 +1,98 @@
 ﻿@model IEnumerable<Amaretto.Application.DTOs.ComboDTO>
-
 @{
     ViewData["Title"] = "Combos";
 }
 
-<div class="container">
-    <h2 class="text-center mb-4">Nuestros Combos</h2>
+<!--  ENCABEZADO  -->
+<section class="catalog-header">
+    <div class="container">
+        <span class="catalog-badge">✦ Hecho para compartir ✦</span>
+        <h1 class="catalog-title">
+            Nuestros <span>Combos</span>
+        </h1>
+        <p class="catalog-subtitle">
+            Combinaciones pensadas para cada celebración: lo mejor de Amaretto Cakes,
+            reunido en un solo lugar.
+        </p>
+    </div>
+</section>
 
-    <div class="row">
+<!--  CATÁLOGO  -->
+<section class="catalog-section">
+    <div class="container">
 
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
-            <div class="col-md-4 mb-4">
-
-                <div class="card h-100 shadow">
-
-                    <img src="@item.Imagen1"
-                         class="card-img-top"
-                         style="height:250px; object-fit:cover;"
-                         alt="@item.Nombre">
-
-                    <div class="card-body">
-
-                        <h5 class="card-title">
-                            @item.Nombre
-                        </h5>
-
-                        <p class="card-text">
-                            ₡@item.Precio.ToString("N2")
-                        </p>
-
-                        @if (item.Estado)
-                        {
-                            <span class="badge bg-success">
-                                Disponible
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">
-                                Inactivo
-                            </span>
-                        }
-
+            <div class="catalog-empty">
+                <i class="bi bi-gift"></i>
+                <p>Por el momento no hay combos disponibles. Vuelve pronto.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var item in Model)
+                {
+                    var hasSecondImage = !string.IsNullOrWhiteSpace(item.Imagen2);
+                    var carouselId = $"carousel-combo-{item.IdCombo}";
+                    <div class="col-lg-4 col-md-6">
+                        <div class="catalog-card">
+                            <div class="catalog-card-img @(hasSecondImage ? "" : "single-image")">
+                                <div id="@carouselId" class="carousel slide" data-bs-ride="false">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img src="@item.Imagen1" alt="@item.Nombre">
+                                        </div>
+                                        @if (hasSecondImage)
+                                        {
+                                            <div class="carousel-item">
+                                                <img src="@item.Imagen2" alt="@item.Nombre">
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (hasSecondImage)
+                                    {
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button>
+                                        <div class="carousel-indicators">
+                                            <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="0" class="active"></button>
+                                            <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="1"></button>
+                                        </div>
+                                    }
+                                </div>
+                                @if (item.Estado)
+                                {
+                                    <span class="catalog-card-badge is-available">
+                                        <i class="bi bi-check-circle me-1"></i>Disponible
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="catalog-card-badge is-unavailable">
+                                        <i class="bi bi-x-circle me-1"></i>Inactivo
+                                    </span>
+                                }
+                            </div>
+                            <div class="catalog-card-body">
+                                <h5>@item.Nombre</h5>
+                                <p class="catalog-card-price">₡@item.Precio.ToString("N2")</p>
+                            </div>
+                            <div class="catalog-card-footer">
+                                <a asp-action="Details"
+                                   asp-route-id="@item.IdCombo"
+                                   class="btn btn-pill btn-catalog">
+                                    Ver detalle <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="card-footer text-center">
-
-                        <a asp-action="Details"
-                           asp-route-id="@item.IdCombo"
-                           class="btn btn-primary">
-                            Ver Detalle
-                        </a>
-
-                    </div>
-
-                </div>
-
+                }
             </div>
         }
 
     </div>
-</div>
+</section>

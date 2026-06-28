@@ -1,23 +1,36 @@
-﻿@{
+﻿@using System.Globalization
+@{
     ViewData["Title"] = "Inicio - Amaretto Cakes";
+
+    
+    var pieces = new[] { "✦", "🌸", "✦", "🎂", "✦", "🍰", "✦", "🌸", "✦", "🎂", "✦", "🍰" };
+
+    // Colores disponibles para las partículas tipo "✦"
+    var colors = new[] { "var(--moss-green)", "var(--rosy-brown)", "var(--beige)" };
+
+    var rnd = new Random();
+
+    string FloatPieceStyle(int index)
+    {
+        var left = rnd.Next(2, 96);
+        var top = rnd.Next(5, 85);
+        var size = (rnd.Next(7, 16) / 10.0).ToString("0.0", CultureInfo.InvariantCulture);
+        var duration = rnd.Next(5, 9).ToString(CultureInfo.InvariantCulture);
+        var delay = ((index % pieces.Length) * 0.3).ToString("0.0", CultureInfo.InvariantCulture);
+        var color = colors[rnd.Next(colors.Length)];
+
+        return $"--fp-left:{left}%; --fp-top:{top}%; --fp-size:{size}rem; --fp-duration:{duration}s; --fp-delay:{delay}s; --fp-color:{color};";
+    }
 }
 
 <!--  HERO  -->
-<section class="hero-amaretto">
+<section class="hero-amaretto has-wave">
 
     <div class="hero-confeti" aria-hidden="true">
-        <span class="hero-piece hp1">✦</span>
-        <span class="hero-piece hp2">🌸</span>
-        <span class="hero-piece hp3">✦</span>
-        <span class="hero-piece hp4">🎂</span>
-        <span class="hero-piece hp5">✦</span>
-        <span class="hero-piece hp6">🍰</span>
-        <span class="hero-piece hp7">✦</span>
-        <span class="hero-piece hp8">🌸</span>
-        <span class="hero-piece hp9">✦</span>
-        <span class="hero-piece hp10">🎂</span>
-        <span class="hero-piece hp11">✦</span>
-        <span class="hero-piece hp12">🍰</span>
+        @for (int i = 0; i < pieces.Length; i++)
+        {
+            <span class="float-piece" style="@FloatPieceStyle(i)">@pieces[i]</span>
+        }
     </div>
 
     <div class="container position-relative" style="z-index:2;">
@@ -34,10 +47,10 @@
                     ingredientes de calidad y un toque único.
                 </p>
                 <div class="d-flex gap-3 flex-wrap mt-4">
-                    <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-amaretto-main">
+                    <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-pill btn-amaretto-main">
                         Ver productos <i class="bi bi-heart-fill ms-1"></i>
                     </a>
-                    <a asp-controller="Combo" asp-action="Catalogo" class="btn btn-amaretto-outline">
+                    <a asp-controller="Combo" asp-action="Catalogo" class="btn btn-pill btn-amaretto-outline">
                         Personaliza tu pastel <i class="bi bi-star ms-1"></i>
                     </a>
                 </div>
@@ -45,8 +58,7 @@
 
             <div class="col-lg-6 text-center mt-4 mt-lg-0">
                 <img src="~/images/hero-cake.png"
-                     class="hero-cake-image img-fluid"
-                     class="img-fluid rounded-4"
+                     class="hero-cake-image img-fluid rounded-4"
                      alt="Pastel principal">
             </div>
 
@@ -62,10 +74,8 @@
 
 </section>
 
-<!-- ===== NUESTROS FAVORITOS ===== -->
-<section class="favorites-section">
-
-    <!-- Ola superior: repite el beige entrando desde arriba (ya la hace la ola del hero) -->
+<!--  NUESTROS FAVORITOS  -->
+<section class="favorites-section has-wave">
 
     <div class="container">
         <h2 class="section-title">
@@ -82,7 +92,7 @@
                     <div class="favorite-card-body">
                         <h5>Fresa & Vainilla</h5>
                         <p class="favorite-price">$32.000</p>
-                        <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-favorite">
+                        <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-pill btn-favorite">
                             Ver más <i class="bi bi-heart-fill ms-1"></i>
                         </a>
                     </div>
@@ -97,7 +107,7 @@
                     <div class="favorite-card-body">
                         <h5>Macarons</h5>
                         <p class="favorite-price">$18.000</p>
-                        <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-favorite">
+                        <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-pill btn-favorite">
                             Ver más <i class="bi bi-heart-fill ms-1"></i>
                         </a>
                     </div>
@@ -112,7 +122,7 @@
                     <div class="favorite-card-body">
                         <h5>Cupcake de Chocolate</h5>
                         <p class="favorite-price">$15.000</p>
-                        <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-favorite">
+                        <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-pill btn-favorite">
                             Ver más <i class="bi bi-heart-fill ms-1"></i>
                         </a>
                     </div>
@@ -127,7 +137,7 @@
                     <div class="favorite-card-body">
                         <h5>Chocolate Premium</h5>
                         <p class="favorite-price">$38.000</p>
-                        <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-favorite">
+                        <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-pill btn-favorite">
                             Ver más <i class="bi bi-heart-fill ms-1"></i>
                         </a>
                     </div>
@@ -147,7 +157,7 @@
 </section>
 
 <!--  SOBRE NOSOTROS  -->
-<section class="about-amaretto">
+<section class="about-amaretto has-wave">
     <div class="container">
         <div class="row align-items-center gy-5">
 
@@ -169,7 +179,7 @@
                     postres que no solo se ven increíbles, sino que saben
                     a momentos especiales.
                 </p>
-                <a href="#" class="btn btn-amaretto-main mt-2">
+                <a href="#" class="btn btn-pill btn-amaretto-main mt-2">
                     Conócenos <i class="bi bi-heart-fill ms-1"></i>
                 </a>
             </div>
@@ -187,7 +197,7 @@
 </section>
 
 <!--  BENEFICIOS  -->
-<section class="benefits-section">
+<section class="benefits-section has-wave">
     <div class="container">
         <div class="row text-center g-4">
 
@@ -243,18 +253,10 @@
 <section class="cta-confeti">
 
     <div class="confeti-container" aria-hidden="true">
-        <span class="confeti-piece c1">✦</span>
-        <span class="confeti-piece c2">🎂</span>
-        <span class="confeti-piece c3">✦</span>
-        <span class="confeti-piece c4">🌸</span>
-        <span class="confeti-piece c5">✦</span>
-        <span class="confeti-piece c6">🍰</span>
-        <span class="confeti-piece c7">✦</span>
-        <span class="confeti-piece c8">🌸</span>
-        <span class="confeti-piece c9">✦</span>
-        <span class="confeti-piece c10">🎂</span>
-        <span class="confeti-piece c11">✦</span>
-        <span class="confeti-piece c12">🍰</span>
+        @for (int i = 0; i < pieces.Length; i++)
+        {
+            <span class="float-piece" style="@FloatPieceStyle(i + 100)">@pieces[i]</span>
+        }
     </div>
 
     <div class="cta-circle cta-circle-1"></div>
@@ -277,10 +279,10 @@
             </p>
 
             <div class="cta-buttons">
-                <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-cta-primary">
+                <a asp-controller="Producto" asp-action="Catalogo" class="btn btn-pill btn-cta-primary">
                     <i class="bi bi-bag-heart-fill me-2"></i> Ver Productos
                 </a>
-                <a asp-controller="Combo" asp-action="Catalogo" class="btn btn-cta-secondary">
+                <a asp-controller="Combo" asp-action="Catalogo" class="btn btn-pill btn-cta-secondary">
                     <i class="bi bi-star-fill me-2"></i> Ver Combos
                 </a>
             </div>
@@ -289,4 +291,3 @@
     </div>
 
 </section>
-
