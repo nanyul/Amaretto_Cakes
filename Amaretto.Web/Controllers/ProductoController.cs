@@ -8,7 +8,8 @@ namespace Amaretto.Web.Controllers
     {
         private readonly IServiceProducto _serviceProducto;
         private readonly IServiceCategoria _serviceCategoria;
-        public ProductoController(IServiceProducto serviceProducto, IServiceCategoria serviceCategoria  )
+
+        public ProductoController(IServiceProducto serviceProducto, IServiceCategoria serviceCategoria)
         {
             _serviceProducto = serviceProducto;
             _serviceCategoria = serviceCategoria;
@@ -18,7 +19,6 @@ namespace Amaretto.Web.Controllers
         public async Task<ActionResult> Index()
         {
             var collection = await _serviceProducto.ListAsync();
-
             return View(collection);
         }
 
@@ -27,26 +27,32 @@ namespace Amaretto.Web.Controllers
             try
             {
                 if (id == null)
-                {
                     return RedirectToAction("Index");
-                }
 
-                var @object = await _serviceProducto.FindByIdAsync(id);
+                var producto = await _serviceProducto.FindByIdAsync(id);
 
-                if (@object == null)
-                {
+                if (producto == null)
                     throw new Exception("Producto no existente");
 
-                }
+                // Productos relacionados: misma categoría, excluyendo el actual, máximo 4
+                var todos = await _serviceProducto.ListAsync();
 
-                return View(@object);
+                ViewBag.Relacionados = todos
+                    .Where(p => p.IdCategoria == producto.IdCategoria
+                             && p.IdProducto != producto.IdProducto
+                             && p.Estado)          // solo activos
+                    .OrderBy(_ => Guid.NewGuid())  // orden aleatorio para variedad
+                    .Take(4)
+                    .ToList();
 
+                return View(producto);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+
         public async Task<IActionResult> Catalogo()
         {
             var lista = await _serviceProducto.ListAsync();
@@ -55,7 +61,11 @@ namespace Amaretto.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Filtrar(string? estado, decimal? precioMax, List<int>? categoriaIds, string? ordenarPor)
+        public async Task<IActionResult> Filtrar(
+            string? estado,
+            decimal? precioMax,
+            List<int>? categoriaIds,
+            string? ordenarPor)
         {
             var productos = await _serviceProducto.FilterAsync(estado, precioMax, categoriaIds, ordenarPor);
 

@@ -1,63 +1,68 @@
 ﻿@model IEnumerable<Amaretto.Application.DTOs.ComboDTO>
-
 @{
     ViewData["Title"] = "Listado de Combos";
 }
-
-<h1>Listado de Combos</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Crear nuevo</a>
-</p>
-
-<table class="table table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Estado</th>
-            <th>Imagen</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-
-                <td>
-                    <strong>@item.Nombre</strong>
-                </td>
-
-                <td style="max-width: 300px;">
-                    @item.Descripcion
-                </td>
-
-                <td>
-                    ₡@item.Precio
-                </td>
-
-                <td>
-                    @(item.Estado ? "Activo" : "Inactivo")
-                </td>
-
-                <td style="width:120px;">
-                    <img src="@item.Imagen1"
-                         style="width:80px; height:80px; object-fit:cover; border-radius:8px;"
-                         alt="Combo imagen" />
-                </td>
-
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@item.IdCombo"
-                       class="btn btn-info btn-sm">
-                        Detalle
-                    </a>
-                </td>
-
-            </tr>
-        }
-    </tbody>
-</table>
+<section class="combo-list-section">
+    <div class="container">
+        <h1 class="combo-list-title">Listado de Combos</h1>
+        <a asp-action="Create" class="btn-create-combo">
+            <i class="bi bi-plus-circle"></i> Crear nuevo
+        </a>
+        <div class="combo-list-card">
+            <table class="combo-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="Nombre">
+                                <div class="combo-table-name">
+                                    <span class="combo-table-thumb">
+                                        @if (!string.IsNullOrEmpty(item.Imagen1))
+                                        {
+                                            <img src="@item.Imagen1" alt="@item.Nombre" />
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-image"></i>
+                                        }
+                                    </span>
+                                    @item.Nombre
+                                </div>
+                            </td>
+                            <td data-label="Descripción">
+                                <span class="combo-table-desc">@item.Descripcion</span>
+                            </td>
+                            <td data-label="Precio">
+                                <span class="combo-table-price">&#x20A1;@item.Precio</span>
+                            </td>
+                            <td data-label="Estado">
+                                @if (item.Estado)
+                                {
+                                    <span class="product-status-badge is-available"><i class="bi bi-check-circle-fill"></i> Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="product-status-badge is-unavailable"><i class="bi bi-x-circle-fill"></i> Inactivo</span>
+                                }
+                            </td>
+                            <td data-label="Acciones">
+                                <a asp-action="Details" asp-route-id="@item.IdCombo" class="btn-ver-detalle">
+                                    Detalle <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

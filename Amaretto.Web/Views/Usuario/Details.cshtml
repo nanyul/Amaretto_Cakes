@@ -1,0 +1,77 @@
+﻿@model Amaretto.Application.DTOs.UsuarioDTO
+
+@{
+    ViewData["Title"] = "Detalle Usuario";
+}
+
+<section class="product-detail-section">
+    <div class="container">
+
+        <div class="product-breadcrumb-row">
+            <nav class="product-breadcrumb">
+                <a asp-action="Index" asp-controller="Home" class="breadcrumb-link">
+                    <i class="bi bi-house-door-fill"></i>
+                </a>
+                <i class="bi bi-chevron-right breadcrumb-sep"></i>
+                <a asp-action="Index" asp-controller="Usuario" class="breadcrumb-link">Usuarios</a>
+                <i class="bi bi-chevron-right breadcrumb-sep"></i>
+                <span class="breadcrumb-current">@Model.NombreCompleto</span>
+            </nav>
+            <a asp-action="Index" asp-controller="Usuario" class="btn-back-catalog">
+                <i class="bi bi-arrow-left"></i> Volver al listado
+            </a>
+        </div>
+
+        <div class="product-detail-main">
+
+            <div class="product-gallery">
+                <div class="product-gallery-main user-gallery">
+                    <span class="product-gallery-badge">
+                        <i class="bi bi-person-fill"></i> Usuario
+                    </span>
+                    <div class="user-avatar-placeholder">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="product-info">
+                <span class="product-info-eyebrow">
+                    <i class="bi bi-stars"></i> @Model.NombreRol
+                </span>
+                <div class="user-id-tag">
+                    <i class="bi bi-fingerprint"></i> ID #@Model.IdUsuario
+                </div>
+                <h1 class="product-info-title">@Model.NombreCompleto</h1>
+
+                <div class="product-info-card">
+                    <div class="product-info-card-icon"><i class="bi bi-envelope-fill"></i></div>
+                    <div>
+                        <span class="product-info-card-label">Correo</span>
+                        <span class="product-info-card-value-link">@Model.Email</span>
+                    </div>
+                </div>
+
+                <div class="product-info-card">
+                    <div class="product-info-card-icon"><i class="bi bi-telephone-fill"></i></div>
+                    <div>
+                        <span class="product-info-card-label">Teléfono</span>
+                        <span class="product-info-card-value-link">@(Model.Telefono ?? "No registrado")</span>
+                    </div>
+                </div>
+
+                
+
+                <div class="product-quality-banner">
+                    <div class="product-quality-icon">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <div>
+                        <strong>Cuenta registrada</strong>
+                        <span>en Amaretto Cakes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

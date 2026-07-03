@@ -2,60 +2,288 @@
 
 @{
     ViewData["Title"] = "Detalle Producto";
+
+    var imagenes = new List<string>();
+    if (!string.IsNullOrEmpty(Model.Imagen1)) imagenes.Add(Model.Imagen1);
+    if (!string.IsNullOrEmpty(Model.Imagen2)) imagenes.Add(Model.Imagen2);
+    if (imagenes.Count == 0) imagenes.Add("/images/placeholder-producto.png");
+
+    var relacionados = ViewBag.Relacionados as IEnumerable<Amaretto.Application.DTOs.ProductoDTO>
+                       ?? Enumerable.Empty<Amaretto.Application.DTOs.ProductoDTO>();
 }
 
-<h2>Detalle del Producto</h2>
+<section class="product-detail-section">
+    <div class="container">
 
-<div class="card">
-    <div class="card-body">
-
-        <div class="row">
-
-            <div class="col-md-4">
-                <img src="@Model.Imagen1"
-                     class="img-fluid rounded"
-                     alt="@Model.Nombre" />
-            </div>
-
-            <div class="col-md-8">
-
-                <h3>@Model.Nombre</h3>
-
-                <p>
-                    <strong>Descripción:</strong><br />
-                    @Model.Descripcion
-                </p>
-
-                <p>
-                    <strong>Categoría:</strong>
-                    @Model.IdCategoriaNavigation.Nombre
-                </p>
-
-                <p>
-                    <strong>Precio:</strong>
-                    ₡@Model.Precio
-                </p>
-
-                <p>
-                    <strong>Ingredientes:</strong>
-                </p>
-
-                <ul>
-                    @foreach (var item in Model.ProductoIngrediente)
-                    {
-                        <li>@item.IdIngredienteNavigation.Nombre</li>
-                    }
-                </ul>
-
-            </div>
-
+        <div class="product-breadcrumb-row">
+            <nav class="product-breadcrumb">
+                <a asp-action="Index" asp-controller="Home" class="breadcrumb-link">
+                    <i class="bi bi-house-door-fill"></i>
+                </a>
+                <i class="bi bi-chevron-right breadcrumb-sep"></i>
+                <a asp-action="Catalogo" asp-controller="Producto" class="breadcrumb-link">Catálogo</a>
+                <i class="bi bi-chevron-right breadcrumb-sep"></i>
+                <span class="breadcrumb-link">@Model.IdCategoriaNavigation.Nombre</span>
+                <i class="bi bi-chevron-right breadcrumb-sep"></i>
+                <span class="breadcrumb-current">@Model.Nombre</span>
+            </nav>
+            <a asp-action="Catalogo" asp-controller="Producto" class="btn-back-catalog">
+                <i class="bi bi-arrow-left"></i> Volver al catálogo
+            </a>
         </div>
 
-    </div>
-</div>
+        <div class="product-detail-main">
 
-<div class="mt-3">
-    <a asp-action="Index" class="btn btn-secondary">
-        Regresar
-    </a>
-</div>
+            <div class="product-gallery">
+                <div id="productCarousel" class="carousel slide product-gallery-main" data-bs-ride="false">
+                    <span class="product-gallery-badge">
+                        <i class="bi bi-heart-fill"></i> Hecho con amor
+                    </span>
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < imagenes.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@imagenes[i]" alt="@Model.Nombre" />
+                            </div>
+                        }
+                    </div>
+                    @if (imagenes.Count > 1)
+                    {
+                        <button class="carousel-control-prev" type="button"
+                                data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button"
+                                data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </button>
+                    }
+                </div>
+
+                @if (imagenes.Count > 1)
+                {
+                    <div class="product-gallery-thumbs">
+                        @for (int i = 0; i < imagenes.Count; i++)
+                        {
+                            <button type="button"
+                                    class="product-thumb @(i == 0 ? "active" : "")"
+                                    data-bs-target="#productCarousel"
+                                    data-bs-slide-to="@i">
+                                <img src="@imagenes[i]" alt="Imagen @(i + 1)" />
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="product-info">
+                <span class="product-info-eyebrow">
+                    <i class="bi bi-stars"></i> Postre Individual
+                </span>
+                <h1 class="product-info-title">@Model.Nombre</h1>
+                <div class="product-info-divider"></div>
+                <p class="product-info-desc">@Model.Descripcion</p>
+
+                <div class="product-info-card">
+                    <div class="product-info-card-icon"><i class="bi bi-tag-fill"></i></div>
+                    <div>
+                        <span class="product-info-card-label">Categoría</span>
+                        <a asp-action="Catalogo" asp-controller="Producto"
+                           class="product-info-card-value-link">
+                            @Model.IdCategoriaNavigation.Nombre
+                        </a>
+                    </div>
+                </div>
+
+                <div class="product-info-card product-info-card-price">
+                    <span class="product-info-card-label">Precio</span>
+                    <span class="product-price-value">&#x20A1;@Model.Precio.ToString("N2")</span>
+                </div>
+
+                <div class="product-actions-row">
+                    <span class="product-qty-label">Cantidad</span>
+                    <div class="product-qty-control">
+                        <button type="button" class="qty-btn" id="qtyMinus">
+                            <i class="bi bi-dash"></i>
+                        </button>
+                        <input type="number" id="qtyInput" class="qty-input"
+                               value="1" min="1" max="99" readonly />
+                        <button type="button" class="qty-btn" id="qtyPlus">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                    <button type="button" class="btn-add-cart" id="btnAddCart"
+                            data-id="@Model.IdProducto" data-tipo="producto">
+                        <i class="bi bi-bag-fill"></i> Agregar al carrito
+                    </button>
+                    <button type="button" class="btn-wishlist-detail" id="btnWishlist">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                </div>
+
+                <div class="product-quality-banner">
+                    <div class="product-quality-icon">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <div>
+                        <strong>Elaborado con ingredientes de calidad</strong>
+                        <span>sin conservantes artificiales</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.ProductoIngrediente != null && Model.ProductoIngrediente.Any())
+        {
+            <div class="product-ingredients-card">
+                <div class="product-ingredients-inner">
+                    <div class="product-ingredients-deco">
+                        <img src="/images/deco-ingredientes.png"
+                             alt="Ingredientes decoración"
+                             onerror="this.style.display='none'" />
+                    </div>
+                    <div class="product-ingredients-content">
+                        <div class="product-ingredients-header">
+                            <i class="bi bi-flower2"></i>
+                            <h3>Ingredientes</h3>
+                        </div>
+                        <ul class="product-ingredients-list">
+                            @foreach (var item in Model.ProductoIngrediente)
+                            {
+                                <li>
+                                    <i class="bi bi-check2-circle"></i>
+                                    @item.IdIngredienteNavigation.Nombre
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (relacionados.Any())
+        {
+            <div class="product-related-section">
+                <h3 class="product-related-title">
+                    <i class="bi bi-stars"></i> También te puede gustar <i class="bi bi-stars"></i>
+                </h3>
+                <div class="product-related-grid">
+                    @foreach (var rel in relacionados)
+                    {
+                        <div class="product-related-card">
+                            <div class="product-related-img">
+                                <img src="@rel.Imagen1" alt="@rel.Nombre" />
+                            </div>
+                            <div class="product-related-body">
+                                <h5>@rel.Nombre</h5>
+                                <span class="product-related-price">
+                                    &#x20A1;@rel.Precio.ToString("N2")
+                                </span>
+                                <a asp-action="Details" asp-controller="Producto"
+                                   asp-route-id="@rel.IdProducto" class="btn-related">
+                                    Ver detalle <i class="bi bi-heart-fill"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <!-- Barra de beneficios con wave -->
+    <div class="detail-benefits-wrap">
+        <div class="detail-benefits-wave">
+            <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z"
+                      fill="#0A3323" />
+            </svg>
+        </div>
+        <div class="detail-benefits-bar">
+            <div class="detail-benefit-item">
+                <div class="detail-benefit-item">
+                    <div class="detail-benefit-icon"><i class="bi bi-flower1"></i></div>
+                    <div>
+                        <strong>Ingredientes</strong>
+                        <span>de calidad</span>
+                    </div>
+                </div>
+                <span class="detail-benefit-sep">✦</span>
+                <div class="detail-benefit-item">
+                    <div class="detail-benefit-icon"><i class="bi bi-heart-fill"></i></div>
+                    <div>
+                        <strong>Hecho</strong>
+                        <span>con amor</span>
+                    </div>
+                </div>
+                <span class="detail-benefit-sep">✦</span>
+                <div class="detail-benefit-item">
+                    <div class="detail-benefit-icon"><i class="bi bi-person-badge-fill"></i></div>
+                    <div>
+                        <strong>Chef</strong>
+                        <span>profesionales</span>
+                    </div>
+                </div>
+                <span class="detail-benefit-sep">✦</span>
+                <div class="detail-benefit-item">
+                    <div class="detail-benefit-icon"><i class="bi bi-truck"></i></div>
+                    <div>
+                        <strong>Entregas</strong>
+                        <span>a tiempo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            // Thumbs activos al navegar carrusel
+            document.getElementById('productCarousel')?.addEventListener('slid.bs.carousel', function (e) {
+                document.querySelectorAll('.product-thumb').forEach(function (t, i) {
+                    t.classList.toggle('active', i === e.to);
+                });
+            });
+            document.querySelectorAll('.product-thumb').forEach(function (thumb) {
+                thumb.addEventListener('click', function () {
+                    document.querySelectorAll('.product-thumb').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Cantidad
+            const qtyInput = document.getElementById('qtyInput');
+            document.getElementById('qtyMinus').addEventListener('click', function () {
+                let v = parseInt(qtyInput.value) || 1;
+                if (v > 1) qtyInput.value = v - 1;
+            });
+            document.getElementById('qtyPlus').addEventListener('click', function () {
+                let v = parseInt(qtyInput.value) || 1;
+                if (v < 99) qtyInput.value = v + 1;
+            });
+
+            // Wishlist
+            document.getElementById('btnWishlist').addEventListener('click', function () {
+                this.classList.toggle('active');
+                const icon = this.querySelector('i');
+                icon.className = this.classList.contains('active') ? 'bi bi-heart-fill' : 'bi bi-heart';
+            });
+
+            // Carrito — conectar con el endpoint real
+            document.getElementById('btnAddCart').addEventListener('click', function () {
+                const id       = this.dataset.id;
+                const cantidad = qtyInput.value;
+                console.log('Agregar producto al carrito ->', { id, cantidad });
+                // fetch('/Carrito/Agregar', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ idProducto: id, cantidad: parseInt(cantidad) })
+                // });
+            });
+        })();
+    </script>
+}

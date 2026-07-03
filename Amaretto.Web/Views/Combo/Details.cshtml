@@ -2,71 +2,302 @@
 
 @{
     ViewData["Title"] = "Detalle Combo";
+
+    var imagenes = new List<string>();
+    if (!string.IsNullOrEmpty(Model.Imagen1)) imagenes.Add(Model.Imagen1);
+    if (!string.IsNullOrEmpty(Model.Imagen2)) imagenes.Add(Model.Imagen2);
+    if (imagenes.Count == 0) imagenes.Add("/images/placeholder-combo.png");
+
+    var relacionados = ViewBag.Relacionados as IEnumerable<Amaretto.Application.DTOs.ComboDTO>
+                       ?? Enumerable.Empty<Amaretto.Application.DTOs.ComboDTO>();
 }
 
-<h2 class="mb-3">Detalle del Combo</h2>
+<section class="product-detail-section">
+    <div class="container">
 
-<div class="card shadow-sm">
-    <div class="card-body">
+        <div class="product-breadcrumb-row">
+            <nav class="product-breadcrumb">
+                <a asp-action="Index" asp-controller="Home" class="breadcrumb-link">
+                    <i class="bi bi-house-door-fill"></i>
+                </a>
+                <i class="bi bi-chevron-right breadcrumb-sep"></i>
+                <a asp-action="Catalogo" asp-controller="Combo" class="breadcrumb-link">Catálogo</a>
+                <i class="bi bi-chevron-right breadcrumb-sep"></i>
+                <span class="breadcrumb-link">Combos</span>
+                <i class="bi bi-chevron-right breadcrumb-sep"></i>
+                <span class="breadcrumb-current">@Model.Nombre</span>
+            </nav>
+            <a asp-action="Catalogo" asp-controller="Combo" class="btn-back-catalog">
+                <i class="bi bi-arrow-left"></i> Volver al catálogo
+            </a>
+        </div>
 
-        <div class="row">
+        <div class="product-detail-main">
 
-            <!-- Imagen -->
-            <div class="col-md-4">
-                <img src="@Model.Imagen1"
-                     class="img-fluid rounded"
-                     style="max-height: 300px; object-fit: cover;"
-                     alt="Imagen del combo" />
+            <div class="product-gallery">
+                <div id="comboCarousel" class="carousel slide product-gallery-main" data-bs-ride="false">
+                    <span class="product-gallery-badge">
+                        <i class="bi bi-heart-fill"></i> Hecho con amor
+                    </span>
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < imagenes.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@imagenes[i]" alt="@Model.Nombre" />
+                            </div>
+                        }
+                    </div>
+                    @if (imagenes.Count > 1)
+                    {
+                        <button class="carousel-control-prev" type="button"
+                                data-bs-target="#comboCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button"
+                                data-bs-target="#comboCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </button>
+                    }
+                </div>
+
+                @if (imagenes.Count > 1)
+                {
+                    <div class="product-gallery-thumbs">
+                        @for (int i = 0; i < imagenes.Count; i++)
+                        {
+                            <button type="button"
+                                    class="product-thumb @(i == 0 ? "active" : "")"
+                                    data-bs-target="#comboCarousel"
+                                    data-bs-slide-to="@i">
+                                <img src="@imagenes[i]" alt="Imagen @(i + 1)" />
+                            </button>
+                        }
+                    </div>
+                }
             </div>
 
-            <!-- Información -->
-            <div class="col-md-8">
+            <div class="product-info">
+                <span class="product-info-eyebrow">
+                    <i class="bi bi-gift-fill"></i> Combo Especial
+                </span>
+                <h1 class="product-info-title">@Model.Nombre</h1>
+                <div class="product-info-divider"></div>
+                <p class="product-info-desc">@Model.Descripcion</p>
 
-                <h3>@Model.Nombre</h3>
+                <div class="product-info-card">
+                    <div class="product-info-card-icon"><i class="bi bi-circle-fill combo-estado-icon"></i></div>
+                    <div>
+                        <span class="product-info-card-label">Disponibilidad</span>
+                        @if (Model.Estado)
+                        {
+                            <span class="combo-estado-disponible">Disponible ahora</span>
+                        }
+                        else
+                        {
+                            <span class="combo-estado-nodisponible">No disponible</span>
+                        }
+                    </div>
+                </div>
 
-                <p>
-                    <strong>Descripción:</strong><br />
-                    @Model.Descripcion
-                </p>
+                <div class="product-info-card product-info-card-price">
+                    <span class="product-info-card-label">Precio del combo</span>
+                    <span class="product-price-value">&#x20A1;@Model.Precio.ToString("N2")</span>
+                </div>
 
-                <p>
-                    <strong>Precio:</strong>
-                    ₡@Model.Precio
-                </p>
+                <div class="product-actions-row">
+                    <span class="product-qty-label">Cantidad</span>
+                    <div class="product-qty-control">
+                        <button type="button" class="qty-btn" id="qtyMinus">
+                            <i class="bi bi-dash"></i>
+                        </button>
+                        <input type="number" id="qtyInput" class="qty-input"
+                               value="1" min="1" max="99" readonly />
+                        <button type="button" class="qty-btn" id="qtyPlus">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                    <button type="button" class="btn-add-cart @(!Model.Estado ? "disabled" : "")"
+                            id="btnAddCart" data-id="@Model.IdCombo" data-tipo="combo"
+                            @(!Model.Estado ? "disabled" : "")>
+                        <i class="bi bi-bag-fill"></i> Agregar al carrito
+                    </button>
+                    <button type="button" class="btn-wishlist-detail" id="btnWishlist">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                </div>
 
-                <p>
-                    <strong>Estado:</strong>
-                    @if (Model.Estado)
-                    {
-                        <span class="badge bg-success">Activo</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger">Inactivo</span>
-                    }
-                </p>
-
-                <p>
-                    <strong>Productos del combo:</strong>
-                </p>
-
-                <ul class="list-group">
-                    @foreach (var producto in Model.Producto)
-                    {
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            @producto.Nombre
-                        </li>
-                    }
-                </ul>
-
+                <div class="product-quality-banner">
+                    <div class="product-quality-icon">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <div>
+                        <strong>Elaborado con ingredientes de calidad</strong>
+                        <span>sin conservantes artificiales</span>
+                    </div>
+                </div>
             </div>
         </div>
 
+        @if (Model.Producto != null && Model.Producto.Any())
+        {
+            <div class="product-ingredients-card">
+                <div class="product-ingredients-header">
+                    <i class="bi bi-boxes"></i>
+                    <h3>Productos incluidos en el combo</h3>
+                </div>
+                <ul class="combo-products-list">
+                    @foreach (var prod in Model.Producto)
+                    {
+                        <li class="combo-product-item">
+                            <div class="combo-product-img">
+                                @if (!string.IsNullOrEmpty(prod.Imagen1))
+                                {
+                                    <img src="@prod.Imagen1" alt="@prod.Nombre" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-cake2-fill"></i>
+                                }
+                            </div>
+                            <div class="combo-product-info">
+                                <span class="combo-product-name">@prod.Nombre</span>
+                                @if (!string.IsNullOrEmpty(prod.Descripcion))
+                                {
+                                    <span class="combo-product-desc">@prod.Descripcion</span>
+                                }
+                            </div>
+                            <div class="combo-product-check">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @if (relacionados.Any())
+        {
+            <div class="product-related-section">
+                <h3 class="product-related-title">
+                    <i class="bi bi-stars"></i> Otros combos que te pueden gustar <i class="bi bi-stars"></i>
+                </h3>
+                <div class="product-related-grid">
+                    @foreach (var rel in relacionados)
+                    {
+                        <div class="product-related-card">
+                            <div class="product-related-img">
+                                <img src="@rel.Imagen1" alt="@rel.Nombre" />
+                            </div>
+                            <div class="product-related-body">
+                                <h5>@rel.Nombre</h5>
+                                <span class="product-related-price">
+                                    &#x20A1;@rel.Precio.ToString("N2")
+                                </span>
+                                <a asp-action="Details" asp-controller="Combo"
+                                   asp-route-id="@rel.IdCombo" class="btn-related">
+                                    Ver detalle <i class="bi bi-heart-fill"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
     </div>
-</div>
 
-<div class="mt-3">
-    <a asp-action="Edit" asp-route-id="@Model.IdCombo" class="btn btn-primary">Editar</a>
-    <a asp-action="Index" class="btn btn-secondary">Regresar</a>
-</div>
+    <!-- Barra de beneficios con wave -->
+    <div class="detail-benefits-wrap">
+        <div class="detail-benefits-wave">
+            <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z"
+                      fill="#0A3323" />
+            </svg>
+        </div>
+        <div class="detail-benefits-bar">
+            <div class="detail-benefit-item">
+                <div class="detail-benefit-item">
+                    <div class="detail-benefit-icon"><i class="bi bi-flower1"></i></div>
+                <div>
+                    <strong>Ingredientes</strong>
+                    <span>de calidad</span>
+                </div>
+            </div>
+            <span class="detail-benefit-sep">✦</span>
+            <div class="detail-benefit-item">
+                <div class="detail-benefit-icon"><i class="bi bi-heart-fill"></i></div>
+                <div>
+                    <strong>Hecho</strong>
+                    <span>con amor</span>
+                </div>
+            </div>
+            <span class="detail-benefit-sep">✦</span>
+            <div class="detail-benefit-item">
+                <div class="detail-benefit-icon"><i class="bi bi-person-badge-fill"></i></div>
+                <div>
+                    <strong>Chef</strong>
+                    <span>profesionales</span>
+                </div>
+            </div>
+            <span class="detail-benefit-sep">✦</span>
+            <div class="detail-benefit-item">
+                <div class="detail-benefit-icon"><i class="bi bi-truck"></i></div>
+                <div>
+                    <strong>Entregas</strong>
+                    <span>a tiempo</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            // Thumbs activos al navegar carrusel
+            document.getElementById('comboCarousel')?.addEventListener('slid.bs.carousel', function (e) {
+                document.querySelectorAll('.product-thumb').forEach(function (t, i) {
+                    t.classList.toggle('active', i === e.to);
+                });
+            });
+            document.querySelectorAll('.product-thumb').forEach(function (thumb) {
+                thumb.addEventListener('click', function () {
+                    document.querySelectorAll('.product-thumb').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Cantidad
+            const qtyInput = document.getElementById('qtyInput');
+            document.getElementById('qtyMinus').addEventListener('click', function () {
+                let v = parseInt(qtyInput.value) || 1;
+                if (v > 1) qtyInput.value = v - 1;
+            });
+            document.getElementById('qtyPlus').addEventListener('click', function () {
+                let v = parseInt(qtyInput.value) || 1;
+                if (v < 99) qtyInput.value = v + 1;
+            });
+
+            // Wishlist
+            document.getElementById('btnWishlist').addEventListener('click', function () {
+                this.classList.toggle('active');
+                const icon = this.querySelector('i');
+                icon.className = this.classList.contains('active') ? 'bi bi-heart-fill' : 'bi bi-heart';
+            });
+
+            // Carrito — conectar con el endpoint real
+            document.getElementById('btnAddCart')?.addEventListener('click', function () {
+                if (this.disabled) return;
+                const id       = this.dataset.id;
+                const cantidad = qtyInput.value;
+                console.log('Agregar combo al carrito ->', { id, cantidad });
+                // fetch('/Carrito/AgregarCombo', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ idCombo: id, cantidad: parseInt(cantidad) })
+                // });
+            });
+        })();
+    </script>
+}

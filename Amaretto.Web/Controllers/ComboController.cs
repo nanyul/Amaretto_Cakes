@@ -1,8 +1,5 @@
 ﻿using Amaretto.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Amaretto.Web.Controllers
 {
@@ -25,10 +22,25 @@ namespace Amaretto.Web.Controllers
 
         public async Task<ActionResult> Details(string? id)
         {
-            if (id == null) return RedirectToAction("Index");
-            var @object = await _serviceCombo.FindByIdAsync(id);
-            if (@object == null) throw new Exception("Combo no existente");
-            return View(@object);
+            if (id == null)
+                return RedirectToAction("Index");
+
+            var combo = await _serviceCombo.FindByIdAsync(id);
+
+            if (combo == null)
+                throw new Exception("Combo no existente");
+
+            // Combos relacionados: cualquier otro combo activo, máximo 4
+            var todos = await _serviceCombo.ListAsync();
+
+            ViewBag.Relacionados = todos
+                .Where(c => c.IdCombo != combo.IdCombo
+                         && c.Estado)              // solo activos
+                .OrderBy(_ => Guid.NewGuid())      // orden aleatorio para variedad
+                .Take(4)
+                .ToList();
+
+            return View(combo);
         }
 
         public async Task<IActionResult> Catalogo()
@@ -39,7 +51,11 @@ namespace Amaretto.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Filtrar(string? estado, decimal? precioMax, List<int>? categoriaIds, string? ordenarPor)
+        public async Task<IActionResult> Filtrar(
+            string? estado,
+            decimal? precioMax,
+            List<int>? categoriaIds,
+            string? ordenarPor)
         {
             var combos = await _serviceCombo.FilterAsync(estado, precioMax, categoriaIds, ordenarPor);
 

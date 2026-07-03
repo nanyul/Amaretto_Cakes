@@ -1,8 +1,10 @@
 using Amaretto.Application;
 using Amaretto.Application.Profiles;
+using Amaretto.Application.Services;
 using Amaretto.Application.Services.Implementations;
 using Amaretto.Application.Services.Interfaces;
 using Amaretto.Infraestructure.Data;
+using Amaretto.Infraestructure.Repositories;
 using Amaretto.Infraestructure.Repository.Implementations;
 using Amaretto.Infraestructure.Repository.Interfaces;
 using Amaretto.Web.Middleware;
@@ -11,6 +13,7 @@ using Libreria.Application.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using System.Text;
@@ -33,6 +36,7 @@ builder.Services.AddTransient<IRepositoryMenuProducto, RepositoryMenuProducto>()
 builder.Services.AddTransient<IRepositoryMenuCombo, RepositoryMenuCombo>();
 builder.Services.AddTransient<IRepositoryCocinaOrden, RepositoryCocinaOrden>();
 builder.Services.AddTransient<IRepositoryEstacion, RepositoryEstacion>();
+builder.Services.AddTransient<IRepositoryUsuario, RepositoryUsuario>();
 
 
 //Services
@@ -43,6 +47,7 @@ builder.Services.AddTransient<IServiceMenuProducto, ServiceMenuProducto>();
 builder.Services.AddTransient<IServiceMenuCombo, ServiceMenuCombo>();
 builder.Services.AddTransient<IServiceCocinaOrden, ServiceCocinaOrden>();
 builder.Services.AddTransient<IServiceEstacion, ServiceEstacion>();
+builder.Services.AddTransient<IServiceUsuario, UsuarioService>();
 
 //Seguridad
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -73,6 +78,7 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile<IngredienteProfile>();
     config.AddProfile<ProductoIngredienteProfile>();
     config.AddProfile<EstacionProfile>();
+    config.AddProfile<UsuarioProfile>();
 });
 // Configuar Conexión a la Base de Datos SQL
 builder.Services.AddDbContext<AmarettoContext>(options =>

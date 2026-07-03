@@ -409,10 +409,8 @@ h1, h2, h3, h4, h5 {
 }
 
 .hero-cake-image {
-    max-width: 500px;
-    width: 100%;
-    border-radius: 25px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    max-width: 700px;
+    width: 150%;
     animation: floatCake 4s ease-in-out infinite;
     filter: drop-shadow(0 20px 40px rgba(10, 51, 35, 0.15));
 }
@@ -1353,6 +1351,7 @@ input[type="range"].price-slider {
     gap: 6px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(211,150,140,0.3);
+    text-decoration: none;
 }
 
     .btn-catalog:hover {
@@ -1596,4 +1595,1417 @@ input[type="range"].price-slider {
     .favorite-card-img {
         height: 180px;
     }
+}
+
+/*
+   DETALLE DE PRODUCTO / COMBO
+   */
+.product-detail-section {
+    padding: 40px 0 0;
+    background: var(--beige);
+    overflow: hidden;
+}
+
+/* Breadcrumb */
+.product-breadcrumb-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.product-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-link {
+    color: var(--midnight-green);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+    .breadcrumb-link:hover {
+        color: var(--rosy-brown);
+    }
+
+.breadcrumb-sep {
+    color: var(--moss-green);
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+.breadcrumb-current {
+    color: var(--rosy-brown);
+    font-weight: 600;
+}
+
+.btn-back-catalog {
+    background: var(--white);
+    color: var(--dark-green) !important;
+    border: 1.5px solid rgba(10,51,35,0.15);
+    border-radius: 50px;
+    padding: 9px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+}
+
+    .btn-back-catalog:hover {
+        background: var(--dark-green);
+        color: var(--beige) !important;
+        transform: translateX(-3px);
+    }
+
+/* Layout principal: galería + info */
+.product-detail-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 56px;
+}
+
+/* Galería */
+.product-gallery-main {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(10,51,35,0.12);
+}
+
+    .product-gallery-main .carousel-inner,
+    .product-gallery-main .carousel-item {
+        aspect-ratio: 4 / 3;
+        height: auto;
+    }
+
+        .product-gallery-main .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;  /*contain*/
+            object-position: center;
+        }
+
+.product-gallery-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 3;
+    background: var(--rosy-brown);
+    color: var(--white);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Avatar de usuario para vista de Detalle (sin imagen real) */
+.product-gallery-main.user-gallery {
+    width: 100%;
+    height: 460px;
+    background: linear-gradient(160deg, var(--beige) 0%, var(--beige-light) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.user-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: var(--white);
+    box-shadow: 0 18px 50px rgba(10,51,35,0.12);
+    border: 4px solid var(--rosy-brown);
+}
+
+    .user-avatar-placeholder i {
+        font-size: 110px;
+        color: var(--dark-green);
+        opacity: 0.85;
+    }
+
+.product-gallery-main .carousel-control-prev,
+.product-gallery-main .carousel-control-next {
+    width: 42px;
+    height: 42px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.85);
+    border-radius: 50%;
+    opacity: 1;
+    transition: all 0.25s ease;
+}
+
+    .product-gallery-main .carousel-control-prev:hover,
+    .product-gallery-main .carousel-control-next:hover {
+        background: var(--moss-green);
+    }
+
+.product-gallery-main .carousel-control-prev {
+    left: 16px;
+}
+
+.product-gallery-main .carousel-control-next {
+    right: 16px;
+}
+
+.product-gallery-main .carousel-control-prev-icon,
+.product-gallery-main .carousel-control-next-icon {
+    filter: invert(15%) sepia(45%) saturate(900%) hue-rotate(115deg);
+    width: 16px;
+    height: 16px;
+}
+
+
+/* Miniaturas */
+.product-gallery-thumbs {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.product-thumb {
+    flex: 1;
+    max-width: 110px;
+    height: 80px;
+    padding: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2.5px solid transparent;
+    cursor: pointer;
+    background: none;
+    transition: all 0.25s ease;
+}
+
+    .product-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-thumb.active {
+        border-color: var(--moss-green);
+    }
+
+    .product-thumb:hover {
+        border-color: var(--rosy-brown);
+    }
+
+/* Información del producto */
+.product-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-info-eyebrow {
+    color: var(--rosy-brown);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.product-info-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: var(--dark-green);
+    font-size: 2.6rem;
+    margin: 0 0 16px;
+    line-height: 1.15;
+}
+
+.product-info-divider {
+    width: 70px;
+    height: 3px;
+    background: var(--moss-green);
+    border-radius: 4px;
+    margin-bottom: 18px;
+    position: relative;
+}
+
+    .product-info-divider::after {
+        content: '✦';
+        position: absolute;
+        left: 84px;
+        top: -10px;
+        color: var(--rosy-brown);
+        font-size: 0.9rem;
+    }
+
+.product-info-desc {
+    color: var(--midnight-green);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.product-info-card {
+    background: rgba(131, 153, 88, 0.1);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.product-info-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.product-info-card-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--midnight-green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.product-info-card-value-link {
+    color: var(--rosy-brown);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.02rem;
+}
+
+    .product-info-card-value-link:hover {
+        text-decoration: underline;
+    }
+
+.product-info-card-price {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(131, 153, 88, 0.16);
+}
+
+.product-price-value {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: var(--dark-green);
+    font-size: 2rem;
+}
+
+/* Fila de acciones: cantidad + carrito + wishlist */
+.product-actions-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 28px 0 24px;
+}
+
+.product-qty-label {
+    font-weight: 600;
+    color: var(--dark-green);
+    font-size: 0.95rem;
+}
+
+.product-qty-control {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border-radius: 50px;
+    border: 1.5px solid rgba(10,51,35,0.12);
+    overflow: hidden;
+}
+
+.qty-btn {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: transparent;
+    color: var(--dark-green);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .qty-btn:hover {
+        background: var(--moss-green);
+        color: var(--white);
+    }
+
+.qty-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    color: var(--dark-green);
+    font-size: 1rem;
+    -moz-appearance: textfield;
+}
+
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+.btn-add-cart {
+    background: var(--dark-green);
+    color: var(--beige) !important;
+    border: none;
+    border-radius: 50px;
+    padding: 13px 26px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 22px rgba(10,51,35,0.25);
+}
+
+    .btn-add-cart:hover {
+        background: var(--moss-green);
+        transform: translateY(-2px);
+    }
+
+.btn-wishlist-detail {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(211,150,140,0.15);
+    color: var(--rosy-brown);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+    .btn-wishlist-detail:hover,
+    .btn-wishlist-detail.active {
+        background: var(--rosy-brown);
+        color: var(--white);
+        transform: scale(1.08);
+    }
+
+        .btn-wishlist-detail.active i::before {
+            content: "\f415"; /* bi-heart-fill */
+        }
+
+/* Banner de calidad */
+.product-quality-banner {
+    background: rgba(131, 153, 88, 0.14);
+    border-radius: 18px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.product-quality-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.product-quality-banner strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    color: var(--dark-green);
+    font-size: 1.02rem;
+}
+
+.product-quality-banner span {
+    color: var(--midnight-green);
+    font-size: 0.88rem;
+}
+
+/* Tarjeta de ingredientes */
+.product-ingredients-card {
+    background: var(--beige-light);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    box-shadow: 0 10px 36px rgba(10,51,35,0.06);
+}
+
+.product-ingredients-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+    .product-ingredients-header i {
+        color: var(--moss-green);
+        font-size: 1.4rem;
+    }
+
+    .product-ingredients-header h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--dark-green);
+        font-weight: 700;
+        margin: 0;
+    }
+
+.product-ingredients-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px 24px;
+    max-width: 520px;
+}
+
+    .product-ingredients-list li {
+        color: var(--dark-green);
+        font-weight: 500;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .product-ingredients-list li i {
+            color: var(--moss-green);
+            font-size: 1rem;
+        }
+
+/* También te puede gustar */
+.product-related-section {
+    margin-bottom: 32px;
+}
+
+.product-related-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    color: var(--dark-green);
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+    .product-related-title i {
+        color: var(--moss-green);
+        font-size: 1rem;
+    }
+
+.product-related-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.product-related-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 26px rgba(10,51,35,0.08);
+    transition: all 0.3s ease;
+}
+
+    .product-related-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(10,51,35,0.14);
+    }
+
+.product-related-img {
+    height: 160px;
+    overflow: hidden;
+}
+
+    .product-related-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+.product-related-card:hover .product-related-img img {
+    transform: scale(1.06);
+}
+
+.product-related-body {
+    padding: 16px 18px 20px;
+    text-align: center;
+}
+
+    .product-related-body h5 {
+        font-family: 'Playfair Display', serif;
+        color: var(--dark-green);
+        font-weight: 700;
+        font-size: 1rem;
+        margin: 0 0 4px;
+    }
+
+.product-related-price {
+    display: block;
+    color: var(--midnight-green);
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin-bottom: 12px;
+}
+
+.btn-related {
+    background: var(--rosy-brown);
+    color: var(--white) !important;
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+    .btn-related:hover {
+        background: var(--dark-green);
+        transform: translateY(-2px);
+    }
+
+/* Responsive */
+@media (max-width: 991px) {
+    .product-detail-main {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .product-related-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .product-info-title {
+        font-size: 2rem;
+    }
+
+    .product-gallery-main .carousel-inner,
+    .product-gallery-main .carousel-item {
+        aspect-ratio: 1 / 1;
+    }
+
+    .product-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-add-cart {
+        justify-content: center;
+    }
+
+    .product-related-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-ingredients-card {
+        padding: 28px 20px;
+    }
+}
+
+/*
+   DETALLE COMBO — elementos exclusivos
+   */
+
+/* Estado disponible / no disponible */
+.combo-estado-disponible {
+    color: var(--moss-green);
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.combo-estado-nodisponible {
+    color: var(--rosy-brown);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.combo-estado-icon {
+    font-size: 0.7rem !important;
+}
+
+/* Lista de productos incluidos en el combo */
+.combo-products-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.combo-product-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--white);
+    border-radius: 14px;
+    padding: 12px 16px;
+    transition: box-shadow 0.2s ease;
+}
+
+    .combo-product-item:hover {
+        box-shadow: 0 4px 16px rgba(10,51,35,0.08);
+    }
+
+.combo-product-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--beige);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--rosy-brown);
+    font-size: 1.4rem;
+}
+
+    .combo-product-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.combo-product-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.combo-product-name {
+    display: block;
+    font-weight: 700;
+    color: var(--dark-green);
+    font-size: 0.95rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.combo-product-desc {
+    display: block;
+    color: var(--midnight-green);
+    font-size: 0.82rem;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.combo-product-check {
+    color: var(--moss-green);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* Botón deshabilitado cuando combo inactivo */
+.btn-add-cart.disabled,
+.btn-add-cart:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none;
+}
+
+/*
+   WAVE + BARRA DE BENEFICIOS — detalle producto/combo
+   */
+.detail-benefits-wrap {
+    margin-top: 40px;
+}
+
+.detail-benefits-wave {
+    line-height: 0;
+    overflow: hidden;
+    display: block;
+    font-size: 0;
+}
+
+    .detail-benefits-wave svg {
+        display: block;
+        width: 100%;
+        height: 70px;
+        vertical-align: bottom;
+    }
+
+.detail-benefits-bar {
+    background: var(--dark-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 32px 20px 40px;
+}
+
+.detail-benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 40px;
+}
+
+    .detail-benefit-item div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-benefit-item strong {
+        color: var(--beige);
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .detail-benefit-item span {
+        color: var(--moss-green);
+        font-size: 0.82rem;
+        font-weight: 400;
+    }
+
+.detail-benefit-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(131, 153, 88, 0.18);
+    border: 1.5px solid rgba(131, 153, 88, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--rosy-brown);
+    font-size: 1.2rem;
+}
+
+.detail-benefit-sep {
+    color: var(--moss-green);
+    font-size: 0.7rem;
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .detail-benefit-item {
+        padding: 12px 20px;
+    }
+
+    .detail-benefit-sep {
+        display: none;
+    }
+
+    .detail-benefits-bar {
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 24px 16px 32px;
+    }
+}
+
+/*
+   IMAGEN DECORATIVA — sección ingredientes
+   */
+.product-ingredients-inner {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.product-ingredients-deco {
+    flex-shrink: 0;
+    width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .product-ingredients-deco img {
+        width: 160px;
+        height: 160px;
+        object-fit: contain;
+        filter: drop-shadow(0 8px 20px rgba(10,51,35,0.12));
+    }
+
+.product-ingredients-content {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .product-ingredients-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .product-ingredients-deco {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* 
+   LISTADO DE USUARIOS
+ */
+.user-list-section {
+    padding: 48px 0;
+}
+
+.user-list-title {
+    font-family: "Playfair Display", serif;
+    color: var(--dark-green);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+.user-list-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 18px 50px rgba(10,51,35,0.10);
+    overflow: hidden;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .user-table thead tr {
+        background: var(--dark-green);
+    }
+
+    .user-table thead th {
+        color: var(--beige-light);
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 16px 20px;
+        text-align: left;
+    }
+
+    .user-table tbody tr {
+        border-bottom: 1px solid rgba(10,51,35,0.08);
+        transition: background-color 0.2s ease;
+    }
+
+        .user-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .user-table tbody tr:hover {
+            background-color: rgba(247,244,213,0.6);
+        }
+
+    .user-table tbody td {
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        color: var(--dark-green);
+        vertical-align: middle;
+    }
+
+.user-table-id {
+    font-weight: 700;
+    color: var(--rosy-brown);
+}
+
+.user-table-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+}
+
+.user-table-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--beige);
+    border: 2px solid var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+    .user-table-avatar i {
+        font-size: 1.1rem;
+        color: var(--dark-green);
+    }
+
+.user-role-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgba(131,153,88,0.15);
+    color: var(--moss-green);
+}
+
+    .user-role-badge.role-admin {
+        background: rgba(211,150,140,0.18);
+        color: var(--rosy-brown);
+    }
+
+    .user-role-badge.role-encargado {
+        background: rgba(16,86,102,0.15);
+        color: var(--midnight-green);
+    }
+
+    .user-role-badge.role-cocinero {
+        background: rgba(10,51,35,0.12);
+        color: var(--dark-green);
+    }
+
+.user-table-email {
+    color: var(--midnight-green);
+}
+
+.btn-ver-detalle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--rosy-brown);
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: gap 0.2s ease;
+}
+
+    .btn-ver-detalle:hover {
+        color: var(--dark-green);
+        gap: 9px;
+    }
+
+@media (max-width: 768px) {
+    .user-table thead {
+        display: none;
+    }
+
+    .user-table tbody tr {
+        display: block;
+        padding: 16px;
+        border-bottom: 8px solid var(--beige);
+    }
+
+    .user-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 4px;
+        border: none;
+    }
+
+        .user-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--moss-green);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-right: 12px;
+        }
+}
+
+/* 
+   LISTADO DE PRODUCTOS (tabla, admin)
+ */
+.product-list-section {
+    padding: 48px 0;
+}
+
+.product-list-title {
+    font-family: "Playfair Display", serif;
+    color: var(--dark-green);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+.product-list-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 18px 50px rgba(10,51,35,0.10);
+    overflow: hidden;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .product-table thead tr {
+        background: var(--dark-green);
+    }
+
+    .product-table thead th {
+        color: var(--beige-light);
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 16px 20px;
+        text-align: left;
+    }
+
+    .product-table tbody tr {
+        border-bottom: 1px solid rgba(10,51,35,0.08);
+        transition: background-color 0.2s ease;
+    }
+
+        .product-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .product-table tbody tr:hover {
+            background-color: rgba(247,244,213,0.6);
+        }
+
+    .product-table tbody td {
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        color: var(--dark-green);
+        vertical-align: middle;
+    }
+
+.product-table-id {
+    font-weight: 700;
+    color: var(--rosy-brown);
+}
+
+.product-table-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+}
+
+.product-table-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--beige);
+    border: 2px solid var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+    .product-table-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-table-thumb i {
+        font-size: 1.1rem;
+        color: var(--dark-green);
+    }
+
+.product-table-price {
+    font-weight: 700;
+    color: var(--dark-green);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.product-category-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgba(131,153,88,0.15);
+    color: var(--moss-green);
+}
+
+.product-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+    .product-status-badge.is-available {
+        background: rgba(131,153,88,0.15);
+        color: var(--moss-green);
+    }
+
+    .product-status-badge.is-unavailable {
+        background: rgba(211,150,140,0.18);
+        color: var(--rosy-brown);
+    }
+
+@media (max-width: 768px) {
+    .product-table thead {
+        display: none;
+    }
+
+    .product-table tbody tr {
+        display: block;
+        padding: 16px;
+        border-bottom: 8px solid var(--beige);
+    }
+
+    .product-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 4px;
+        border: none;
+    }
+
+        .product-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--moss-green);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-right: 12px;
+        }
+}
+
+.product-custom-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgba(16,86,102,0.15);
+    color: var(--midnight-green);
+}
+
+    .product-custom-badge.is-no {
+        background: rgba(10,51,35,0.08);
+        color: var(--midnight-green);
+        opacity: 0.6;
+    }
+
+/* 
+   LISTADO DE COMBOS (tabla, admin)
+ */
+.combo-list-section {
+    padding: 48px 0;
+}
+
+.combo-list-title {
+    font-family: "Playfair Display", serif;
+    color: var(--dark-green);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.combo-list-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 18px 50px rgba(10,51,35,0.10);
+    overflow: hidden;
+}
+
+.btn-create-combo {
+    background: var(--dark-green) !important;
+    color: var(--beige) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 11px 26px !important;
+    font-weight: 600;
+    font-size: 0.88rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 22px rgba(10,51,35,0.2);
+}
+
+    .btn-create-combo:hover {
+        background: var(--moss-green) !important;
+        color: var(--white) !important;
+        transform: translateY(-2px);
+    }
+
+.combo-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .combo-table thead tr {
+        background: var(--dark-green);
+    }
+
+    .combo-table thead th {
+        color: var(--beige-light);
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 16px 20px;
+        text-align: left;
+    }
+
+    .combo-table tbody tr {
+        border-bottom: 1px solid rgba(10,51,35,0.08);
+        transition: background-color 0.2s ease;
+    }
+
+        .combo-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .combo-table tbody tr:hover {
+            background-color: rgba(247,244,213,0.6);
+        }
+
+    .combo-table tbody td {
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        color: var(--dark-green);
+        vertical-align: middle;
+    }
+
+.combo-table-name {
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    color: var(--dark-green);
+}
+
+.combo-table-desc {
+    color: var(--midnight-green);
+    font-size: 0.88rem;
+    max-width: 300px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.combo-table-price {
+    font-weight: 700;
+    color: var(--dark-green);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.combo-table-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--beige);
+    border: 2px solid var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+    .combo-table-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .combo-table-thumb i {
+        font-size: 1.4rem;
+        color: var(--dark-green);
+    }
+
+@media (max-width: 768px) {
+    .combo-table thead {
+        display: none;
+    }
+
+    .combo-table tbody tr {
+        display: block;
+        padding: 16px;
+        border-bottom: 8px solid var(--beige);
+    }
+
+    .combo-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 4px;
+        border: none;
+    }
+
+        .combo-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--moss-green);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-right: 12px;
+        }
+
+    .combo-table-desc {
+        max-width: 180px;
+        text-align: right;
+    }
+}
+
+.user-id-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(211,150,140,0.15);
+    color: var(--rosy-brown);
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 4px 12px;
+    border-radius: 50px;
+    margin-bottom: 14px;
+    width: fit-content;
 }

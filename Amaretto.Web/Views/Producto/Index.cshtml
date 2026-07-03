@@ -1,67 +1,84 @@
 ﻿@model IEnumerable<Amaretto.Application.DTOs.ProductoDTO>
-
 @{
-    ViewData["Title"] = "Listado Productos";
+    ViewData["Title"] = "Listado de Productos";
 }
 
-<h1>Listado de Productos</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Crear nuevo</a>
-</p>
+<section class="product-list-section">
+    <div class="container">
+        <h2 class="product-list-title">Lista de Productos</h2>
 
-<table class="table table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>Categoría</th>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Personalizable</th>
-            <th>Estado</th>
-            <th>Imagen</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
+        <a asp-action="Create" class="btn-create-combo">
+            <i class="bi bi-plus-circle"></i> Crear nuevo
+        </a>
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
 
-                <td>@item.IdCategoriaNavigation.Nombre</td>
-
-                <td><strong>@item.Nombre</strong></td>
-
-                <td style="max-width: 200px;">
-                    @item.Descripcion
-                </td>
-
-                <td>₡@item.Precio</td>
-
-                <td>
-                    @(item.EsPersonalizable ? "Sí" : "No")
-                </td>
-
-                <td>
-                    @(item.Estado ? "Activo" : "Inactivo")
-                </td>
-
-                <td style="width:120px;">
-                    <img src="@item.Imagen1"
-                         style="width:80px; height:80px; object-fit:cover; border-radius:8px;"
-                         alt="img" />
-                </td>
-
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@item.IdProducto"
-                       class="btn btn-info btn-sm">
-                        Detalle
-                    </a>
-                </td>
-
-            </tr>
-        }
-    </tbody>
-</table>
+        <div class="product-list-card">
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Personalizable</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td data-label="Producto">
+                                <div class="product-table-name">
+                                    <span class="product-table-thumb">
+                                        @if (!string.IsNullOrEmpty(p.Imagen1))
+                                        {
+                                            <img src="@p.Imagen1" alt="@p.Nombre" />
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-image"></i>
+                                        }
+                                    </span>
+                                    @p.Nombre
+                                </div>
+                            </td>
+                            <td data-label="Categoría">
+                                <span class="product-category-badge">@p.IdCategoriaNavigation.Nombre</span>
+                            </td>
+                            <td data-label="Precio">
+                                <span class="product-table-price">&#x20A1;@p.Precio.ToString("N2")</span>
+                            </td>
+                            <td data-label="Estado">
+                                @if (p.Estado)
+                                {
+                                    <span class="product-status-badge is-available"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                                }
+                                else
+                                {
+                                    <span class="product-status-badge is-unavailable"><i class="bi bi-x-circle-fill"></i> No disponible</span>
+                                }
+                            </td>
+                            <td data-label="Personalizable">
+                                @if (p.EsPersonalizable)
+                                {
+                                    <span class="product-custom-badge"><i class="bi bi-stars"></i> Sí</span>
+                                }
+                                else
+                                {
+                                    <span class="product-custom-badge is-no">No</span>
+                                }
+                            </td>
+                            <td data-label="Detalle">
+                                <a asp-action="Details" asp-route-id="@p.IdProducto" class="btn-ver-detalle">
+                                    Ver detalle <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
