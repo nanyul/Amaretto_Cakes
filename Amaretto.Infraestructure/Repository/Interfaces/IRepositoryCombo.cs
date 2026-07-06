@@ -12,7 +12,7 @@ namespace Amaretto.Infraestructure.Repository.Interfaces
         Task<ICollection<Combo>> ListAsync();
         Task<Combo> FindByIdAsync(string id);
         Task<ICollection<Combo>> FilterAsync(string? estado, decimal? precioMax, List<int>? categoriaIds, string? ordenarPor);
-
-
+        Task<string> AddAsync(Combo entity, string[] selectedProductos);
+        Task UpdateAsync(Combo entity, string[] selectedProductos);
     }
 }

@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/amaretto.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!--SweetAlert-->
+    <link rel="stylesheet" href="~/css/sweetalert2.min.css" asp-append-version="true" />
+    <!-- Multi-select -->
+    @* https://davidstutz.github.io/bootstrap-multiselect/ *@
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.2/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <!--JQuery UI CSS-->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 </head>
 <body>
 
@@ -80,10 +87,19 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!--SweetAlert2 (JS) - cargado globalmente para que TempData["Mensaje"] funcione en cualquier página -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script src="~/js/catalog-filtros.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <script>
+            @Html.Raw(TempData["Mensaje"])
+        </script>
+    }
 </body>
 </html>

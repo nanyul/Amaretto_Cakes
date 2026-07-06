@@ -1,5 +1,7 @@
-﻿using Amaretto.Application.Services.Implementations;
+﻿using Amaretto.Application.DTOs;
+using Amaretto.Application.Services.Implementations;
 using Amaretto.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Amaretto.Web.Controllers
@@ -8,18 +10,47 @@ namespace Amaretto.Web.Controllers
     {
         private readonly IServiceProducto _serviceProducto;
         private readonly IServiceCategoria _serviceCategoria;
+        private readonly IServiceIngrediente _serviceIngrediente;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductoController(IServiceProducto serviceProducto, IServiceCategoria serviceCategoria)
+        public ProductoController(IServiceProducto serviceProducto, IServiceCategoria serviceCategoria, IServiceIngrediente serviceIngrediente, IWebHostEnvironment webHostEnvironment)
         {
             _serviceProducto = serviceProducto;
             _serviceCategoria = serviceCategoria;
+            _serviceIngrediente = serviceIngrediente;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string? nombre, int? categoriaId, string? estado)
         {
             var collection = await _serviceProducto.ListAsync();
-            return View(collection);
+
+            IEnumerable<ProductoDTO> filtrado = collection;
+
+            if (!string.IsNullOrWhiteSpace(nombre))
+                filtrado = filtrado.Where(p => !string.IsNullOrEmpty(p.Nombre)
+                    && p.Nombre.Contains(nombre, StringComparison.OrdinalIgnoreCase));
+
+            if (categoriaId.HasValue && categoriaId.Value > 0)
+                filtrado = filtrado.Where(p => p.IdCategoria == categoriaId.Value);
+
+            if (estado == "disponible")
+                filtrado = filtrado.Where(p => p.Estado);
+            else if (estado == "inactivo")
+                filtrado = filtrado.Where(p => !p.Estado);
+
+            // Más reciente primero (aproximado por el consecutivo del ID, sin campo de fecha en BD)
+            var ordenado = filtrado
+                .OrderByDescending(p => p.IdProducto)
+                .ToList();
+
+            ViewBag.ListCategorias = await _serviceCategoria.ListAsync();
+            ViewBag.FiltroNombre = nombre;
+            ViewBag.FiltroCategoriaId = categoriaId;
+            ViewBag.FiltroEstado = estado;
+
+            return View(ordenado);
         }
 
         public async Task<ActionResult> Details(string? id)
@@ -81,5 +112,136 @@ namespace Amaretto.Web.Controllers
 
             return Json(model);
         }
+
+
+        // CREAR
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            ViewBag.ListCategorias = await _serviceCategoria.ListAsync();
+            ViewBag.ListIngredientes = await _serviceIngrediente.ListAsync();
+            return View(new ProductoDTO { Estado = true }); // disponible por defecto
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ProductoDTO dto, IFormFile imagenFile, IFormFile imagenFile2, int[] selectedIngredientes)
+        {
+            ModelState.Remove("IdProducto");
+
+            if (imagenFile != null)
+            {
+                dto.Imagen1 = await GuardarImagenAsync(imagenFile);
+            }
+
+            if (imagenFile2 != null)
+            {
+                dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
+            }
+            else
+            {
+                ModelState.AddModelError("Imagen1", "La imagen del producto es requerida");
+            }
+
+            if (dto.IdCategoria <= 0)
+                ModelState.AddModelError("IdCategoria", "Debe seleccionar una categoría");
+
+            if (selectedIngredientes == null || selectedIngredientes.Length == 0)
+                ModelState.AddModelError("", "Debe seleccionar al menos un ingrediente");
+
+            if (dto.Precio <= 0)
+                ModelState.AddModelError("Precio", "El precio debe ser mayor a 0");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ListCategorias = await _serviceCategoria.ListAsync();
+                ViewBag.ListIngredientes = await _serviceIngrediente.ListAsync();
+                return View(dto);
+            }
+
+            await _serviceProducto.AddAsync(dto, selectedIngredientes);
+
+            TempData["Mensaje"] = Util.SweetAlertHelper.Mensaje(
+                "Crear Producto",
+                "Producto creado", Util.SweetAlertMessageType.success);
+
+            return RedirectToAction("Index");
+        }
+
+        // EDITAR
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var dto = await _serviceProducto.FindByIdAsync(id);
+            if (dto == null)
+                return RedirectToAction("Index");
+
+            ViewBag.ListCategorias = await _serviceCategoria.ListAsync();
+            ViewBag.ListIngredientes = await _serviceIngrediente.ListAsync();
+            ViewBag.SelectedIngredientes = dto.ProductoIngrediente.Select(x => x.IdIngrediente).ToList();
+            return View(dto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, ProductoDTO dto, IFormFile? imagenFile, IFormFile? imagenFile2, int[] selectedIngredientes)
+        {
+            ModelState.Remove("IdProducto");
+
+            if (imagenFile != null)
+            {
+                dto.Imagen1 = await GuardarImagenAsync(imagenFile);
+            }
+
+            if (imagenFile2 != null)
+            {
+                dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
+            }
+
+
+            if (dto.IdCategoria <= 0)
+                ModelState.AddModelError("IdCategoria", "Debe seleccionar una categoría");
+
+            if (selectedIngredientes == null || selectedIngredientes.Length == 0)
+                ModelState.AddModelError("", "Debe seleccionar al menos un ingrediente");
+
+            if (dto.Precio <= 0)
+                ModelState.AddModelError("Precio", "El precio debe ser mayor a 0");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ListCategorias = await _serviceCategoria.ListAsync();
+                ViewBag.ListIngredientes = await _serviceIngrediente.ListAsync();
+                ViewBag.SelectedIngredientes = selectedIngredientes?.ToList() ?? new List<int>();
+                return View(dto);
+            }
+
+            await _serviceProducto.UpdateAsync(id, dto, selectedIngredientes);
+
+            TempData["Mensaje"] = Util.SweetAlertHelper.Mensaje(
+                "Editar Producto",
+                "Producto actualizado", Util.SweetAlertMessageType.success);
+
+            return RedirectToAction("Index");
+        }
+
+        private async Task<string> GuardarImagenAsync(IFormFile imagenFile)
+        {
+            string carpeta = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
+            if (!Directory.Exists(carpeta))
+                Directory.CreateDirectory(carpeta);
+
+            string nombreArchivo = $"{Guid.NewGuid()}{Path.GetExtension(imagenFile.FileName)}";
+            string rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+            using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+            {
+                await imagenFile.CopyToAsync(stream);
+            }
+
+            return $"/images/productos/{nombreArchivo}";
+        }
+
+
     }
 }

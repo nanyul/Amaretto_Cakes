@@ -63,5 +63,71 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
             return await query.ToListAsync();
         }
+
+        // CREAR
+        public async Task<string> AddAsync(Combo entity, string[] selectedProductos)
+        {
+            // Generar un nuevo IdCombo único
+            entity.IdCombo = await GetNextIdComboAsync();
+
+            if (selectedProductos != null && selectedProductos.Any())
+            {
+                var productos = await _context.Set<Producto>()
+                    .Where(p => selectedProductos.Contains(p.IdProducto))
+                    .ToListAsync();
+
+                foreach (var producto in productos)
+                {
+                    entity.IdProducto.Add(producto);
+                }
+            }
+
+            await _context.Set<Combo>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity.IdCombo;
+        }
+
+        // ACTUALIZAR
+        public async Task UpdateAsync(Combo entity, string[] selectedProductos)
+        {
+            // entity llega ya trackeado (viene de FindByIdAsync sin AsNoTracking + AutoMapper.Map(dto, entity))
+            // Relación muchos a muchos con productos: limpiar y reasignar
+            entity.IdProducto.Clear();
+
+            if (selectedProductos != null && selectedProductos.Any())
+            {
+                var productos = await _context.Set<Producto>()
+                    .Where(p => selectedProductos.Contains(p.IdProducto))
+                    .ToListAsync();
+
+                foreach (var producto in productos)
+                {
+                    entity.IdProducto.Add(producto);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        // Genera el siguiente consecutivo tipo COMBO001, COMBO002, ...
+        private async Task<string> GetNextIdComboAsync()
+        {
+            var ids = await _context.Set<Combo>()
+                .Select(x => x.IdCombo)
+                .Where(x => x.StartsWith("COMBO"))
+                .ToListAsync();
+
+            int max = 0;
+            foreach (var id in ids)
+            {
+                if (int.TryParse(id.Replace("COMBO", ""), out int numero) && numero > max)
+                {
+                    max = numero;
+                }
+            }
+            int siguiente = max + 1;
+            return $"COMBO{siguiente:D3}";
+        }
+
     }
 }

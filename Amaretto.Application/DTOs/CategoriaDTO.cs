@@ -20,7 +20,6 @@ namespace Amaretto.Application.DTOs
         [Required(ErrorMessage = "{0} es un dato requerido")]
         public string Nombre { get; set; } = null!;
 
-        //public virtual List<ProductoIngredienteDTO> IdProducto { get; set; } = null!;
         public virtual List<ProductoDTO> Producto { get; set; } = new List<ProductoDTO>();
     }
 }

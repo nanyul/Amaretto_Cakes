@@ -46,9 +46,13 @@
                             <td data-label="Email"><span class="user-table-email">@u.Email</span></td>
                             <td data-label="Teléfono">@(u.Telefono ?? "—")</td>
                             <td data-label="Detalle">
-                                <a asp-action="Details" asp-route-id="@u.IdUsuario" class="btn-ver-detalle">
-                                    Ver detalle <i class="bi bi-arrow-right"></i>
+                                <a asp-action="Details"
+                                   asp-route-id="@u.IdUsuario"
+                                   class="btn-table-action btn-view"
+                                   title="Ver detalle">
+                                    <i class="bi bi-eye"></i>
                                 </a>
+
                             </td>
                         </tr>
                     }

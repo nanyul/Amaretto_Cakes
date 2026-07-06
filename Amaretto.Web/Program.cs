@@ -37,6 +37,7 @@ builder.Services.AddTransient<IRepositoryMenuCombo, RepositoryMenuCombo>();
 builder.Services.AddTransient<IRepositoryCocinaOrden, RepositoryCocinaOrden>();
 builder.Services.AddTransient<IRepositoryEstacion, RepositoryEstacion>();
 builder.Services.AddTransient<IRepositoryUsuario, RepositoryUsuario>();
+builder.Services.AddTransient<IRepositoryIngrediente, RepositoryIngrediente>();
 
 
 //Services
@@ -48,6 +49,7 @@ builder.Services.AddTransient<IServiceMenuCombo, ServiceMenuCombo>();
 builder.Services.AddTransient<IServiceCocinaOrden, ServiceCocinaOrden>();
 builder.Services.AddTransient<IServiceEstacion, ServiceEstacion>();
 builder.Services.AddTransient<IServiceUsuario, UsuarioService>();
+builder.Services.AddTransient<IServiceIngrediente, ServiceIngrediente>();
 
 //Seguridad
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
