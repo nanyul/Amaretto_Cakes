@@ -15,9 +15,13 @@ namespace Amaretto.Application.DTOs
     {
         public int IdDetalle { get; set; }
 
+        public int IdPedido { get; set; }
+
         public string? IdProducto { get; set; }
 
         public int Cantidad { get; set; }
+
+        public string NombreProductoOCombo { get; set; } = string.Empty;
 
         public virtual List<CocinaOrdenDTO> CocinaOrden { get; set; } = new List<CocinaOrdenDTO>();
     }

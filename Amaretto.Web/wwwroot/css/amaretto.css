@@ -3558,3 +3558,1450 @@ textarea.form-control-amaretto {
     border-color: var(--midnight-green) !important;
     color: var(--midnight-green) !important;
 }
+
+/*
+   LISTADO DE MENÚS DE PRODUCTOS
+ */
+.menu-list-section {
+    padding: 48px 0;
+}
+
+.menu-list-title {
+    font-family: "Playfair Display", serif;
+    color: var(--dark-green);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+.menu-list-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 18px 50px rgba(10,51,35,0.10);
+    overflow: hidden;
+}
+
+.menu-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .menu-table thead tr {
+        background: var(--dark-green);
+    }
+
+    .menu-table thead th {
+        color: var(--beige-light);
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 16px 20px;
+        text-align: left;
+    }
+
+    .menu-table tbody tr {
+        border-bottom: 1px solid rgba(10,51,35,0.08);
+        transition: background-color 0.2s ease;
+    }
+
+        .menu-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .menu-table tbody tr:hover {
+            background-color: rgba(247,244,213,0.6);
+        }
+
+    .menu-table tbody td {
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        color: var(--dark-green);
+        vertical-align: middle;
+    }
+
+.menu-table-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+}
+
+.menu-table-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--beige);
+    border: 2px solid var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+    .menu-table-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .menu-table-thumb i {
+        font-size: 1.1rem;
+        color: var(--dark-green);
+    }
+
+.menu-table-desc {
+    color: var(--midnight-green);
+    font-size: 0.88rem;
+    max-width: 320px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.menu-table-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--midnight-green);
+    font-weight: 500;
+}
+
+    .menu-table-date i {
+        color: var(--moss-green);
+        font-size: 0.95rem;
+    }
+
+.btn-ver-menu {
+    background: var(--rosy-brown) !important;
+    color: var(--white) !important;
+    border-radius: 50px !important;
+    padding: 8px 18px !important;
+    font-weight: 600;
+    font-size: 0.82rem;
+    border: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(211,150,140,0.3);
+}
+
+    .btn-ver-menu:hover {
+        background: var(--dark-green) !important;
+        color: var(--white) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(10,51,35,0.2);
+    }
+
+@media (max-width: 768px) {
+    .menu-table thead {
+        display: none;
+    }
+
+    .menu-table tbody tr {
+        display: block;
+        padding: 16px;
+        border-bottom: 8px solid var(--beige);
+    }
+
+    .menu-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 4px;
+        border: none;
+    }
+
+        .menu-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--moss-green);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-right: 12px;
+        }
+
+    .menu-table-desc {
+        max-width: 180px;
+        text-align: right;
+        -webkit-line-clamp: 1;
+    }
+}
+
+/* Barra de filtro por estado */
+.menu-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.filter-pill {
+    background: var(--white);
+    color: var(--midnight-green);
+    border: 1.5px solid rgba(131,153,88,0.3);
+    border-radius: 50px;
+    padding: 9px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+    .filter-pill:hover {
+        border-color: var(--moss-green);
+        color: var(--dark-green);
+    }
+
+    .filter-pill.active {
+        background: var(--dark-green);
+        color: var(--beige-light);
+        border-color: var(--dark-green);
+        box-shadow: 0 6px 18px rgba(10,51,35,0.2);
+    }
+
+/* Estado vacío al filtrar */
+.menu-empty {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--midnight-green);
+}
+
+    .menu-empty i {
+        font-size: 2.6rem;
+        color: var(--rosy-brown);
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    .menu-empty p {
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+/*
+   DETALLE DE MENÚ DE PRODUCTOS
+ */
+.menu-detail-section {
+    padding: 48px 0 80px;
+    background: var(--beige);
+}
+
+/* Encabezado */
+.menu-detail-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.menu-detail-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--dark-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 10px;
+}
+
+.menu-detail-flourish {
+    color: var(--moss-green);
+    font-size: 1.3rem;
+    opacity: 0.6;
+}
+
+.menu-detail-subtitle {
+    font-style: italic;
+    color: var(--rosy-brown);
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Barra de disponibilidad */
+.menu-detail-info-bar {
+    background: var(--beige-light);
+    border: 1.5px solid rgba(131, 153, 88, 0.25);
+    border-radius: 20px;
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto 48px;
+    box-shadow: 0 8px 24px rgba(10,51,35,0.06);
+}
+
+.menu-detail-info-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.menu-detail-info-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(211, 150, 140, 0.18);
+    color: var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.menu-detail-info-label {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--dark-green);
+    font-size: 1rem;
+}
+
+.menu-detail-info-value {
+    display: block;
+    color: var(--midnight-green);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.menu-detail-info-sep {
+    color: var(--rosy-brown);
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+/* Grid de categorías */
+.menu-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+    margin-bottom: 40px;
+}
+
+.menu-category-box {
+    background: var(--beige-light);
+    border: 1.5px solid rgba(131, 153, 88, 0.2);
+    border-radius: 20px;
+    padding: 26px 26px 10px;
+    box-shadow: 0 8px 26px rgba(10,51,35,0.06);
+}
+
+/* Encabezado de categoría */
+.menu-category-header {
+    background: var(--dark-green);
+    border-radius: 50px;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: -46px auto 24px;
+    width: fit-content;
+    box-shadow: 0 8px 20px rgba(10,51,35,0.25);
+}
+
+    .menu-category-header h2 {
+        font-family: 'Playfair Display', serif;
+        color: var(--beige-light);
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+.menu-category-icon-left,
+.menu-category-icon-right {
+    color: var(--moss-green);
+    font-size: 0.9rem;
+}
+
+/* Lista de productos dentro de una categoría */
+.menu-product-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-product-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 0;
+}
+
+.menu-product-thumb {
+    width: 76px;
+    height: 76px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--beige);
+    border: 2px solid var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--dark-green);
+    font-size: 1.6rem;
+}
+
+    .menu-product-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.menu-product-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+    .menu-product-info strong {
+        font-family: 'Playfair Display', serif;
+        color: var(--dark-green);
+        font-size: 1.02rem;
+        font-weight: 700;
+    }
+
+    .menu-product-info small {
+        color: var(--midnight-green);
+        font-size: 0.85rem;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+.menu-product-price {
+    font-family: 'Playfair Display', serif;
+    color: var(--dark-green);
+    font-weight: 700;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding-left: 12px;
+    border-left: 1.5px dashed rgba(211, 150, 140, 0.5);
+}
+
+.menu-product-divider {
+    text-align: center;
+    color: var(--rosy-brown);
+    font-size: 0.7rem;
+    opacity: 0.55;
+    padding: 4px 0;
+}
+
+/* Banner de calidad */
+.menu-quality-banner {
+    background: rgba(211, 150, 140, 0.14);
+    border-radius: 50px;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.menu-quality-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--rosy-brown);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.menu-quality-text p {
+    margin: 0;
+    color: var(--dark-green);
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.menu-quality-emphasis {
+    font-style: italic;
+    color: var(--rosy-brown) !important;
+    font-weight: 600 !important;
+    margin-top: 4px !important;
+}
+
+    .menu-quality-emphasis i {
+        font-size: 0.8rem;
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .menu-detail-title {
+        font-size: 2.1rem;
+        gap: 10px;
+    }
+
+    .menu-detail-info-bar {
+        flex-direction: column;
+        gap: 20px;
+        padding: 24px;
+    }
+
+    .menu-detail-info-sep {
+        transform: rotate(90deg);
+    }
+
+    .menu-category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-product-row {
+        flex-wrap: wrap;
+    }
+
+    .menu-product-price {
+        border-left: none;
+        padding-left: 94px;
+        margin-top: -8px;
+    }
+
+    .menu-quality-banner {
+        flex-direction: column;
+        text-align: center;
+        border-radius: 24px;
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .menu-detail-title {
+        font-size: 1.7rem;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/*
+   LISTADO DE ÓRDENES DE COCINA
+ */
+
+.cocina-order-section {
+    padding: 48px 0 70px;
+    background: var(--beige);
+}
+
+/* Encabezado con botón Crear proceso */
+.cocina-order-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.cocina-order-heading {
+    text-align: left;
+    flex: 1;
+    min-width: 260px;
+}
+
+    .cocina-order-heading .cocina-order-title {
+        justify-content: flex-start;
+    }
+
+    .cocina-order-heading .cocina-order-subtitle {
+        justify-content: flex-start;
+    }
+
+.cocina-order-count {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--moss-green);
+    background: rgba(131, 153, 88, 0.12);
+    padding: 5px 14px;
+    border-radius: 50px;
+}
+
+/* Encabezado centrado (Details / versión sin botón Crear) */
+.cocina-order-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.cocina-order-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--dark-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.cocina-order-flourish {
+    color: var(--moss-green);
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
+.cocina-order-subtitle {
+    font-style: italic;
+    color: var(--rosy-brown);
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+    .cocina-order-subtitle i {
+        font-size: 0.85rem;
+    }
+
+/* Tarjeta contenedora */
+.cocina-order-card {
+    background: var(--beige-light);
+    border-radius: 22px;
+    box-shadow: 0 18px 50px rgba(10,51,35,0.10);
+    overflow: hidden;
+}
+
+/* Tabla */
+.cocina-order-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .cocina-order-table thead tr {
+        background: var(--moss-green);
+    }
+
+    .cocina-order-table thead th {
+        color: var(--beige-light);
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 16px 24px;
+        text-align: left;
+    }
+
+        .cocina-order-table thead th i {
+            margin-right: 8px;
+        }
+
+    .cocina-order-table tbody td {
+        padding: 12px 24px;
+        font-size: 0.95rem;
+        color: var(--dark-green);
+        vertical-align: middle;
+    }
+
+    .cocina-order-table tbody tr:nth-child(odd) {
+        background: rgba(247, 244, 213, 0.35);
+    }
+
+    .cocina-order-table tbody tr:hover {
+        background-color: rgba(131, 153, 88, 0.08);
+    }
+
+/* Nombre + miniatura */
+.cocina-order-name {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+}
+
+    .cocina-order-name.is-continuation {
+        padding-left: 54px;
+        font-weight: 500;
+    }
+
+.cocina-order-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--white);
+    border: 2px solid var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(10,51,35,0.08);
+}
+
+    .cocina-order-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cocina-order-thumb i {
+        font-size: 1.05rem;
+        color: var(--dark-green);
+    }
+
+/* Divisor entre grupos */
+.cocina-order-divider-row td {
+    padding: 6px 24px !important;
+}
+
+.cocina-order-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .cocina-order-divider span {
+        flex: 1;
+        height: 1px;
+        background: rgba(131, 153, 88, 0.4);
+    }
+
+    .cocina-order-divider i {
+        color: var(--rosy-brown);
+        font-size: 0.7rem;
+        flex-shrink: 0;
+    }
+
+/* Fila de acciones (Ver orden + Editar) */
+.cocina-order-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Botón Ver orden */
+.btn-ver-orden {
+    background: rgba(211, 150, 140, 0.14) !important;
+    color: var(--rosy-brown) !important;
+    border: 1.5px solid var(--rosy-brown) !important;
+    border-radius: 50px !important;
+    padding: 7px 18px !important;
+    font-weight: 600;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-ver-orden:hover {
+        background: var(--rosy-brown) !important;
+        color: var(--white) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(211,150,140,0.35);
+    }
+
+/* Botón Editar (uno por proceso, primera fila del grupo) */
+.btn-editar-orden {
+    background: rgba(10, 51, 35, 0.06) !important;
+    color: var(--dark-green) !important;
+    border: 1.5px solid var(--dark-green) !important;
+    border-radius: 50px !important;
+    padding: 7px 18px !important;
+    font-weight: 600;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-editar-orden:hover {
+        background: var(--dark-green) !important;
+        color: var(--white) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(10,51,35,0.25);
+    }
+
+/* Estado vacío */
+.cocina-order-empty {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--midnight-green);
+}
+
+    .cocina-order-empty i {
+        font-size: 2.6rem;
+        color: var(--rosy-brown);
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    .cocina-order-empty p {
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cocina-order-header-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .cocina-order-header-row .btn-create-combo {
+            justify-content: center;
+            margin-bottom: 0;
+        }
+
+    .cocina-order-heading {
+        text-align: center;
+    }
+
+        .cocina-order-heading .cocina-order-title,
+        .cocina-order-heading .cocina-order-subtitle {
+            justify-content: center;
+        }
+
+    .cocina-order-title {
+        font-size: 1.9rem;
+        gap: 10px;
+    }
+
+    .cocina-order-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .cocina-order-table thead {
+        display: none;
+    }
+
+    .cocina-order-table tbody tr {
+        display: block;
+        padding: 12px 16px;
+    }
+
+    .cocina-order-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 4px;
+    }
+
+        .cocina-order-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--moss-green);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            margin-right: 12px;
+        }
+
+    .cocina-order-name.is-continuation {
+        padding-left: 0;
+    }
+
+    .cocina-order-divider-row td {
+        padding: 10px 16px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .cocina-order-title {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/*
+   DETALLE DE PROCESO DE PREPARACIÓN
+ */
+
+.process-detail-section {
+    padding: 48px 0 70px;
+    background: var(--beige);
+}
+
+/* Encabezado */
+.process-detail-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.process-detail-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--dark-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.process-detail-flourish {
+    color: var(--moss-green);
+    font-size: 1.1rem;
+    opacity: 0.6;
+}
+
+.process-detail-underline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: rgba(211, 150, 140, 0.6);
+    font-size: 0.8rem;
+}
+
+    .process-detail-underline .bi-heart-fill {
+        color: var(--rosy-brown);
+        font-size: 0.9rem;
+        opacity: 1;
+    }
+
+/* Tarjeta contenedora */
+.process-detail-card {
+    background: var(--beige-light);
+    border-radius: 26px;
+    padding: 36px 40px 40px;
+    box-shadow: 0 18px 50px rgba(10,51,35,0.10);
+}
+
+/* Bloque producto */
+.process-detail-product {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 32px;
+}
+
+.process-detail-product-thumb {
+    width: 88px;
+    height: 88px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--white);
+    border: 3px solid var(--rosy-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(10,51,35,0.1);
+}
+
+    .process-detail-product-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .process-detail-product-thumb i {
+        font-size: 2rem;
+        color: var(--dark-green);
+    }
+
+.process-detail-product-label {
+    display: block;
+    color: var(--rosy-brown);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.process-detail-product-info h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--dark-green);
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin: 0 0 4px;
+}
+
+.process-detail-product-heart {
+    color: var(--rosy-brown);
+    font-size: 0.95rem;
+}
+
+/* Subtítulo estaciones */
+.process-detail-subheading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+    .process-detail-subheading i {
+        color: var(--rosy-brown);
+        font-size: 1.1rem;
+    }
+
+    .process-detail-subheading span:not(.process-detail-subheading-line) {
+        font-family: 'Playfair Display', serif;
+        color: var(--rosy-brown);
+        font-weight: 700;
+        font-size: 1.2rem;
+        white-space: nowrap;
+    }
+
+.process-detail-subheading-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(211, 150, 140, 0.35);
+}
+
+/* Tabla de estaciones */
+.process-table-wrap {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 26px rgba(10,51,35,0.08);
+    margin-bottom: 28px;
+}
+
+.process-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .process-table thead tr {
+        background: var(--moss-green);
+    }
+
+    .process-table thead th {
+        color: var(--beige-light);
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 16px 24px;
+        text-align: left;
+    }
+
+        .process-table thead th i {
+            margin-right: 8px;
+        }
+
+    .process-table tbody tr {
+        background: var(--beige-light);
+        border-bottom: 1px solid rgba(10,51,35,0.06);
+    }
+
+        .process-table tbody tr:nth-child(odd) {
+            background: rgba(247, 244, 213, 0.4);
+        }
+
+        .process-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+    .process-table tbody td {
+        padding: 14px 24px;
+        vertical-align: middle;
+    }
+
+.process-order-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(211, 150, 140, 0.18);
+    color: var(--rosy-brown);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.process-station-name {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    color: var(--dark-green);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 2px;
+}
+
+.process-station-desc {
+    display: block;
+    color: var(--midnight-green);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.process-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+    .process-status-badge.is-completed {
+        background: rgba(131, 153, 88, 0.18);
+        color: var(--moss-green);
+    }
+
+    .process-status-badge.is-progress {
+        background: rgba(212, 163, 91, 0.2);
+        color: #b8792e;
+    }
+
+/* Botón volver */
+.btn-volver-proceso {
+    background: var(--rosy-brown) !important;
+    color: var(--white) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 11px 26px !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(211,150,140,0.35);
+}
+
+    .btn-volver-proceso:hover {
+        background: var(--dark-green) !important;
+        color: var(--white) !important;
+        transform: translateY(-2px);
+    }
+
+.btn-editar-proceso {
+    background: transparent !important;
+    color: var(--dark-green) !important;
+    border: 1.5px solid var(--dark-green) !important;
+    border-radius: 50px !important;
+    padding: 11px 26px !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-left: 12px;
+}
+
+    .btn-editar-proceso:hover {
+        background: var(--dark-green) !important;
+        color: var(--white) !important;
+        transform: translateY(-2px);
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .process-detail-card {
+        padding: 26px 20px 30px;
+    }
+
+    .process-detail-title {
+        font-size: 1.8rem;
+        gap: 10px;
+    }
+
+    .process-detail-product {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .process-table thead {
+        display: none;
+    }
+
+    .process-table tbody tr {
+        display: block;
+        padding: 14px 16px;
+        border-bottom: 8px solid var(--beige);
+    }
+
+    .process-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 4px;
+    }
+
+        .process-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--moss-green);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            margin-right: 12px;
+        }
+
+    .process-station-name,
+    .process-station-desc {
+        text-align: right;
+    }
+}
+
+@media (max-width: 576px) {
+    .process-detail-title {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+
+/*
+   CATÁLOGO DE MENÚS
+ */
+
+/* Ícono decorativo SOLO cuando el menú no tiene ninguna imagen asociada */
+.menu-icon-placeholder {
+    background: linear-gradient(160deg, var(--beige) 0%, var(--beige-light) 100%);
+}
+
+.menu-cover-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .menu-cover-fallback i {
+        font-size: 3.4rem;
+        color: var(--rosy-brown);
+        opacity: 0.5;
+    }
+
+/* Descripción corta dentro de la tarjeta */
+.catalog-card-menu-desc {
+    color: var(--midnight-green);
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 6px 0 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Fila de fechas (reemplaza el precio en las tarjetas de producto) */
+.catalog-card-menu-dates {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dark-green);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+    .catalog-card-menu-dates i {
+        color: var(--moss-green);
+        font-size: 0.9rem;
+    }
+
+/* Footer de tarjeta con un solo botón (sin ícono de favorito) */
+.catalog-card-footer.single {
+    justify-content: center;
+}
+
+/* Tarjeta cruzada del sidebar (invita al otro catálogo de menús) */
+.sidebar-cta.sidebar-cta-alt {
+    background: linear-gradient(135deg, var(--moss-green) 0%, #6b7f45 100%);
+}
+
+    .sidebar-cta.sidebar-cta-alt .btn-sidebar-cta {
+        background: var(--white) !important;
+        color: var(--dark-green) !important;
+    }
+
+        .sidebar-cta.sidebar-cta-alt .btn-sidebar-cta:hover {
+            background: var(--beige) !important;
+            color: var(--dark-green) !important;
+        }
+
+/*
+   FORMULARIO CREAR/EDITAR PROCESO DE PREPARACIÓN (CocinaOrden)
+   Agregar este bloque al final de amaretto.css
+   Reutiliza .product-form-*, .form-section-title, .form-field, .form-control-amaretto,
+   .btn-form-*, .product-breadcrumb, etc. ya existentes (mismo patrón que Crear/Editar Producto).
+ */
+.estacion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.estacion-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 18px;
+    border: 1.5px solid rgba(131, 153, 88, 0.25);
+    border-radius: 14px;
+    background: var(--white);
+    transition: all 0.2s ease;
+}
+
+    .estacion-row.is-active {
+        border-color: var(--moss-green);
+        background: rgba(131, 153, 88, 0.08);
+    }
+
+.estacion-row-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    color: var(--dark-green);
+    cursor: pointer;
+    margin: 0;
+}
+
+    .estacion-row-label input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--dark-green);
+        cursor: pointer;
+    }
+
+.estacion-orden-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.estacion-orden-tag {
+    font-size: 0.78rem;
+    color: var(--midnight-green);
+    font-weight: 500;
+}
+
+.estacion-orden-input {
+    width: 56px;
+    text-align: center;
+    padding: 7px 4px;
+    border: 1.5px solid rgba(131, 153, 88, 0.3);
+    border-radius: 10px;
+    font-weight: 700;
+    color: var(--dark-green);
+    font-family: 'Montserrat', sans-serif;
+}
+
+    .estacion-orden-input:disabled {
+        opacity: 0.4;
+        background: var(--beige);
+    }
+
+/* Producto fijo (no editable) en el formulario de Edit */
+.process-fixed-product {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--beige);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: var(--dark-green);
+    font-size: 0.95rem;
+}
+
+    .process-fixed-product i {
+        color: var(--rosy-brown);
+        font-size: 0.95rem;
+    }
+
+/* Filas de avance del proceso (Edit) */
+.estacion-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.estacion-progress-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    border: 1.5px solid rgba(131, 153, 88, 0.25);
+    border-radius: 14px;
+    background: var(--white);
+    flex-wrap: wrap;
+}
+
+.estacion-progress-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 220px;
+}
+
+.estacion-progress-orden {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(211, 150, 140, 0.18);
+    color: var(--rosy-brown);
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.estacion-progress-info strong {
+    display: block;
+    color: var(--dark-green);
+    font-family: 'Playfair Display', serif;
+    font-size: 0.98rem;
+}
+
+.estacion-progress-fechas {
+    display: flex;
+    gap: 12px;
+    margin-top: 2px;
+}
+
+    .estacion-progress-fechas span {
+        font-size: 0.76rem;
+        color: var(--midnight-green);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .estacion-progress-fechas i {
+        color: var(--moss-green);
+        font-size: 0.75rem;
+    }
+
+.estado-select {
+    max-width: 180px;
+}

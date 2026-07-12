@@ -38,30 +38,15 @@
                                 <i class="bi bi-cake2 me-2"></i> Productos
                             </a>
                         </li>
-                    </ul>
-                </li>
-
-                <!-- Menús -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <span class="nav-icon"><i class="bi bi-journal-text"></i></span>
-                        Menús
-                    </a>
-                    <ul class="dropdown-menu dropdown-amaretto">
+                        <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
                         <li>
-                            <a asp-controller="MenuProducto" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                            <a asp-controller="MenuProducto" asp-action="Catalogo" class="dropdown-item dropdown-item-amaretto">
                                 <i class="bi bi-cake2-fill me-2"></i> Menú Producto
                             </a>
                         </li>
                         <li>
-                            <a asp-controller="MenuCombo" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                            <a asp-controller="MenuCombo" asp-action="Catalogo" class="dropdown-item dropdown-item-amaretto">
                                 <i class="bi bi-box-fill me-2"></i> Menú Combo
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
-                        <li>
-                            <a asp-controller="CocinaOrden" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
-                                <i class="bi bi-fire me-2"></i> Órdenes
                             </a>
                         </li>
                     </ul>
@@ -87,6 +72,22 @@
                         <li>
                             <a asp-controller="Usuario" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
                                 <i class="bi bi-cake2 me-2"></i> Usuarios
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
+                        <li>
+                            <a asp-controller="MenuProducto" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-cake2-fill me-2"></i> Menú Producto
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="MenuCombo" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-box-fill me-2"></i> Menú Combo
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="CocinaOrden" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-fire me-2"></i> Órdenes
                             </a>
                         </li>
                     </ul>
