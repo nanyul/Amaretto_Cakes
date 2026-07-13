@@ -46,5 +46,48 @@ namespace Amaretto.Infraestructure.Repository.Implementations
                                  .OrderByDescending(x => x.FechaInicio)
                                  .ToListAsync();
         }
+
+        // CREAR
+        public async Task<int> AddAsync(MenuCombo entity, string[] selectedCombos)
+        {
+            if (selectedCombos != null && selectedCombos.Any())
+            {
+                foreach (var idCombo in selectedCombos)
+                {
+                    entity.MenuDetalleCombo.Add(new MenuDetalleCombo
+                    {
+                        IdCombo = idCombo
+                    });
+                }
+            }
+
+            await _context.Set<MenuCombo>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity.IdMenuCombo;
+        }
+
+        // ACTUALIZAR
+        public async Task UpdateAsync(MenuCombo entity, string[] selectedCombos)
+        {
+            var existentes = await _context.Set<MenuDetalleCombo>()
+                .Where(x => x.IdMenuCombo == entity.IdMenuCombo)
+                .ToListAsync();
+
+            _context.Set<MenuDetalleCombo>().RemoveRange(existentes);
+
+            if (selectedCombos != null)
+            {
+                foreach (var idCombo in selectedCombos)
+                {
+                    _context.Set<MenuDetalleCombo>().Add(new MenuDetalleCombo
+                    {
+                        IdMenuCombo = entity.IdMenuCombo,
+                        IdCombo = idCombo
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

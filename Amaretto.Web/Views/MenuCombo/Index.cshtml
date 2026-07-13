@@ -4,7 +4,12 @@
 }
 <section class="menu-list-section">
     <div class="container">
-        <h2 class="menu-list-title">Menús de Combos</h2>
+        <div class="menu-list-header-row">
+            <h2 class="menu-list-title">Menús de Combos</h2>
+            <a asp-action="Create" class="btn-create-combo">
+                <i class="bi bi-plus-circle"></i> Crear nuevo
+            </a>
+        </div>
 
         <!-- Filtro por estado -->
         <div class="menu-filter-bar">
@@ -25,7 +30,7 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Descripción</th>
-                        <th>Fecha</th>
+                        <th>Fecha Limite</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -62,10 +67,18 @@
                                 }
                             </td>
                             <td data-label="Acciones">
-                                <a class="btn-ver-menu"
-                                   asp-controller="MenuCombo" asp-action="Details" asp-route-id="@menu.IdMenuCombo">
-                                    Ver menú <i class="bi bi-arrow-right-short"></i>
-                                </a>
+                                <div class="table-actions">
+                                    <a class="btn-ver-menu"
+                                       asp-controller="MenuCombo" asp-action="Details" asp-route-id="@menu.IdMenuCombo">
+                                        Ver menú <i class="bi bi-arrow-right-short"></i>
+                                    </a>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@menu.IdMenuCombo"
+                                       class="btn-table-action btn-edit"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }

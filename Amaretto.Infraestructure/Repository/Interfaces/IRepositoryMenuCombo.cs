@@ -14,5 +14,9 @@ namespace Amaretto.Infraestructure.Repository.Interfaces
         Task<MenuCombo> FindByIdAsync(int id);
 
         Task<MenuCombo?> ObtenerMenuDisponibleAsync();
+
+        Task<int> AddAsync(MenuCombo entity, string[] selectedCombos);
+
+        Task UpdateAsync(MenuCombo entity, string[] selectedCombos);
     }
 }

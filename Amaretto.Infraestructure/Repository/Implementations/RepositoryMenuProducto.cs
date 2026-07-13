@@ -72,13 +72,18 @@ namespace Amaretto.Infraestructure.Repository.Implementations
         // ACTUALIZAR
         public async Task UpdateAsync(MenuProducto entity, string[] selectedProductos)
         {
-            // Relación con productos: limpiar y reasignar (igual patrón que ProductoIngrediente)
-            entity.MenuDetalleProducto.Clear();
+
+            var existentes = await _context.Set<MenuDetalleProducto>()
+                .Where(x => x.IdMenuProducto == entity.IdMenuProducto)
+                .ToListAsync();
+
+            _context.Set<MenuDetalleProducto>().RemoveRange(existentes);
+
             if (selectedProductos != null)
             {
                 foreach (var idProducto in selectedProductos)
                 {
-                    entity.MenuDetalleProducto.Add(new MenuDetalleProducto
+                    _context.Set<MenuDetalleProducto>().Add(new MenuDetalleProducto
                     {
                         IdMenuProducto = entity.IdMenuProducto,
                         IdProducto = idProducto
