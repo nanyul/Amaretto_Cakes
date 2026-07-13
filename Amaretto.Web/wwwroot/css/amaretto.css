@@ -5005,3 +5005,82 @@ textarea.form-control-amaretto {
 .estado-select {
     max-width: 180px;
 }
+
+/*
+   CREAR/EDITAR MENÚ DE PRODUCTOS + AJUSTES AL INDEX
+ */
+
+/* Header del listado con botón "Crear nuevo" (MenuProducto/Index) */
+.menu-list-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+    .menu-list-header-row .menu-list-title {
+        margin-bottom: 0;
+    }
+
+/* Checklist de productos en Create/Edit de MenuProducto (puede ser largo) */
+.menu-producto-checklist {
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+/* Acciones combinadas en la celda de la tabla (Ver menú + Editar) */
+.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Botones de acción tipo ícono (si no existían ya definidos) */
+.btn-table-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+    .btn-table-action.btn-view {
+        background: rgba(16, 86, 102, 0.1);
+        color: var(--midnight-green);
+    }
+
+        .btn-table-action.btn-view:hover {
+            background: var(--midnight-green);
+            color: var(--white);
+        }
+
+    .btn-table-action.btn-edit {
+        background: rgba(10, 51, 35, 0.08);
+        color: var(--dark-green);
+    }
+
+        .btn-table-action.btn-edit:hover {
+            background: var(--dark-green);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+@media (max-width: 768px) {
+    .menu-list-header-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .menu-list-header-row .btn-create-combo {
+            justify-content: center;
+        }
+}

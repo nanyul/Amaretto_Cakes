@@ -49,5 +49,44 @@ namespace Amaretto.Infraestructure.Repository.Implementations
                                  .OrderByDescending(x => x.FechaInicio)
                                  .ToListAsync();
         }
+
+        // CREAR
+        public async Task<int> AddAsync(MenuProducto entity, string[] selectedProductos)
+        {
+            if (selectedProductos != null && selectedProductos.Any())
+            {
+                foreach (var idProducto in selectedProductos)
+                {
+                    entity.MenuDetalleProducto.Add(new MenuDetalleProducto
+                    {
+                        IdProducto = idProducto
+                    });
+                }
+            }
+
+            await _context.Set<MenuProducto>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity.IdMenuProducto;
+        }
+
+        // ACTUALIZAR
+        public async Task UpdateAsync(MenuProducto entity, string[] selectedProductos)
+        {
+            // Relación con productos: limpiar y reasignar (igual patrón que ProductoIngrediente)
+            entity.MenuDetalleProducto.Clear();
+            if (selectedProductos != null)
+            {
+                foreach (var idProducto in selectedProductos)
+                {
+                    entity.MenuDetalleProducto.Add(new MenuDetalleProducto
+                    {
+                        IdMenuProducto = entity.IdMenuProducto,
+                        IdProducto = idProducto
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
