@@ -11,6 +11,11 @@ namespace Amaretto.Web.Controllers
         private readonly IServiceProducto _serviceProducto;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
+        // Límites de validación para las imágenes subidas
+        private const long TamanoMaximoImagen = 5 * 1024 * 1024; // 5 MB
+        private const int TamanoMaximoImagenMB = 5;
+        private static readonly string[] ExtensionesPermitidas = { ".jpg", ".jpeg", ".png" };
+
         public ComboController(IServiceCombo serviceCombo, IServiceCategoria serviceCategoria, IServiceProducto serviceProducto, IWebHostEnvironment webHostEnvironment)
         {
             _serviceCombo = serviceCombo;
@@ -37,7 +42,7 @@ namespace Amaretto.Web.Controllers
             else if (estado == "inactivo")
                 filtrado = filtrado.Where(c => !c.Estado);
 
-            // Más reciente primero (aproximado por el consecutivo del ID, sin campo de fecha en BD)
+            // Más reciente primero (aproximado por el consecutivo del ID)
             var ordenado = filtrado
                 .OrderByDescending(c => c.IdCombo)
                 .ToList();
@@ -114,19 +119,24 @@ namespace Amaretto.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ComboDTO dto, IFormFile imagenFile, IFormFile imagenFile2, string[] selectedProductos)
         {
-            Console.WriteLine("ENTRÓ AL POST");
             ModelState.Remove("IdCombo");
             ModelState.Remove("Imagen1");
             ModelState.Remove("Imagen2");
 
             if (imagenFile != null)
             {
-                dto.Imagen1 = await GuardarImagenAsync(imagenFile);
+                if (!EsImagenValida(imagenFile))
+                    ModelState.AddModelError("", $"La imagen 1 debe ser JPG o PNG y no superar los {TamanoMaximoImagenMB}MB");
+                else
+                    dto.Imagen1 = await GuardarImagenAsync(imagenFile);
             }
 
             if (imagenFile2 != null)
             {
-                dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
+                if (!EsImagenValida(imagenFile2))
+                    ModelState.AddModelError("", $"La imagen 2 debe ser JPG o PNG y no superar los {TamanoMaximoImagenMB}MB");
+                else
+                    dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
             }
 
             if (imagenFile == null || imagenFile2 == null)
@@ -176,14 +186,32 @@ namespace Amaretto.Web.Controllers
             ModelState.Remove("Imagen1");
             ModelState.Remove("Imagen2");
 
+            var comboActual = await _serviceCombo.FindByIdAsync(id);
+
             if (imagenFile != null)
             {
-                dto.Imagen1 = await GuardarImagenAsync(imagenFile);
+                if (!EsImagenValida(imagenFile))
+                {
+                    ModelState.AddModelError("", $"La imagen 1 debe ser JPG o PNG y no superar los {TamanoMaximoImagenMB}MB");
+                }
+                else
+                {
+                    EliminarImagenAnterior(comboActual?.Imagen1);
+                    dto.Imagen1 = await GuardarImagenAsync(imagenFile);
+                }
             }
 
             if (imagenFile2 != null)
             {
-                dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
+                if (!EsImagenValida(imagenFile2))
+                {
+                    ModelState.AddModelError("", $"La imagen 2 debe ser JPG o PNG y no superar los {TamanoMaximoImagenMB}MB");
+                }
+                else
+                {
+                    EliminarImagenAnterior(comboActual?.Imagen2);
+                    dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
+                }
             }
 
             if (string.IsNullOrEmpty(dto.Imagen1) || string.IsNullOrEmpty(dto.Imagen2))
@@ -199,17 +227,6 @@ namespace Amaretto.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                // DIAGNÓSTICO TEMPORAL: mientras confirmamos por qué no guarda,
-                // esto imprime en la consola/output del servidor la razón real.
-                // Puedes quitar este bloque una vez resuelto.
-                foreach (var kvp in ModelState)
-                {
-                    foreach (var error in kvp.Value.Errors)
-                    {
-                        Console.WriteLine($"[Edit Combo] Campo inválido: '{kvp.Key}' -> {error.ErrorMessage}");
-                    }
-                }
-
                 ViewBag.ListProductos = await _serviceProducto.ListAsync();
                 ViewBag.SelectedProductos = selectedProductos?.ToList() ?? new List<string>();
                 return View(dto);
@@ -239,6 +256,39 @@ namespace Amaretto.Web.Controllers
             }
 
             return $"/images/productos/{nombreArchivo}";
+        }
+
+        // Valida que la imagen tenga un formato permitido y no exceda el tamaño máximo permitido
+        private static bool EsImagenValida(IFormFile imagenFile)
+        {
+            if (imagenFile == null || imagenFile.Length == 0 || imagenFile.Length > TamanoMaximoImagen)
+                return false;
+
+            var extension = Path.GetExtension(imagenFile.FileName)?.ToLowerInvariant();
+            return !string.IsNullOrEmpty(extension) && ExtensionesPermitidas.Contains(extension);
+        }
+
+        // Elimina del disco la imagen anterior del combo, si existe físicamente
+        private void EliminarImagenAnterior(string? rutaImagenRelativa)
+        {
+            if (string.IsNullOrEmpty(rutaImagenRelativa))
+                return;
+
+            var rutaFisica = Path.Combine(
+                _webHostEnvironment.WebRootPath,
+                rutaImagenRelativa.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+
+            if (System.IO.File.Exists(rutaFisica))
+            {
+                try
+                {
+                    System.IO.File.Delete(rutaFisica);
+                }
+                catch (IOException)
+                {
+                    // No se interrumpe el flujo si el archivo no puede eliminarse (p. ej. en uso)
+                }
+            }
         }
 
     }

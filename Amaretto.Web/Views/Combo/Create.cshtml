@@ -145,8 +145,7 @@
     </div>
 </section>
 
-@* Estilos propios de la selección de productos del combo.
-   Si ya tienes un CSS compartido con Producto, puedes mover este bloque ahí. *@
+
 <style>
     .producto-search-wrap {
         position: relative;
@@ -262,7 +261,7 @@
             });
         });
 
-        // Imágenes del combo (2 slots, igual que Producto)
+        // Imágenes del combo 
         const imagenesInput = document.getElementById('imagenesInput');
         const dropzone = document.getElementById('dropzone');
         const formCombo = document.getElementById('formCombo');
@@ -349,6 +348,23 @@
 
         slots.forEach(slot => {
             slot.removeBtn.addEventListener('click', () => clearSlot(slot));
+        });
+
+     
+        formCombo.addEventListener('reset', function () {
+            setTimeout(() => {
+                slots.forEach(slot => clearSlot(slot));
+
+                charCount.textContent = descripcionTxt.value.length;
+
+                document.querySelectorAll('.producto-row').forEach(fila => {
+                    fila.classList.remove('row-active');
+                    fila.style.display = '';
+                });
+                document.getElementById('productosError').textContent = '';
+
+                actualizarEstadoLabel();
+            }, 0);
         });
 
         // Validación: se requieren las 2 imágenes para crear el combo

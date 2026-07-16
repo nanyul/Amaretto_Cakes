@@ -13,6 +13,11 @@ namespace Amaretto.Web.Controllers
         private readonly IServiceIngrediente _serviceIngrediente;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
+        // Límites de validación para las imágenes subidas
+        private const long TamanoMaximoImagen = 5 * 1024 * 1024; // 5 MB
+        private const int TamanoMaximoImagenMB = 5;
+        private static readonly string[] ExtensionesPermitidas = { ".jpg", ".jpeg", ".png" };
+
         public ProductoController(IServiceProducto serviceProducto, IServiceCategoria serviceCategoria, IServiceIngrediente serviceIngrediente, IWebHostEnvironment webHostEnvironment)
         {
             _serviceProducto = serviceProducto;
@@ -129,14 +134,25 @@ namespace Amaretto.Web.Controllers
         {
             ModelState.Remove("IdProducto");
 
+            if (!string.IsNullOrWhiteSpace(dto.Nombre) && await ExisteNombreDuplicadoAsync(dto.Nombre))
+            {
+                ModelState.AddModelError("Nombre", "Ya existe un producto con este nombre");
+            }
+
             if (imagenFile != null)
             {
-                dto.Imagen1 = await GuardarImagenAsync(imagenFile);
+                if (!EsImagenValida(imagenFile))
+                    ModelState.AddModelError("Imagen1", $"La imagen debe ser JPG o PNG y no superar los {TamanoMaximoImagenMB}MB");
+                else
+                    dto.Imagen1 = await GuardarImagenAsync(imagenFile);
             }
 
             if (imagenFile2 != null)
             {
-                dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
+                if (!EsImagenValida(imagenFile2))
+                    ModelState.AddModelError("Imagen2", $"La imagen debe ser JPG o PNG y no superar los {TamanoMaximoImagenMB}MB");
+                else
+                    dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
             }
             else
             {
@@ -188,16 +204,47 @@ namespace Amaretto.Web.Controllers
         {
             ModelState.Remove("IdProducto");
 
+            var productoActual = await _serviceProducto.FindByIdAsync(id);
+
+            if (!string.IsNullOrWhiteSpace(dto.Nombre) && await ExisteNombreDuplicadoAsync(dto.Nombre, id))
+            {
+                ModelState.AddModelError("Nombre", "Ya existe un producto con este nombre");
+            }
+
             if (imagenFile != null)
             {
-                dto.Imagen1 = await GuardarImagenAsync(imagenFile);
+                if (!EsImagenValida(imagenFile))
+                {
+                    ModelState.AddModelError("Imagen1", $"La imagen debe ser JPG o PNG y no superar los {TamanoMaximoImagenMB}MB");
+                }
+                else
+                {
+                    EliminarImagenAnterior(productoActual?.Imagen1);
+                    dto.Imagen1 = await GuardarImagenAsync(imagenFile);
+                }
+            }
+            else if (string.IsNullOrEmpty(dto.Imagen1) && !string.IsNullOrEmpty(productoActual?.Imagen1))
+            {
+                // El usuario eliminó la imagen existente sin subir una nueva
+                EliminarImagenAnterior(productoActual.Imagen1);
             }
 
             if (imagenFile2 != null)
             {
-                dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
+                if (!EsImagenValida(imagenFile2))
+                {
+                    ModelState.AddModelError("Imagen2", $"La imagen debe ser JPG o PNG y no superar los {TamanoMaximoImagenMB}MB");
+                }
+                else
+                {
+                    EliminarImagenAnterior(productoActual?.Imagen2);
+                    dto.Imagen2 = await GuardarImagenAsync(imagenFile2);
+                }
             }
-
+            else if (string.IsNullOrEmpty(dto.Imagen2) && !string.IsNullOrEmpty(productoActual?.Imagen2))
+            {
+                EliminarImagenAnterior(productoActual.Imagen2);
+            }
 
             if (dto.IdCategoria <= 0)
                 ModelState.AddModelError("IdCategoria", "Debe seleccionar una categoría");
@@ -242,6 +289,50 @@ namespace Amaretto.Web.Controllers
             return $"/images/productos/{nombreArchivo}";
         }
 
+        // Verifica si ya existe un producto con el mismo nombre (sin distinguir mayúsculas/minúsculas
+        // ni espacios extra). Si se pasa idExcluido, ese producto no se toma en cuenta (caso Edit).
+        private async Task<bool> ExisteNombreDuplicadoAsync(string nombre, string? idExcluido = null)
+        {
+            var productos = await _serviceProducto.ListAsync();
+
+            return productos.Any(p =>
+                !string.IsNullOrEmpty(p.Nombre)
+                && p.Nombre.Trim().Equals(nombre.Trim(), StringComparison.OrdinalIgnoreCase)
+                && (idExcluido == null || p.IdProducto.ToString() != idExcluido));
+        }
+
+        // Valida que la imagen tenga un formato permitido y no exceda el tamaño máximo permitido
+        private static bool EsImagenValida(IFormFile imagenFile)
+        {
+            if (imagenFile == null || imagenFile.Length == 0 || imagenFile.Length > TamanoMaximoImagen)
+                return false;
+
+            var extension = Path.GetExtension(imagenFile.FileName)?.ToLowerInvariant();
+            return !string.IsNullOrEmpty(extension) && ExtensionesPermitidas.Contains(extension);
+        }
+
+        // Elimina del disco la imagen anterior del producto, si existe físicamente
+        private void EliminarImagenAnterior(string? rutaImagenRelativa)
+        {
+            if (string.IsNullOrEmpty(rutaImagenRelativa))
+                return;
+
+            var rutaFisica = Path.Combine(
+                _webHostEnvironment.WebRootPath,
+                rutaImagenRelativa.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+
+            if (System.IO.File.Exists(rutaFisica))
+            {
+                try
+                {
+                    System.IO.File.Delete(rutaFisica);
+                }
+                catch (IOException)
+                {
+                    // No se interrumpe el flujo si el archivo no puede eliminarse (p. ej. en uso)
+                }
+            }
+        }
 
     }
 }
