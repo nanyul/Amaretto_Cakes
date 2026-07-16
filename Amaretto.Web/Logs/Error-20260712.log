@@ -1,0 +1,246 @@
+2026-07-12 00:36:08.994 -06:00 [ERR] 
+EventId    :4662-260712123608
+ErrorList  :Unable to resolve service for type 'Amaretto.Application.Services.Interfaces.IServicePedidoDetalle' while attempting to activate 'Amaretto.Web.Controllers.CocinaOrdenController'.
+StackTrace :   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method244(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+
+2026-07-12 00:42:22.465 -06:00 [ERR] 
+EventId    :3908-260712124222
+ErrorList  :Unable to resolve service for type 'Amaretto.Application.Services.Interfaces.IServicePedidoDetalle' while attempting to activate 'Amaretto.Web.Controllers.CocinaOrdenController'.
+StackTrace :   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method29(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+
+2026-07-12 13:17:34.847 -06:00 [ERR] 
+EventId    :4590-260712011734
+ErrorList  :Unable to resolve service for type 'Amaretto.Application.Services.Interfaces.IServicePedidoDetalle' while attempting to activate 'Amaretto.Web.Controllers.CocinaOrdenController'.
+StackTrace :   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method469(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+
+2026-07-12 13:22:07.150 -06:00 [ERR] 
+EventId    :1032-260712012206
+ErrorList  :Missing type map configuration or unsupported mapping.
+
+Mapping types:
+PedidoDetalle -> PedidoDetalleDTO
+Amaretto.Infraestructure.Models.PedidoDetalle -> Amaretto.Application.DTOs.PedidoDetalleDTO
+StackTrace :   at lambda_method404(Closure, Object, PedidoDetalleDTO, ResolutionContext)
+   at Amaretto.Application.Services.Implementations.ServicePedidoDetalle.FindByIdAsync(Int32 id) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Application\Services\Implementations\ServicePedidoDetalle.cs:line 30
+   at Amaretto.Web.Controllers.CocinaOrdenController.Edit(Int32 id) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Controllers\CocinaOrdenController.cs:line 98
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+
+2026-07-12 13:30:50.651 -06:00 [ERR] 
+EventId    :4806-260712013050
+ErrorList  :Missing type map configuration or unsupported mapping.
+
+Mapping types:
+PedidoDetalle -> PedidoDetalleDTO
+Amaretto.Infraestructure.Models.PedidoDetalle -> Amaretto.Application.DTOs.PedidoDetalleDTO
+StackTrace :   at lambda_method431(Closure, Object, PedidoDetalleDTO, ResolutionContext)
+   at Amaretto.Application.Services.Implementations.ServicePedidoDetalle.FindByIdAsync(Int32 id) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Application\Services\Implementations\ServicePedidoDetalle.cs:line 30
+   at Amaretto.Web.Controllers.CocinaOrdenController.Edit(Int32 id) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Controllers\CocinaOrdenController.cs:line 98
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+
+2026-07-12 13:31:05.845 -06:00 [ERR] 
+EventId    :1842-260712013105
+ErrorList  :Missing type map configuration or unsupported mapping.
+
+Mapping types:
+PedidoDetalle -> PedidoDetalleDTO
+Amaretto.Infraestructure.Models.PedidoDetalle -> Amaretto.Application.DTOs.PedidoDetalleDTO
+StackTrace :   at lambda_method431(Closure, Object, PedidoDetalleDTO, ResolutionContext)
+   at Amaretto.Application.Services.Implementations.ServicePedidoDetalle.FindByIdAsync(Int32 id) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Application\Services\Implementations\ServicePedidoDetalle.cs:line 30
+   at Amaretto.Web.Controllers.CocinaOrdenController.Edit(Int32 id) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Controllers\CocinaOrdenController.cs:line 98
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+
+2026-07-12 18:38:39.598 -06:00 [ERR] 
+EventId    :2321-260712063839
+ErrorList  :The association between entities 'MenuProducto' and 'MenuDetalleProducto' with the key value '{IdMenuProducto: 5}' has been severed, but the relationship is either marked as required or is implicitly required because the foreign key is not nullable. If the dependent/child entity should be deleted when a required relationship is severed, configure the relationship to use cascade deletes.
+StackTrace :   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.HandleConceptualNulls(Boolean sensitiveLoggingEnabled, Boolean force, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.HandleNullForeignKey(IProperty property, Boolean setModified, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetProperty(IPropertyBase propertyBase, Object value, Boolean isMaterialization, Boolean setModified, Boolean isCascadeDelete, CurrentValueType valueType)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetProperty(IPropertyBase propertyBase, Object value, Boolean isMaterialization, Boolean setModified, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.set_Item(IPropertyBase propertyBase, Object value)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.NavigationFixer.ConditionallyNullForeignKeyProperties(InternalEntityEntry dependentEntry, InternalEntityEntry principalEntry, IForeignKey foreignKey)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.NavigationFixer.NavigationCollectionChanged(InternalEntityEntry entry, INavigationBase navigationBase, IEnumerable`1 added, IEnumerable`1 removed)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntryNotifier.NavigationCollectionChanged(InternalEntityEntry entry, INavigationBase navigationBase, IEnumerable`1 added, IEnumerable`1 removed)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.DetectNavigationChange(InternalEntityEntry entry, INavigationBase navigationBase)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.LocalDetectChanges(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.DetectChanges(IStateManager stateManager)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker.DetectChanges()
+   at Microsoft.EntityFrameworkCore.DbContext.TryDetectChanges()
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Amaretto.Infraestructure.Repository.Implementations.RepositoryMenuProducto.UpdateAsync(MenuProducto entity, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Infraestructure\Repository\Implementations\RepositoryMenuProducto.cs:line 89
+   at Amaretto.Application.Services.Implementations.ServiceMenuProducto.UpdateAsync(Int32 id, MenuProductoDTO dto, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Application\Services\Implementations\ServiceMenuProducto.cs:line 52
+   at Amaretto.Web.Controllers.MenuProductoController.Edit(Int32 id, MenuProductoDTO dto, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Controllers\MenuProductoController.cs:line 141
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+
+2026-07-12 18:45:32.348 -06:00 [ERR] 
+EventId    :636-260712064532
+ErrorList  :The association between entities 'MenuProducto' and 'MenuDetalleProducto' with the key value '{IdMenuProducto: 5}' has been severed, but the relationship is either marked as required or is implicitly required because the foreign key is not nullable. If the dependent/child entity should be deleted when a required relationship is severed, configure the relationship to use cascade deletes.
+StackTrace :   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.HandleConceptualNulls(Boolean sensitiveLoggingEnabled, Boolean force, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.HandleNullForeignKey(IProperty property, Boolean setModified, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetProperty(IPropertyBase propertyBase, Object value, Boolean isMaterialization, Boolean setModified, Boolean isCascadeDelete, CurrentValueType valueType)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetProperty(IPropertyBase propertyBase, Object value, Boolean isMaterialization, Boolean setModified, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.set_Item(IPropertyBase propertyBase, Object value)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.NavigationFixer.ConditionallyNullForeignKeyProperties(InternalEntityEntry dependentEntry, InternalEntityEntry principalEntry, IForeignKey foreignKey)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.NavigationFixer.NavigationCollectionChanged(InternalEntityEntry entry, INavigationBase navigationBase, IEnumerable`1 added, IEnumerable`1 removed)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntryNotifier.NavigationCollectionChanged(InternalEntityEntry entry, INavigationBase navigationBase, IEnumerable`1 added, IEnumerable`1 removed)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.DetectNavigationChange(InternalEntityEntry entry, INavigationBase navigationBase)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.LocalDetectChanges(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.DetectChanges(IStateManager stateManager)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker.DetectChanges()
+   at Microsoft.EntityFrameworkCore.DbContext.TryDetectChanges()
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Amaretto.Infraestructure.Repository.Implementations.RepositoryMenuProducto.UpdateAsync(MenuProducto entity, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Infraestructure\Repository\Implementations\RepositoryMenuProducto.cs:line 89
+   at Amaretto.Application.Services.Implementations.ServiceMenuProducto.UpdateAsync(Int32 id, MenuProductoDTO dto, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Application\Services\Implementations\ServiceMenuProducto.cs:line 52
+   at Amaretto.Web.Controllers.MenuProductoController.Edit(Int32 id, MenuProductoDTO dto, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Controllers\MenuProductoController.cs:line 141
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+
+2026-07-12 18:45:32.350 -06:00 [ERR] 
+EventId    :3134-260712064532
+ErrorList  :The association between entities 'MenuProducto' and 'MenuDetalleProducto' with the key value '{IdMenuProducto: 5}' has been severed, but the relationship is either marked as required or is implicitly required because the foreign key is not nullable. If the dependent/child entity should be deleted when a required relationship is severed, configure the relationship to use cascade deletes.
+StackTrace :   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.HandleConceptualNulls(Boolean sensitiveLoggingEnabled, Boolean force, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.HandleNullForeignKey(IProperty property, Boolean setModified, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetProperty(IPropertyBase propertyBase, Object value, Boolean isMaterialization, Boolean setModified, Boolean isCascadeDelete, CurrentValueType valueType)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetProperty(IPropertyBase propertyBase, Object value, Boolean isMaterialization, Boolean setModified, Boolean isCascadeDelete)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.set_Item(IPropertyBase propertyBase, Object value)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.NavigationFixer.ConditionallyNullForeignKeyProperties(InternalEntityEntry dependentEntry, InternalEntityEntry principalEntry, IForeignKey foreignKey)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.NavigationFixer.NavigationCollectionChanged(InternalEntityEntry entry, INavigationBase navigationBase, IEnumerable`1 added, IEnumerable`1 removed)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntryNotifier.NavigationCollectionChanged(InternalEntityEntry entry, INavigationBase navigationBase, IEnumerable`1 added, IEnumerable`1 removed)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.DetectNavigationChange(InternalEntityEntry entry, INavigationBase navigationBase)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.LocalDetectChanges(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.ChangeDetector.DetectChanges(IStateManager stateManager)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker.DetectChanges()
+   at Microsoft.EntityFrameworkCore.DbContext.TryDetectChanges()
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Amaretto.Infraestructure.Repository.Implementations.RepositoryMenuProducto.UpdateAsync(MenuProducto entity, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Infraestructure\Repository\Implementations\RepositoryMenuProducto.cs:line 89
+   at Amaretto.Application.Services.Implementations.ServiceMenuProducto.UpdateAsync(Int32 id, MenuProductoDTO dto, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Application\Services\Implementations\ServiceMenuProducto.cs:line 52
+   at Amaretto.Web.Controllers.MenuProductoController.Edit(Int32 id, MenuProductoDTO dto, String[] selectedProductos) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Controllers\MenuProductoController.cs:line 141
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Amaretto.Web.Middleware.ErrorHandlingMiddleware.Invoke(HttpContext context) in C:\Users\keyli\Downloads\Amaretto_Cakes\Amaretto_Cakes\Amaretto.Web\Middleware\ErrorHandlingMiddleware.cs:line 24
+

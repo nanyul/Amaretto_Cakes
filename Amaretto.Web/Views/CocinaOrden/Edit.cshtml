@@ -1,0 +1,109 @@
+@using Amaretto.Application.DTOs
+@model int
+@{
+    ViewData["Title"] = "Editar Proceso de Preparación";
+    var detalle = (PedidoDetalleDTO)ViewBag.Detalle;
+    var pasos = (List<CocinaOrdenDTO>)ViewBag.Pasos;
+}
+
+<section class="product-form-section">
+    <div class="container">
+        <div class="product-form-header-row">
+            <h1 class="product-form-title">Editar Proceso de Preparación</h1>
+            <p class="product-form-subtitle">Actualiza el avance de cada estación. Las estaciones y su orden no se pueden modificar aquí.</p>
+            <nav class="product-breadcrumb">
+                <a asp-controller="Home" asp-action="Index" class="breadcrumb-link"><i class="bi bi-house-door-fill"></i></a>
+                <span class="breadcrumb-sep">›</span>
+                <a asp-action="Index" class="breadcrumb-link">Órdenes</a>
+                <span class="breadcrumb-sep">›</span>
+                <span class="breadcrumb-current">Editar</span>
+            </nav>
+        </div>
+
+        <form asp-action="Edit" method="post" class="product-form-card" id="formProceso">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" name="idDetalle" value="@Model" />
+
+            <h5 class="form-section-title"><i class="bi bi-bag-check"></i> Producto</h5>
+
+            <div class="form-field">
+                <label class="form-label-custom">Producto asociado a este proceso</label>
+                <div class="process-fixed-product">
+                    <i class="bi bi-lock-fill"></i>
+                    Pedido #@detalle.IdPedido - @detalle.NombreProductoOCombo x@detalle.Cantidad
+                </div>
+            </div>
+
+            <h5 class="form-section-title mt-4"><i class="bi bi-diagram-3"></i> Avance del Proceso</h5>
+            <small class="field-hint d-block mb-3">
+                Al marcar una estación como <strong>Completado</strong>, las anteriores se completan automáticamente
+                (no se puede saltar un paso).
+            </small>
+
+            <div class="estacion-progress-list" id="estacionProgressList">
+                @foreach (var paso in pasos)
+                {
+                    <div class="estacion-progress-row" data-orden="@paso.OrdenPaso">
+                        <input type="hidden" name="cocinaOrdenIds" value="@paso.IdCocinaOrden" />
+
+                        <div class="estacion-progress-info">
+                            <span class="estacion-progress-orden">@paso.OrdenPaso</span>
+                            <div>
+                                <strong>@paso.IdEstacionNavigation.Nombre</strong>
+                                @if (paso.FechaInicio != null || paso.FechaFin != null)
+                                {
+                                    <div class="estacion-progress-fechas">
+                                        @if (paso.FechaInicio != null)
+                                        {
+                                            <span><i class="bi bi-play-fill"></i> @paso.FechaInicio.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                                        }
+                                        @if (paso.FechaFin != null)
+                                        {
+                                            <span><i class="bi bi-flag-fill"></i> @paso.FechaFin.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <select name="estados" class="form-control-amaretto estado-select">
+                            <option value="Pendiente" selected="@(paso.Estado == "Pendiente")">Pendiente</option>
+                            <option value="En Proceso" selected="@(paso.Estado == "En Proceso")">En Proceso</option>
+                            <option value="Completado" selected="@(paso.Estado == "Completado")">Completado</option>
+                        </select>
+                    </div>
+                }
+            </div>
+
+            <div class="product-form-footer">
+                <a asp-action="Index" class="btn-form-cancel">Cancelar</a>
+                <div class="footer-actions-right">
+                    <button type="submit" class="btn-form-submit"><i class="bi bi-save"></i> Guardar avance</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Reflejo visual de la cascada: si el usuario marca una estación como
+        // "Completado", las anteriores (menor "orden") también se muestran como
+        // Completado. La regla real se aplica igual en el servidor.
+        document.querySelectorAll('.estado-select').forEach(function (select) {
+            select.addEventListener('change', function () {
+                if (this.value !== 'Completado') return;
+
+                const filaActual = this.closest('.estacion-progress-row');
+                const ordenActual = parseInt(filaActual.dataset.orden, 10);
+
+                document.querySelectorAll('.estacion-progress-row').forEach(function (fila) {
+                    const orden = parseInt(fila.dataset.orden, 10);
+                    if (orden < ordenActual) {
+                        fila.querySelector('.estado-select').value = 'Completado';
+                    }
+                });
+            });
+        });
+    </script>
+}

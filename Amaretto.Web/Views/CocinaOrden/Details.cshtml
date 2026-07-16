@@ -1,67 +1,115 @@
 ﻿@model Amaretto.Application.DTOs.CocinaOrdenDTO
-
-
 @{
     ViewData["Title"] = "Detalle Proceso";
-
     string nombreProducto = "";
-
+    string? imagenProducto = null;
     if (Model.IdDetalleNavigation?.IdProductoNavigation != null)
     {
-        nombreProducto =
-            Model.IdDetalleNavigation.IdProductoNavigation.Nombre;
+        nombreProducto = Model.IdDetalleNavigation.IdProductoNavigation.Nombre;
+        imagenProducto = Model.IdDetalleNavigation.IdProductoNavigation.Imagen1;
     }
     else if (Model?.IdDetalleNavigation?.IdComboNavigation != null)
     {
-        nombreProducto =
-            Model.IdDetalleNavigation.IdComboNavigation.Nombre;
+        nombreProducto = Model.IdDetalleNavigation.IdComboNavigation.Nombre;
+        imagenProducto = Model.IdDetalleNavigation.IdComboNavigation.Imagen1;
     }
 }
+<section class="process-detail-section">
+    <div class="container">
 
-<div class="container">
+        <!-- Encabezado -->
+        <div class="process-detail-header">
+            <h1 class="process-detail-title">
+                <span class="process-detail-flourish"><i class="bi bi-stars"></i></span>
+                Detalle Proceso de Preparación
+                <span class="process-detail-flourish"><i class="bi bi-stars"></i></span>
+            </h1>
+            <div class="process-detail-underline">
+                <i class="bi bi-arrow-right"></i>
+                <i class="bi bi-heart-fill"></i>
+                <i class="bi bi-arrow-left"></i>
+            </div>
+        </div>
 
-    <h1>Detalle Proceso de Preparación</h1>
+        <div class="process-detail-card">
 
-    <hr />
-
-    <div class="mb-4">
-        <h4>Producto</h4>
-        <p>@nombreProducto</p>
-    </div>
-
-    <h4>Estaciones del Proceso</h4>
-
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Orden</th>
-                <th>Estación</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var estacion in ViewBag.Estaciones)
-            {
-                <tr>
-                    <td>@estacion.Nombre</td>
-                    <td>@estacion.Descripcion</td>
-
-                    @if (estacion.IdEstacion <= Model.IdEstacion)
+            <!-- Producto / Combo -->
+            <div class="process-detail-product">
+                <div class="process-detail-product-thumb">
+                    @if (!string.IsNullOrEmpty(imagenProducto))
                     {
-                        <td class="text-success">Completada</td>
+                        <img src="@imagenProducto" alt="@nombreProducto" />
                     }
                     else
                     {
-                        <td class="text-warning">En Proceso</td>
+                        <i class="bi bi-cake2"></i>
                     }
-                </tr>
-            }
-        </tbody>
-    </table>
+                </div>
+                <div class="process-detail-product-info">
+                    <span class="process-detail-product-label">Producto</span>
+                    <h3>@nombreProducto</h3>
+                    <i class="bi bi-heart-fill process-detail-product-heart"></i>
+                </div>
+            </div>
 
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Volver
-    </a>
+            <!-- Estaciones -->
+            <div class="process-detail-subheading">
+                <i class="bi bi-flower1"></i>
+                <span>Estaciones del Proceso</span>
+                <span class="process-detail-subheading-line"></span>
+            </div>
 
-</div>
+            <div class="process-table-wrap">
+                <table class="process-table">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-list-check"></i> Orden</th>
+                            <th><i class="bi bi-flower1"></i> Estación</th>
+                            <th><i class="bi bi-heart-fill"></i> Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int contador = 0;
+                        }
+                        @foreach (var estacion in ViewBag.Estaciones)
+                        {
+                            contador++;
+                            <tr>
+                                <td data-label="Orden">
+                                    <span class="process-order-badge">@contador</span>
+                                </td>
+                                <td data-label="Estación">
+                                    <strong class="process-station-name">@estacion.Nombre</strong>
+                                    <span class="process-station-desc">@estacion.Descripcion</span>
+                                </td>
+                                <td data-label="Estado">
+                                    @if (estacion.IdEstacion <= Model.IdEstacion)
+                                    {
+                                        <span class="process-status-badge is-completed">
+                                            <i class="bi bi-check-circle-fill"></i> Completada
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="process-status-badge is-progress">
+                                            <i class="bi bi-clock-fill"></i> En Proceso
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <a asp-action="Index" class="btn-volver-proceso">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.IdDetalle" class="btn-editar-proceso">
+                <i class="bi bi-pencil-fill"></i> Editar proceso
+            </a>
+
+        </div>
+    </div>
+</section>

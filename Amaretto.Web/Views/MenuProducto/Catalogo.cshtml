@@ -1,0 +1,295 @@
+﻿@model List<Amaretto.Application.DTOs.MenuProductoDTO>
+@{
+    ViewData["Title"] = "Catálogo de Menús";
+
+    var pieces = new[] { "✦", "🌸", "✦", "🎂", "✦", "🍰", "✦", "🌸", "✦", "🎂", "✦", "🍰" };
+    var colors = new[] { "var(--moss-green)", "var(--rosy-brown)", "var(--beige)" };
+    var rnd = new Random();
+
+    string FloatPieceStyle(int index)
+    {
+        var left = rnd.Next(2, 96);
+        var top = rnd.Next(5, 85);
+        var size = (rnd.Next(7, 16) / 10.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+        var duration = rnd.Next(5, 9).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var delay = ((index % pieces.Length) * 0.3).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+        var color = colors[rnd.Next(colors.Length)];
+        return $"--fp-left:{left}%; --fp-top:{top}%; --fp-size:{size}rem; --fp-duration:{duration}s; --fp-delay:{delay}s; --fp-color:{color};";
+    }
+}
+
+<!--  ENCABEZADO  -->
+<section class="catalog-header">
+    <div class="container position-relative" style="z-index:2;">
+        <span class="catalog-badge">✦ Catálogo de Menús ✦</span>
+        <h1 class="catalog-title">
+            Menús de temporada,
+            <span>hechos para endulzar</span>
+        </h1>
+        <p class="catalog-subtitle">
+            Descubre nuestros menús de productos disponibles por tiempo limitado,
+            con lo mejor de cada temporada.
+        </p>
+    </div>
+
+    <div class="hero-confeti" aria-hidden="true">
+        @for (int i = 0; i < pieces.Length; i++)
+        {
+            <span class="float-piece" style="@FloatPieceStyle(i)">@pieces[i]</span>
+        }
+    </div>
+
+    <div class="wave-bottom" aria-hidden="true">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,40 C480,80 960,0 1440,50 L1440,80 L0,80 Z" fill="#FFFDF6" />
+        </svg>
+    </div>
+</section>
+
+<!--  SECCIÓN PRINCIPAL  -->
+<section class="catalog-section">
+    <div class="container">
+        <div class="catalog-layout">
+
+            <!--  SIDEBAR  -->
+            <aside class="catalog-sidebar">
+
+                <!-- Filtrar por estado -->
+                <div class="sidebar-panel">
+                    <p class="sidebar-panel-title"><i class="bi bi-toggle2-on"></i> Estado</p>
+                    <ul class="filter-category-list">
+                        <li><label><input type="radio" name="estadoMenu" value="todos" checked /><span>Todos</span></label></li>
+                        <li><label><input type="radio" name="estadoMenu" value="disponible" /><span>Disponibles</span></label></li>
+                        <li><label><input type="radio" name="estadoMenu" value="no-disponible" /><span>No disponibles</span></label></li>
+                    </ul>
+                </div>
+
+                <!-- CTA especial -->
+                <div class="sidebar-cta">
+                    <span class="sidebar-cta-icon">🎂</span>
+                    <h6>¿Buscas algo especial?</h6>
+                    <p>Podemos hacerlo realidad.</p>
+                    <a asp-controller="Home" asp-action="Contact" class="btn-sidebar-cta">
+                        Contáctanos <i class="bi bi-heart-fill"></i>
+                    </a>
+                </div>
+
+                <!-- Invitación cruzada: Menú de Combos -->
+                <div class="sidebar-cta sidebar-cta-alt">
+                    <span class="sidebar-cta-icon">📦</span>
+                    <h6>¿Buscas Menús de Combos?</h6>
+                    <p>Descubre combos por temporada, ideales para compartir.</p>
+                    <a asp-controller="MenuCombo" asp-action="Catalogo" class="btn-sidebar-cta">
+                        Ver Menú Combos <i class="bi bi-arrow-right-short"></i>
+                    </a>
+                </div>
+
+            </aside>
+
+            <!--  ÁREA DE GRID  -->
+            <div class="catalog-grid-area">
+
+                <!-- Barra superior -->
+                <div class="catalog-topbar">
+                    <p class="catalog-count mb-0">
+                        Mostrando <strong id="menuCatalogCount">@Model.Count()</strong> menús
+                    </p>
+                    <div class="catalog-view-toggle">
+                        <span>Ver:</span>
+                        <button class="btn-view active" id="btnGrid" title="Vista grilla">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                        </button>
+                        <button class="btn-view" id="btnList" title="Vista lista">
+                            <i class="bi bi-list-ul"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @if (!Model.Any())
+                {
+                    <div class="catalog-empty">
+                        <i class="bi bi-cup-hot"></i>
+                        <p>Por el momento no hay menús disponibles. Vuelve pronto.</p>
+                    </div>
+                }
+                else
+                {
+                    <!-- Grid de menús -->
+                    <div class="row g-3" id="menuGrid">
+                        @foreach (var item in Model.OrderByDescending(x => x.FechaInicio))
+                        {
+                            var imagenesMenu = (item.MenuDetalleProducto ?? Enumerable.Empty<Amaretto.Application.DTOs.MenuDetalleProductoDTO>())
+                            .Where(x => x.IdProductoNavigation != null && !string.IsNullOrEmpty(x.IdProductoNavigation.Imagen1))
+                            .Select(x => x.IdProductoNavigation.Imagen1!)
+                            .Take(6)
+                            .ToList();
+                            var carouselId = $"carousel-menu-prod-{item.IdMenuProducto}";
+                            var cardImgClass = "catalog-card-img"
+                            + (imagenesMenu.Count <= 1 ? " single-image" : "")
+                            + (imagenesMenu.Any() ? "" : " menu-icon-placeholder");
+
+                            <div class="col-lg-4 col-md-6 col-sm-6 menu-catalog-item"
+                                 data-estado="@(item.Estado ? "disponible" : "no-disponible")">
+                                <div class="catalog-card animate-on-scroll">
+
+                                    <!-- Carrusel con las imágenes de los productos incluidos en el menú -->
+                                    <div class="@cardImgClass">
+                                        <div id="@carouselId" class="carousel slide"
+                                             data-bs-ride="@(imagenesMenu.Count > 1 ? "carousel" : "false")"
+                                             data-bs-interval="3200">
+                                            <div class="carousel-inner">
+                                                @if (imagenesMenu.Any())
+                                                {
+                                                    for (int i = 0; i < imagenesMenu.Count; i++)
+                                                    {
+                                                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                            <img src="@imagenesMenu[i]" alt="@item.Nombre">
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <div class="carousel-item active">
+                                                        <div class="menu-cover-fallback">
+                                                            <i class="bi bi-journal-richtext"></i>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                            @if (imagenesMenu.Count > 1)
+                                            {
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon"></span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon"></span>
+                                                </button>
+                                                <div class="carousel-indicators">
+                                                    @for (int i = 0; i < imagenesMenu.Count; i++)
+                                                    {
+                                                        <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></button>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+
+                                        @if (item.Estado)
+                                        {
+                                            <span class="catalog-card-badge is-available">
+                                                <i class="bi bi-check-circle-fill me-1"></i>Disponible
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="catalog-card-badge is-unavailable">
+                                                <i class="bi bi-x-circle-fill me-1"></i>No disponible
+                                            </span>
+                                        }
+                                    </div>
+
+                                    <!-- Cuerpo -->
+                                    <div class="catalog-card-body">
+                                        <h5>@item.Nombre</h5>
+                                        <p class="catalog-card-menu-desc">@item.Descripcion</p>
+                                        <p class="catalog-card-menu-dates">
+                                            <i class="bi bi-calendar-range"></i>
+                                            @item.FechaInicio.ToString("dd/MM/yyyy") - @item.FechaFin.ToString("dd/MM/yyyy")
+                                        </p>
+                                    </div>
+
+                                    <!-- Footer -->
+                                    <div class="catalog-card-footer single">
+                                        <a asp-controller="MenuProducto" asp-action="Details"
+                                           asp-route-id="@item.IdMenuProducto"
+                                           class="btn-catalog">
+                                            Ver menú <i class="bi bi-arrow-right-short ms-1"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="catalog-empty d-none" id="menuCatalogEmptyState">
+                        <i class="bi bi-cup-hot"></i>
+                        <p>No hay menús que coincidan con este filtro.</p>
+                    </div>
+
+                    <!-- Paginación -->
+                    <nav class="catalog-pagination" aria-label="Paginación de menús">
+                        <a href="#" class="page-btn disabled" aria-label="Anterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                        <a href="#" class="page-btn active">1</a>
+                        <a href="#" class="page-btn" aria-label="Siguiente">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </nav>
+                }
+
+            </div>
+            <!-- /catalog-grid-area -->
+
+        </div>
+        <!-- /catalog-layout -->
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const cards = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+            cards.forEach(c => observer.observe(c));
+
+            const btnGrid = document.getElementById('btnGrid');
+            const btnList = document.getElementById('btnList');
+            const grid = document.getElementById('menuGrid');
+
+            btnGrid?.addEventListener('click', () => {
+                btnGrid.classList.add('active');
+                btnList.classList.remove('active');
+                grid.querySelectorAll('.menu-catalog-item').forEach(col => {
+                    col.className = 'col-lg-4 col-md-6 col-sm-6 menu-catalog-item';
+                    if (col.dataset.estado) col.setAttribute('data-estado', col.dataset.estado);
+                });
+            });
+
+            btnList?.addEventListener('click', () => {
+                btnList.classList.add('active');
+                btnGrid.classList.remove('active');
+                grid.querySelectorAll('.menu-catalog-item').forEach(col => {
+                    col.className = 'col-12 menu-catalog-item';
+                    if (col.dataset.estado) col.setAttribute('data-estado', col.dataset.estado);
+                });
+            });
+
+            // Filtro por estado
+            const radios = document.querySelectorAll('input[name="estadoMenu"]');
+            const items = document.querySelectorAll('.menu-catalog-item');
+            const emptyState = document.getElementById('menuCatalogEmptyState');
+            const countLabel = document.getElementById('menuCatalogCount');
+
+            radios.forEach(function (radio) {
+                radio.addEventListener('change', function () {
+                    const filtro = this.value;
+                    let visibles = 0;
+
+                    items.forEach(function (item) {
+                        const estado = item.getAttribute('data-estado');
+                        const mostrar = filtro === 'todos' || estado === filtro;
+                        item.style.display = mostrar ? '' : 'none';
+                        if (mostrar) visibles++;
+                    });
+
+                    if (countLabel) countLabel.textContent = visibles;
+                    if (emptyState) emptyState.classList.toggle('d-none', visibles > 0);
+                });
+            });
+        });
+    </script>
+}

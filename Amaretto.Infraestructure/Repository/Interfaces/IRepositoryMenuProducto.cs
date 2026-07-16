@@ -14,5 +14,8 @@ namespace Amaretto.Infraestructure.Repository.Interfaces
         Task<MenuProducto> FindByIdAsync(int id);
 
         Task<MenuProducto?> ObtenerMenuDisponibleAsync();
+
+        Task<int> AddAsync(MenuProducto entity, string[] selectedProductos);
+        Task UpdateAsync(MenuProducto entity, string[] selectedProductos);
     }
 }

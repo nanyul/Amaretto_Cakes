@@ -1,11 +1,9 @@
 ﻿using Amaretto.Application.DTOs;
 using Amaretto.Application.Services.Interfaces;
+using Amaretto.Infraestructure.Models;
 using Amaretto.Infraestructure.Repository.Interfaces;
 using AutoMapper;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Amaretto.Application.Services.Implementations
@@ -15,33 +13,43 @@ namespace Amaretto.Application.Services.Implementations
         private readonly IRepositoryMenuCombo _repository;
         private readonly IMapper _mapper;
 
-        public ServiceMenuCombo(
-            IRepositoryMenuCombo repository,
-            IMapper mapper)
+        public ServiceMenuCombo(IRepositoryMenuCombo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        public async Task<ICollection<MenuComboDTO>> ListAsync()
+        public async Task<MenuComboDTO?> ObtenerMenuDisponibleAsync()
         {
-            var list = await _repository.ListAsync();
-
-            return _mapper.Map<ICollection<MenuComboDTO>>(list);
+            var entity = await _repository.ObtenerMenuDisponibleAsync();
+            return entity == null ? null : _mapper.Map<MenuComboDTO>(entity);
         }
 
         public async Task<MenuComboDTO> FindByIdAsync(int id)
         {
             var entity = await _repository.FindByIdAsync(id);
-
             return _mapper.Map<MenuComboDTO>(entity);
         }
 
-        public async Task<MenuComboDTO?> ObtenerMenuDisponibleAsync()
+        public async Task<ICollection<MenuComboDTO>> ListAsync()
         {
-            var entity = await _repository.ObtenerMenuDisponibleAsync();
+            var list = await _repository.ListAsync();
+            return _mapper.Map<ICollection<MenuComboDTO>>(list);
+        }
 
-            return _mapper.Map<MenuComboDTO>(entity);
+        // CREAR
+        public async Task<int> AddAsync(MenuComboDTO dto, string[] selectedCombos)
+        {
+            var entity = _mapper.Map<MenuCombo>(dto);
+            return await _repository.AddAsync(entity, selectedCombos);
+        }
+
+        // ACTUALIZAR
+        public async Task UpdateAsync(int id, MenuComboDTO dto, string[] selectedCombos)
+        {
+            var entity = await _repository.FindByIdAsync(id);
+            var actualizado = _mapper.Map(dto, entity);
+            await _repository.UpdateAsync(actualizado, selectedCombos);
         }
     }
 }

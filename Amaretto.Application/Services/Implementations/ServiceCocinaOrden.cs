@@ -1,4 +1,4 @@
-﻿using Amaretto.Application.DTOs;
+using Amaretto.Application.DTOs;
 using Amaretto.Application.Services.Interfaces;
 using Amaretto.Infraestructure.Data;
 using Amaretto.Infraestructure.Models;
@@ -15,7 +15,7 @@ using static Amaretto.Application.Services.Implementations.ServiceProducto;
 namespace Amaretto.Application.Services.Implementations
 {
 
-public class ServiceCocinaOrden : IServiceCocinaOrden
+    public class ServiceCocinaOrden : IServiceCocinaOrden
     {
         private readonly IRepositoryCocinaOrden _repository;
         private readonly IMapper _mapper;
@@ -38,6 +38,29 @@ public class ServiceCocinaOrden : IServiceCocinaOrden
         {
             var entity = await _repository.FindByIdAsync(id);
             return _mapper.Map<CocinaOrdenDTO>(entity);
+        }
+
+        // ESTACIONES DE UN PROCESO
+        public async Task<ICollection<CocinaOrdenDTO>> ListByDetalleAsync(int idDetalle)
+        {
+            var list = await _repository.ListByDetalleAsync(idDetalle);
+            return _mapper.Map<ICollection<CocinaOrdenDTO>>(list);
+        }
+
+        // CREAR PROCESO
+        public async Task AddAsync(int idDetalle, List<(int IdEstacion, int OrdenPaso)> estaciones)
+        {
+            var input = estaciones
+                .Select(e => new CocinaOrdenEstacionInput(e.IdEstacion, e.OrdenPaso))
+                .ToList();
+
+            await _repository.AddRangoAsync(idDetalle, input);
+        }
+
+        // EDITAR PROCESO: avanzar estado (con cascada resuelta en el repositorio)
+        public async Task UpdateEstadoAsync(int idDetalle, Dictionary<int, string> estadosPorCocinaOrden)
+        {
+            await _repository.ActualizarEstadosAsync(idDetalle, estadosPorCocinaOrden);
         }
     }
 }

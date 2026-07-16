@@ -1,0 +1,135 @@
+@model Amaretto.Application.DTOs.MenuProductoDTO
+@using Amaretto.Application.DTOs
+
+@{
+    ViewData["Title"] = "Editar Menú de Productos";
+    var productos = (ICollection<ProductoDTO>)ViewBag.ListProductos;
+    var seleccionados = (List<string>)ViewBag.SelectedProductos;
+}
+
+<section class="product-form-section">
+    <div class="container">
+        <div class="product-form-header-row">
+            <h1 class="product-form-title">Editar Menú de Productos</h1>
+            <p class="product-form-subtitle">Actualiza la información de @Model.Nombre.</p>
+            <nav class="product-breadcrumb">
+                <a asp-controller="Home" asp-action="Index" class="breadcrumb-link"><i class="bi bi-house-door-fill"></i></a>
+                <span class="breadcrumb-sep">›</span>
+                <a asp-controller="MenuProducto" asp-action="Index" class="breadcrumb-link">Menús de Productos</a>
+                <span class="breadcrumb-sep">›</span>
+                <span class="breadcrumb-current">Editar</span>
+            </nav>
+        </div>
+
+        <form asp-action="Edit" asp-route-id="@Model.IdMenuProducto" method="post" class="product-form-card" id="formMenu">
+            <input type="hidden" asp-for="IdMenuProducto" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="form-section-title"><i class="bi bi-stars"></i> Información del menú</h5>
+
+            <div class="form-field">
+                <label asp-for="Nombre" class="form-label-custom">Nombre del menú <span class="required-mark">*</span></label>
+                <input asp-for="Nombre" class="form-control-amaretto" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="form-field mt-3">
+                <label asp-for="Descripcion" class="form-label-custom">Descripción <span class="required-mark">*</span></label>
+                <textarea asp-for="Descripcion" class="form-control-amaretto" maxlength="400" id="descripcionTxt"></textarea>
+                <div class="char-counter"><span id="charCount">@(Model.Descripcion?.Length ?? 0)</span>/400</div>
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-md-6 form-field">
+                    <label asp-for="FechaInicio" class="form-label-custom">Fecha inicio <span class="required-mark">*</span></label>
+                    <input asp-for="FechaInicio" type="date" class="form-control-amaretto" />
+                    <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-field">
+                    <label asp-for="FechaFin" class="form-label-custom">Fecha fin <span class="required-mark">*</span></label>
+                    <input asp-for="FechaFin" type="date" class="form-control-amaretto" />
+                    <span asp-validation-for="FechaFin" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-field mt-3">
+                <label class="form-label-custom">Estado del menú</label>
+                <small class="field-hint">Define si el menú aparece disponible en el catálogo.</small>
+                <div class="status-toggle-wrap">
+                    <label class="switch-toggle">
+                        <input type="checkbox" asp-for="Estado" id="estadoToggle" />
+                        <span class="switch-slider"></span>
+                    </label>
+                    <span class="status-toggle-label" id="estadoLabel"></span>
+                </div>
+            </div>
+
+            <h5 class="form-section-title mt-4"><i class="bi bi-cake2"></i> Productos del menú <span class="required-mark">*</span></h5>
+            <small class="field-hint d-block mb-2">Selecciona uno o más productos que compondrán este menú.</small>
+
+            <div class="ingredient-checklist menu-producto-checklist">
+                @foreach (var p in productos)
+                {
+                    bool marcado = seleccionados.Contains(p.IdProducto);
+                    <label class="ingredient-chip @(marcado ? "chip-active" : "")">
+                        <input type="checkbox" name="selectedProductos" value="@p.IdProducto" checked="@marcado" />
+                        <span>@p.Nombre</span>
+                    </label>
+                }
+            </div>
+
+            <div class="product-form-footer">
+                <a asp-action="Index" class="btn-form-cancel">Cancelar</a>
+                <div class="footer-actions-right">
+                    <button type="submit" class="btn-form-submit"><i class="bi bi-save"></i> Guardar cambios</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const descripcionTxt = document.getElementById('descripcionTxt');
+        const charCount = document.getElementById('charCount');
+        descripcionTxt.addEventListener('input', function () {
+            charCount.textContent = this.value.length;
+        });
+
+        document.querySelectorAll('.ingredient-chip input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', function () {
+                this.closest('.ingredient-chip').classList.toggle('chip-active', this.checked);
+            });
+        });
+
+        const estadoToggle = document.getElementById('estadoToggle');
+        const estadoLabel = document.getElementById('estadoLabel');
+
+        function actualizarEstadoLabel() {
+            if (estadoToggle.checked) {
+                estadoLabel.textContent = 'Disponible';
+                estadoLabel.classList.remove('is-no-disponible');
+                estadoLabel.classList.add('is-disponible');
+            } else {
+                estadoLabel.textContent = 'No disponible';
+                estadoLabel.classList.remove('is-disponible');
+                estadoLabel.classList.add('is-no-disponible');
+            }
+        }
+
+        estadoToggle.addEventListener('change', actualizarEstadoLabel);
+        actualizarEstadoLabel();
+
+        document.getElementById('formMenu').addEventListener('submit', function (e) {
+            const marcados = document.querySelectorAll('.menu-producto-checklist input[type="checkbox"]:checked').length;
+            if (marcados === 0) {
+                e.preventDefault();
+                alert('Debes seleccionar al menos un producto para el menú.');
+            }
+        });
+    </script>
+}
