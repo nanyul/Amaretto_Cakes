@@ -5,37 +5,25 @@
     string ObtenerNombre(Amaretto.Application.DTOs.CocinaOrdenDTO m)
     {
         if (m.IdDetalleNavigation?.IdProductoNavigation != null)
-        {
             return m.IdDetalleNavigation.IdProductoNavigation.Nombre;
-        }
         else if (m.IdDetalleNavigation?.IdComboNavigation != null)
-        {
             return m.IdDetalleNavigation.IdComboNavigation.Nombre;
-        }
         return string.Empty;
     }
 
     string? ObtenerImagen(Amaretto.Application.DTOs.CocinaOrdenDTO m)
     {
         if (m.IdDetalleNavigation?.IdProductoNavigation != null)
-        {
             return m.IdDetalleNavigation.IdProductoNavigation.Imagen1;
-        }
         else if (m.IdDetalleNavigation?.IdComboNavigation != null)
-        {
             return m.IdDetalleNavigation.IdComboNavigation.Imagen1;
-        }
         return null;
     }
 
-    // Agrupado por IdDetalle (el proceso real), no por nombre — así dos pedidos
-    // distintos del mismo producto no se mezclan en un solo bloque/edición.
     var grupos = Model.GroupBy(m => m.IdDetalle).ToList();
 }
 <section class="cocina-order-section">
     <div class="container">
-
-        <!-- Encabezado -->
         <div class="cocina-order-header-row">
             <div class="cocina-order-heading">
                 <h1 class="cocina-order-title">
@@ -53,78 +41,52 @@
             </a>
         </div>
 
-        <!-- Tabla -->
         <div class="cocina-order-card">
             <table class="cocina-order-table">
                 <thead>
                     <tr>
-                        <th><i class="bi bi-cup-hot"></i> Nombre</th>
-                        <th><i class="bi bi-list-check"></i> Cantidad de Pasos</th>
-                        <th><i class="bi bi-heart-fill"></i> Detalles</th>
+                        <th><i class="bi bi-cup-hot"></i> Producto / Combo</th>
+                        <th><i class="bi bi-list-check"></i> Cantidad de Estaciones</th>
+                        <th><i class="bi bi-heart-fill"></i> Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @{
-                        var esPrimerGrupo = true;
-                    }
                     @foreach (var grupo in grupos)
                     {
-                        if (!esPrimerGrupo)
-                        {
-                            <tr class="cocina-order-divider-row">
-                                <td colspan="3">
-                                    <div class="cocina-order-divider">
-                                        <span></span>
-                                        <i class="bi bi-heart-fill"></i>
-                                        <span></span>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                        esPrimerGrupo = false;
-
-                        var nombreGrupo = ObtenerNombre(grupo.First());
-                        var imagenGrupo = ObtenerImagen(grupo.First());
+                        var primerPaso = grupo.First();
+                        var nombreGrupo = ObtenerNombre(primerPaso);
+                        var imagenGrupo = ObtenerImagen(primerPaso);
                         var idDetalleGrupo = grupo.Key;
-                        var esPrimeraFila = true;
+                        var cantidadPasos = grupo.Count();
 
-                        foreach (var menu in grupo)
-                        {
-                            <tr>
-                                <td data-label="Nombre">
-                                    <div class="cocina-order-name@(esPrimeraFila ? "" : " is-continuation")">
-                                        @if (esPrimeraFila)
+                        <tr>
+                            <td data-label="Nombre">
+                                <div class="cocina-order-name">
+                                    <span class="cocina-order-thumb">
+                                        @if (!string.IsNullOrEmpty(imagenGrupo))
                                         {
-                                            <span class="cocina-order-thumb">
-                                                @if (!string.IsNullOrEmpty(imagenGrupo))
-                                                {
-                                                    <img src="@imagenGrupo" alt="@nombreGrupo" />
-                                                }
-                                                else
-                                                {
-                                                    <i class="bi bi-cake2"></i>
-                                                }
-                                            </span>
+                                            <img src="@imagenGrupo" alt="@nombreGrupo" />
                                         }
-                                        <span>@nombreGrupo</span>
-                                    </div>
-                                </td>
-                                <td data-label="Cantidad de Pasos">@menu.OrdenPaso</td>
-                                <td data-label="Detalles">
-                                    <div class="cocina-order-actions">
-                                        <a class="btn-ver-orden"
-                                           asp-controller="CocinaOrden" asp-action="Details" asp-route-id="@menu.IdCocinaOrden">
-                                            <i class="bi bi-eye-fill"></i> Ver orden
-                                        </a>
-                                        <a class="btn-editar-orden"
-                                           asp-controller="CocinaOrden" asp-action="Edit" asp-route-id="@idDetalleGrupo">
-                                            <i class="bi bi-pencil-fill"></i> Editar
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            esPrimeraFila = false;
-                        }
+                                        else
+                                        {
+                                            <i class="bi bi-cake2"></i>
+                                        }
+                                    </span>
+                                    <span>@nombreGrupo (Pedido #@primerPaso.IdDetalleNavigation.IdPedido)</span>
+                                </div>
+                            </td>
+                            <td data-label="Cantidad de Estaciones">@cantidadPasos estaciones</td>
+                            <td data-label="Detalles">
+                                <div class="cocina-order-actions">
+                                    <a class="btn-ver-orden" asp-controller="CocinaOrden" asp-action="Details" asp-route-id="@idDetalleGrupo">
+                                        <i class="bi bi-eye-fill"></i> Ver detalles
+                                    </a>
+                                    <a class="btn-editar-orden" asp-controller="CocinaOrden" asp-action="Edit" asp-route-id="@idDetalleGrupo">
+                                        <i class="bi bi-pencil-fill"></i> Editar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -137,6 +99,5 @@
                 </div>
             }
         </div>
-
     </div>
 </section>

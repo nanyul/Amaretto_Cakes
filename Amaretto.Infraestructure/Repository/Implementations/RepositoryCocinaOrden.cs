@@ -51,6 +51,9 @@ namespace Amaretto.Infraestructure.Repository.Implementations
         {
             return await _context.Set<CocinaOrden>()
                 .Include(x => x.IdEstacionNavigation)
+                .Include(x => x.IdDetalleNavigation)
+                .ThenInclude(x => x.IdProductoNavigation)
+                .ThenInclude(x => x.IdCombo)
                 .Where(x => x.IdDetalle == idDetalle)
                 .OrderBy(x => x.OrdenPaso)
                 .ToListAsync();
@@ -73,54 +76,81 @@ namespace Amaretto.Infraestructure.Repository.Implementations
             await _context.SaveChangesAsync();
         }
 
-        // EDITAR PROCESO: actualizar Estado con cascada + fechas automáticas
-        public async Task ActualizarEstadosAsync(int idDetalle, Dictionary<int, string> estadosPorCocinaOrden)
+        // EDITAR PROCESO: 
+        public async Task ActualizarEstadosAsync(int idDetalle, List<CocinaOrdenUpdateInput> filasExistentes, List<CocinaOrdenEstacionInput> filasNuevas)
         {
-            var filas = await _context.Set<CocinaOrden>()
+            var registros = await _context.Set<CocinaOrden>()
+                .Include(x => x.IdEstacionNavigation)
                 .Where(x => x.IdDetalle == idDetalle)
-                .OrderBy(x => x.OrdenPaso)
                 .ToListAsync();
 
-            // 1. Aplicar los estados elegidos por el usuario
-            foreach (var fila in filas)
+            var inputPorId = filasExistentes.ToDictionary(f => f.IdCocinaOrden);
+
+            foreach (var registro in registros)
             {
-                if (estadosPorCocinaOrden.TryGetValue(fila.IdCocinaOrden, out var nuevoEstado))
+                if (inputPorId.TryGetValue(registro.IdCocinaOrden, out var input))
                 {
-                    fila.Estado = nuevoEstado;
+                    registro.OrdenPaso = input.OrdenPaso;
                 }
             }
 
-            // 2. Cascada: si alguna estación quedó "Completado", todas las de menor
-            //    OrdenPaso también deben quedar "Completado" (no se puede saltar un paso).
-            var maxOrdenCompletado = filas
-                .Where(f => f.Estado == "Completado")
-                .Select(f => (int?)f.OrdenPaso)
-                .Max();
-
-            if (maxOrdenCompletado.HasValue)
+            var nuevosRegistros = filasNuevas.Select(f => new CocinaOrden
             {
-                foreach (var fila in filas.Where(f => f.OrdenPaso < maxOrdenCompletado.Value && f.Estado != "Completado"))
+                IdDetalle = idDetalle,
+                IdEstacion = f.IdEstacion,
+                OrdenPaso = f.OrdenPaso,
+                Estado = "Pendiente"
+            }).ToList();
+
+            _context.Set<CocinaOrden>().AddRange(nuevosRegistros);
+
+            var todos = registros.Concat(nuevosRegistros).OrderBy(r => r.OrdenPaso).ToList();
+
+            string EstadoEfectivo(CocinaOrden r) =>
+                inputPorId.TryGetValue(r.IdCocinaOrden, out var i) ? i.Estado : r.Estado;
+
+            foreach (var registro in todos)
+            {
+                var estadoDeseado = EstadoEfectivo(registro);
+
+                if (estadoDeseado == "Completado" || estadoDeseado == "En Proceso")
                 {
-                    fila.Estado = "Completado";
+                    var hayAnteriorNoCompletada = todos
+                        .Where(r => r.OrdenPaso < registro.OrdenPaso)
+                        .Any(r => EstadoEfectivo(r) != "Completado");
+
+                    if (hayAnteriorNoCompletada)
+                    {
+                        var nombreEstacion = registro.IdEstacionNavigation?.Nombre ?? "(nueva)";
+                        throw new InvalidOperationException(
+                            $"No se puede avanzar la estación \"{nombreEstacion}\" (paso {registro.OrdenPaso}) porque una estación anterior aún no está Completada.");
+                    }
                 }
             }
 
-            // 3. Fechas automáticas (solo se llenan una vez, no se sobreescriben)
+            //Aplicar los estados 
+            foreach (var registro in registros)
+            {
+                if (inputPorId.TryGetValue(registro.IdCocinaOrden, out var input))
+                {
+                    registro.Estado = input.Estado;
+                }
+            }
+
+           
             var ahora = DateTime.Now;
-            foreach (var fila in filas)
+            foreach (var registro in todos)
             {
-                if ((fila.Estado == "En Proceso" || fila.Estado == "Completado") && fila.FechaInicio == null)
-                {
-                    fila.FechaInicio = ahora;
-                }
+                if ((registro.Estado == "En Proceso" || registro.Estado == "Completado") && registro.FechaInicio == null)
+                    registro.FechaInicio = ahora;
 
-                if (fila.Estado == "Completado" && fila.FechaFin == null)
-                {
-                    fila.FechaFin = ahora;
-                }
+                if (registro.Estado == "Completado" && registro.FechaFin == null)
+                    registro.FechaFin = ahora;
             }
 
             await _context.SaveChangesAsync();
         }
+
+
     }
 }

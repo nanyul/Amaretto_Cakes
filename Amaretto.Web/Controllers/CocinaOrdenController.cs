@@ -1,5 +1,6 @@
 ﻿using Amaretto.Application.Services.Implementations;
 using Amaretto.Application.Services.Interfaces;
+using Amaretto.Infraestructure.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 namespace Amaretto.Web.Controllers
 {
@@ -26,21 +27,23 @@ namespace Amaretto.Web.Controllers
             return View(collection);
         }
 
-        public async Task<ActionResult> Details(string? id)
+        public async Task<ActionResult> Details(int id)
         {
             try
             {
-                if (id == null)
+                if (id <= 0)
                 {
                     return RedirectToAction("Index");
                 }
-                var @object = await _serviceCocinaOrden.FindByIdAsync(id);
-                if (@object == null)
+
+                var pasos = await _serviceCocinaOrden.ListByDetalleAsync(id);
+
+                if (pasos == null || !pasos.Any())
                 {
-                    throw new Exception("Libro no existente");
+                    return RedirectToAction("Index");
                 }
-                ViewBag.Estaciones = await _serviceEstacion.ListAsync();
-                return View(@object);
+
+                return View(pasos);
             }
             catch (Exception ex)
             {
@@ -67,10 +70,33 @@ namespace Amaretto.Web.Controllers
             if (estacionIds == null || estacionIds.Length == 0)
                 ModelState.AddModelError("", "Debe seleccionar al menos una estación");
 
+            if (estacionIds != null && ordenPasos != null && estacionIds.Length != ordenPasos.Length)
+            {
+                ModelState.AddModelError("", "La cantidad de órdenes no coincide con la cantidad de estaciones seleccionadas");
+            }
+            else if (estacionIds != null && ordenPasos != null && estacionIds.Length > 0)
+            {
+                var cantidad = estacionIds.Length;
+
+                // No se pueden repetir números de orden
+                if (ordenPasos.Distinct().Count() != ordenPasos.Length)
+                    ModelState.AddModelError("", "Las estaciones no pueden tener el mismo número de orden");
+
+                // El rango debe ir de 1 a la cantidad de estaciones seleccionadas
+                if (ordenPasos.Any(o => o < 1 || o > cantidad))
+                    ModelState.AddModelError("", $"El número de orden debe estar entre 1 y {cantidad} (la cantidad de estaciones seleccionadas)");
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.ListPedidoDetalle = await _servicePedidoDetalle.ListDisponiblesAsync();
                 ViewBag.ListEstaciones = await _serviceEstacion.ListAsync();
+
+                TempData["Mensaje"] = Util.SweetAlertHelper.Mensaje(
+                    "Crear Proceso",
+                    string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)),
+                    Util.SweetAlertMessageType.error);
+
                 return View();
             }
 
@@ -87,7 +113,7 @@ namespace Amaretto.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        // EDITAR: avanzar el estado de cada estación (no cambia estaciones ni orden)
+        // EDITAR: cambiar orden y estado de cada estación
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -99,34 +125,99 @@ namespace Amaretto.Web.Controllers
             if (detalle == null)
                 return RedirectToAction("Index");
 
+            var todasLasEstaciones = await _serviceEstacion.ListAsync();
+            var idsUsados = pasos.Select(p => p.IdEstacion).ToHashSet();
+
             ViewBag.Detalle = detalle;
             ViewBag.Pasos = pasos.OrderBy(p => p.OrdenPaso).ToList();
+            ViewBag.ListEstacionesDisponibles = todasLasEstaciones
+                .Where(e => !idsUsados.Contains(e.IdEstacion))
+                .ToList();
 
             return View((object)id);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int idDetalle, int[] cocinaOrdenIds, string[] estados)
+        public async Task<IActionResult> Edit(
+    int idDetalle,
+    int[] cocinaOrdenIds, int[] ordenPasos, string[] estados,
+    int[] nuevasEstacionIds, int[] nuevosOrdenPasos)
         {
-            if (cocinaOrdenIds == null || estados == null || cocinaOrdenIds.Length != estados.Length)
+            cocinaOrdenIds ??= Array.Empty<int>();
+            ordenPasos ??= Array.Empty<int>();
+            estados ??= Array.Empty<string>();
+            nuevasEstacionIds ??= Array.Empty<int>();
+            nuevosOrdenPasos ??= Array.Empty<int>();
+
+            if (cocinaOrdenIds.Length != estados.Length || cocinaOrdenIds.Length != ordenPasos.Length)
+                ModelState.AddModelError("", "Datos de estaciones existentes inválidos");
+
+            if (nuevasEstacionIds.Length != nuevosOrdenPasos.Length)
+                ModelState.AddModelError("", "Datos de estaciones nuevas inválidos");
+
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Datos de estaciones inválidos");
+                // El orden se valida en conjunto: las existentes + las nuevas que se agregan
+                var todosLosOrdenes = ordenPasos.Concat(nuevosOrdenPasos).ToList();
+                var cantidad = todosLosOrdenes.Count;
+
+                if (todosLosOrdenes.Distinct().Count() != todosLosOrdenes.Count)
+                    ModelState.AddModelError("", "Las estaciones no pueden tener el mismo número de orden");
+
+                if (todosLosOrdenes.Any(o => o < 1 || o > cantidad))
+                    ModelState.AddModelError("", $"El número de orden debe estar entre 1 y {cantidad}");
             }
 
             if (!ModelState.IsValid)
             {
-                var pasos = await _serviceCocinaOrden.ListByDetalleAsync(idDetalle);
+                var pasosInvalidos = await _serviceCocinaOrden.ListByDetalleAsync(idDetalle);
+                var todasLasEstaciones = await _serviceEstacion.ListAsync();
+                var idsUsados = pasosInvalidos.Select(p => p.IdEstacion).ToHashSet();
+
                 ViewBag.Detalle = await _servicePedidoDetalle.FindByIdAsync(idDetalle);
-                ViewBag.Pasos = pasos.OrderBy(p => p.OrdenPaso).ToList();
+                ViewBag.Pasos = pasosInvalidos.OrderBy(p => p.OrdenPaso).ToList();
+                ViewBag.ListEstacionesDisponibles = todasLasEstaciones
+                    .Where(e => !idsUsados.Contains(e.IdEstacion))
+                    .ToList();
+
+                TempData["Mensaje"] = Util.SweetAlertHelper.Mensaje(
+                    "Editar Proceso",
+                    string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)),
+                    Util.SweetAlertMessageType.error);
+
                 return View(idDetalle);
             }
 
-            var estadosPorId = cocinaOrdenIds
-                .Select((id, i) => (id, estado: estados[i]))
-                .ToDictionary(x => x.id, x => x.estado);
+            var filasExistentes = cocinaOrdenIds
+                .Select((id, i) => new CocinaOrdenUpdateInput(id, ordenPasos[i], estados[i]))
+                .ToList();
 
-            await _serviceCocinaOrden.UpdateEstadoAsync(idDetalle, estadosPorId);
+            var filasNuevas = nuevasEstacionIds
+                .Select((id, i) => new CocinaOrdenEstacionInput(id, nuevosOrdenPasos[i]))
+                .ToList();
+
+            try
+            {
+                await _serviceCocinaOrden.UpdateEstadoAsync(idDetalle, filasExistentes, filasNuevas);
+            }
+            catch (InvalidOperationException ex)
+            {
+                var pasosActuales = await _serviceCocinaOrden.ListByDetalleAsync(idDetalle);
+                var todasLasEstaciones = await _serviceEstacion.ListAsync();
+                var idsUsados = pasosActuales.Select(p => p.IdEstacion).ToHashSet();
+
+                ViewBag.Detalle = await _servicePedidoDetalle.FindByIdAsync(idDetalle);
+                ViewBag.Pasos = pasosActuales.OrderBy(p => p.OrdenPaso).ToList();
+                ViewBag.ListEstacionesDisponibles = todasLasEstaciones
+                    .Where(e => !idsUsados.Contains(e.IdEstacion))
+                    .ToList();
+
+                TempData["Mensaje"] = Util.SweetAlertHelper.Mensaje(
+                    "Editar Proceso", ex.Message, Util.SweetAlertMessageType.error);
+
+                return View(idDetalle);
+            }
 
             TempData["Mensaje"] = Util.SweetAlertHelper.Mensaje(
                 "Editar Proceso",

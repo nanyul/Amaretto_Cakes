@@ -1,4 +1,5 @@
 ﻿using Amaretto.Application.DTOs;
+using Amaretto.Infraestructure.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Amaretto.Application.Services.Interfaces
         Task<CocinaOrdenDTO> FindByIdAsync(string id);
         Task<ICollection<CocinaOrdenDTO>> ListByDetalleAsync(int idDetalle);
         Task AddAsync(int idDetalle, List<(int IdEstacion, int OrdenPaso)> estaciones);
-        Task UpdateEstadoAsync(int idDetalle, Dictionary<int, string> estadosPorCocinaOrden);
+        Task UpdateEstadoAsync(int idDetalle, List<CocinaOrdenUpdateInput> filasExistentes, List<CocinaOrdenEstacionInput> filasNuevas);
+
     }
 }

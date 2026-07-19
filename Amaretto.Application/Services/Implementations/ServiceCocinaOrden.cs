@@ -3,6 +3,7 @@ using Amaretto.Application.Services.Interfaces;
 using Amaretto.Infraestructure.Data;
 using Amaretto.Infraestructure.Models;
 using Amaretto.Infraestructure.Repository.Interfaces;
+using Amaretto.Infraestructure.Repository.Implementations;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -57,10 +58,9 @@ namespace Amaretto.Application.Services.Implementations
             await _repository.AddRangoAsync(idDetalle, input);
         }
 
-        // EDITAR PROCESO: avanzar estado (con cascada resuelta en el repositorio)
-        public async Task UpdateEstadoAsync(int idDetalle, Dictionary<int, string> estadosPorCocinaOrden)
+        public async Task UpdateEstadoAsync(int idDetalle, List<CocinaOrdenUpdateInput> filasExistentes, List<CocinaOrdenEstacionInput> filasNuevas)
         {
-            await _repository.ActualizarEstadosAsync(idDetalle, estadosPorCocinaOrden);
+            await _repository.ActualizarEstadosAsync(idDetalle, filasExistentes, filasNuevas);
         }
     }
 }

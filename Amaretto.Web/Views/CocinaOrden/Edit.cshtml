@@ -10,7 +10,7 @@
     <div class="container">
         <div class="product-form-header-row">
             <h1 class="product-form-title">Editar Proceso de Preparación</h1>
-            <p class="product-form-subtitle">Actualiza el avance de cada estación. Las estaciones y su orden no se pueden modificar aquí.</p>
+            <p class="product-form-subtitle">Actualiza el orden y el avance de cada estación.</p>
             <nav class="product-breadcrumb">
                 <a asp-controller="Home" asp-action="Index" class="breadcrumb-link"><i class="bi bi-house-door-fill"></i></a>
                 <span class="breadcrumb-sep">›</span>
@@ -30,24 +30,30 @@
                 <label class="form-label-custom">Producto asociado a este proceso</label>
                 <div class="process-fixed-product">
                     <i class="bi bi-lock-fill"></i>
-                    Pedido #@detalle.IdPedido - @detalle.NombreProductoOCombo x@detalle.Cantidad
+                    Pedido #@detalle.IdPedido - @detalle.NombreProductoOCombo
                 </div>
             </div>
 
             <h5 class="form-section-title mt-4"><i class="bi bi-diagram-3"></i> Avance del Proceso</h5>
             <small class="field-hint d-block mb-3">
-                Al marcar una estación como <strong>Completado</strong>, las anteriores se completan automáticamente
-                (no se puede saltar un paso).
+                Puedes ajustar el orden de las estaciones. No se puede marcar una estación como
+                <strong>En Proceso</strong> o <strong>Completado</strong> si una estación anterior aún no está Completada.
             </small>
 
             <div class="estacion-progress-list" id="estacionProgressList">
+
+
                 @foreach (var paso in pasos)
                 {
-                    <div class="estacion-progress-row" data-orden="@paso.OrdenPaso">
+                    <div class="estacion-progress-row">
                         <input type="hidden" name="cocinaOrdenIds" value="@paso.IdCocinaOrden" />
 
                         <div class="estacion-progress-info">
-                            <span class="estacion-progress-orden">@paso.OrdenPaso</span>
+                            <div class="estacion-orden-wrap">
+                                <span class="estacion-orden-tag">Orden</span>
+                                <input type="number" name="ordenPasos" min="1" max="@pasos.Count"
+                                       class="estacion-orden-input" value="@paso.OrdenPaso" />
+                            </div>
                             <div>
                                 <strong>@paso.IdEstacionNavigation.Nombre</strong>
                                 @if (paso.FechaInicio != null || paso.FechaFin != null)
@@ -66,7 +72,7 @@
                             </div>
                         </div>
 
-                        <select name="estados" class="form-control-amaretto estado-select">
+                        <select name="estados" class="form-control-amaretto estado-select" data-estado-original="@paso.Estado">
                             <option value="Pendiente" selected="@(paso.Estado == "Pendiente")">Pendiente</option>
                             <option value="En Proceso" selected="@(paso.Estado == "En Proceso")">En Proceso</option>
                             <option value="Completado" selected="@(paso.Estado == "Completado")">Completado</option>
@@ -74,6 +80,32 @@
                     </div>
                 }
             </div>
+
+               @{
+                    var estacionesDisponibles = (ICollection<Amaretto.Application.DTOs.EstacionCocinaDTO>)ViewBag.ListEstacionesDisponibles;
+                }
+
+                @if (estacionesDisponibles != null && estacionesDisponibles.Any())
+                {
+                    <h5 class="form-section-title mt-4"><i class="bi bi-plus-circle"></i> Agregar Estaciones</h5>
+                    <small class="field-hint d-block mb-3">Estaciones que aún no forman parte de este proceso.</small>
+
+                    <div class="estacion-list" id="estacionNuevaList">
+                        @foreach (var est in estacionesDisponibles)
+                        {
+                            <div class="estacion-row">
+                                <label class="estacion-row-label">
+                                    <input type="checkbox" class="estacion-nueva-checkbox" name="nuevasEstacionIds" value="@est.IdEstacion" />
+                                    <span>@est.Nombre</span>
+                                </label>
+                                <div class="estacion-orden-wrap">
+                                    <span class="estacion-orden-tag">Orden</span>
+                                    <input type="number" name="nuevosOrdenPasos" min="1" class="estacion-orden-input" value="1" disabled />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
 
             <div class="product-form-footer">
                 <a asp-action="Index" class="btn-form-cancel">Cancelar</a>
@@ -86,24 +118,101 @@
 </section>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Reflejo visual de la cascada: si el usuario marca una estación como
-        // "Completado", las anteriores (menor "orden") también se muestran como
-        // Completado. La regla real se aplica igual en el servidor.
-        document.querySelectorAll('.estado-select').forEach(function (select) {
-            select.addEventListener('change', function () {
-                if (this.value !== 'Completado') return;
+        const filas = Array.from(document.querySelectorAll('.estacion-progress-row'));
 
-                const filaActual = this.closest('.estacion-progress-row');
-                const ordenActual = parseInt(filaActual.dataset.orden, 10);
+        function ordenDe(fila) {
+            return parseInt(fila.querySelector('.estacion-orden-input').value, 10);
+        }
 
-                document.querySelectorAll('.estacion-progress-row').forEach(function (fila) {
-                    const orden = parseInt(fila.dataset.orden, 10);
-                    if (orden < ordenActual) {
-                        fila.querySelector('.estado-select').value = 'Completado';
-                    }
-                });
+        function anterioresCompletadas(ordenActual) {
+            return filas.every(fila => {
+                if (ordenDe(fila) >= ordenActual) return true;
+                return fila.querySelector('.estado-select').value === 'Completado';
             });
+        }
+
+                document.querySelectorAll('.estacion-nueva-checkbox').forEach(cb => {
+            cb.addEventListener('change', function () {
+                const row = this.closest('.estacion-row');
+                const ordenInput = row.querySelector('.estacion-orden-input');
+                row.classList.toggle('is-active', this.checked);
+                ordenInput.disabled = !this.checked;
+
+                if (this.checked) {
+                    const totalMarcados = filas.length + document.querySelectorAll('.estacion-nueva-checkbox:checked').length;
+                    ordenInput.value = totalMarcados;
+                }
+            });
+        });  
+        
+        filas.forEach(fila => {
+            const select = fila.querySelector('.estado-select');
+
+            select.addEventListener('change', function () {
+                // Volver a "Pendiente"
+                if (this.value === 'Pendiente') {
+                    this.dataset.estadoOriginal = this.value;
+                    return;
+                }
+
+                const ordenActual = ordenDe(fila);
+
+                if (!anterioresCompletadas(ordenActual)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Paso fuera de orden',
+                        text: 'No puedes avanzar esta estación porque una estación anterior aún no está Completada.'
+                    });
+                    this.value = this.dataset.estadoOriginal || 'Pendiente';
+                    return;
+                }
+
+                this.dataset.estadoOriginal = this.value;
+            });
+        });
+
+        // 
+        filas.forEach(fila => {
+            const ordenInput = fila.querySelector('.estacion-orden-input');
+            ordenInput.addEventListener('change', function () {
+                const select = fila.querySelector('.estado-select');
+                if (select.value === 'Pendiente') return;
+
+                if (!anterioresCompletadas(ordenDe(fila))) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Paso fuera de orden',
+                        text: 'Con este nuevo orden, esta estación queda por delante de una que aún no está Completada.'
+                    });
+                    select.value = 'Pendiente';
+                    select.dataset.estadoOriginal = 'Pendiente';
+                }
+            });
+        });
+
+        document.getElementById('formProceso').addEventListener('submit', function (e) {
+            const ordenesExistentes = filas.map(ordenDe);
+            const ordenesNuevos = Array.from(document.querySelectorAll('.estacion-nueva-checkbox:checked'))
+                .map(cb => parseInt(cb.closest('.estacion-row').querySelector('.estacion-orden-input').value, 10));
+
+            const valoresOrden = ordenesExistentes.concat(ordenesNuevos);
+            const cantidad = valoresOrden.length;
+
+            const duplicados = new Set(valoresOrden).size !== valoresOrden.length;
+            if (duplicados) {
+                e.preventDefault();
+                Swal.fire({ icon: 'error', title: 'Orden duplicado', text: 'Las estaciones no pueden tener el mismo número de orden.' });
+                return;
+            }
+
+            const fueraDeRango = valoresOrden.some(v => v < 1 || v > cantidad);
+            if (fueraDeRango) {
+                e.preventDefault();
+                Swal.fire({ icon: 'error', title: 'Orden fuera de rango', text: `El número de orden debe estar entre 1 y ${cantidad}.` });
+                return;
+            }
         });
     </script>
 }

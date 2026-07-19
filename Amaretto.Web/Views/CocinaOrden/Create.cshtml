@@ -31,7 +31,7 @@
                     <option value="">Seleccionar producto</option>
                     @foreach (var pd in pedidosDetalle)
                     {
-                        <option value="@pd.IdDetalle">Pedido #@pd.IdPedido - @pd.NombreProductoOCombo x@pd.Cantidad</option>
+                        <option value="@pd.IdDetalle">Pedido #@pd.IdPedido - @pd.NombreProductoOCombo </option>
                     }
                 </select>
             </div>
@@ -92,7 +92,8 @@
 
         formProceso.addEventListener('submit', function (e) {
             const idDetalle = formProceso.querySelector('[name="idDetalle"]').value;
-            const marcados = document.querySelectorAll('.estacion-checkbox:checked').length;
+            const checksMarcados = Array.from(document.querySelectorAll('.estacion-checkbox:checked')); // <-- faltaba esto
+            const marcados = checksMarcados.length;
 
             if (!idDetalle) {
                 e.preventDefault();
@@ -103,6 +104,26 @@
             if (marcados === 0) {
                 e.preventDefault();
                 Swal.fire({ icon: 'warning', title: 'Faltan estaciones', text: 'Debes seleccionar al menos una estación del proceso.' });
+                return;
+            }
+
+            const valoresOrden = checksMarcados.map(cb => {
+                const row = cb.closest('.estacion-row');
+                return parseInt(row.querySelector('.estacion-orden-input').value, 10);
+            });
+
+            const duplicados = new Set(valoresOrden).size !== valoresOrden.length;
+            if (duplicados) {
+                e.preventDefault();
+                Swal.fire({ icon: 'error', title: 'Orden duplicado', text: 'Las estaciones no pueden tener el mismo número de orden.' });
+                return;
+            }
+
+            const fueraDeRango = valoresOrden.some(val => val < 1 || val > marcados);
+            if (fueraDeRango) {
+                e.preventDefault();
+                Swal.fire({ icon: 'error', title: 'Orden fuera de rango', text: `El número de orden debe estar entre 1 y ${marcados} (la cantidad de estaciones seleccionadas).` });
+                return;
             }
         });
     </script>
