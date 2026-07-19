@@ -1015,7 +1015,6 @@ input[type="range"].price-slider {
         box-shadow: 0 0 0 3px rgba(131,153,88,0.15);
     }
 
-/* CTA sidebar */
 .sidebar-cta {
     background: linear-gradient(135deg, var(--dark-green) 0%, #0d4a35 100%);
     border-radius: 18px;
@@ -1327,6 +1326,7 @@ input[type="range"].price-slider {
     font-family: 'Montserrat', sans-serif;
     margin: 4px 0 0;
     transition: color 0.3s ease;
+    text-align: right;
 }
 
 /* Footer de la tarjeta */
@@ -4831,6 +4831,7 @@ textarea.form-control-amaretto {
 /* Tarjeta cruzada del sidebar (invita al otro catálogo de menús) */
 .sidebar-cta.sidebar-cta-alt {
     background: linear-gradient(135deg, var(--moss-green) 0%, #6b7f45 100%);
+    margin-top: 20px;
 }
 
     .sidebar-cta.sidebar-cta-alt .btn-sidebar-cta {
