@@ -146,6 +146,20 @@
                     }
                 </li>
 
+                <!-- Boton del traductor -->
+                <li class="nav-item">
+                    <button id="btnIdioma"
+                            class="lang-btn"
+                            type="button"
+                            onclick="toggleIdioma()"
+                            title="Cambiar idioma">
+                        <i class="bi bi-translate"></i>
+                        <span id="langText">ES</span>
+                    </button>
+
+                    <div id="google_translate_element" style="display:none;"></div>
+                </li>
+
                 <!-- Separador visual -->
                 <li class="nav-item d-none d-lg-block">
                     <span class="navbar-separator"></span>

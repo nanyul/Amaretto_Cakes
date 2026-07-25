@@ -5085,3 +5085,71 @@ textarea.form-control-amaretto {
             justify-content: center;
         }
 }
+
+/* Ocultar completamente el banner de Google */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame {
+    display: none !important;
+}
+
+iframe.skiptranslate {
+    display: none !important;
+}
+
+body {
+    top: 0 !important;
+}
+
+/* Oculta el widget original */
+.goog-te-gadget,
+.goog-te-gadget-simple {
+    display: none !important;
+}
+
+/* Oculta el banner moderno */
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.goog-te-balloon-frame {
+    display: none !important;
+}
+
+/* Evita que Google mueva la página */
+html,
+body {
+    top: 0 !important;
+    position: static !important;
+}
+
+/* Botón del traductor */
+.lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--beige);
+    font-size: .95rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: all .25s ease;
+}
+
+    .lang-btn i {
+        font-size: 1.1rem;
+        color: var(--gold);
+    }
+
+    .lang-btn:hover {
+        background: rgba(255,255,255,.08);
+        color: var(--gold);
+    }
+
+        .lang-btn:hover i {
+            color: var(--gold);
+        }
+
+    .lang-btn:focus {
+        outline: none;
+        box-shadow: none;
+    }

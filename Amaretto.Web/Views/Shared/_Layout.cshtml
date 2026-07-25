@@ -101,5 +101,45 @@
             @Html.Raw(TempData["Mensaje"])
         </script>
     }
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'es',
+                includedLanguages: 'es,en',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function idiomaActual() {
+            const cookie = document.cookie.match(/googtrans=\/es\/([a-z]+)/);
+            return cookie ? cookie[1] : "es";
+        }
+
+        function actualizarBoton() {
+            const idioma = idiomaActual();
+            document.getElementById("langText").textContent = idioma.toUpperCase();
+        }
+
+        function toggleIdioma() {
+
+            let nuevoIdioma = idiomaActual() === "es"
+                ? "en"
+                : "es";
+
+            document.cookie = "googtrans=/es/" + nuevoIdioma + ";path=/";
+            document.cookie = "googtrans=/es/" + nuevoIdioma + ";domain=" + location.hostname + ";path=/";
+
+            location.reload();
+        }
+
+        window.onload = function () {
+
+            if (!document.cookie.includes("googtrans")) {
+                document.cookie = "googtrans=/es/es;path=/";
+            }
+            actualizarBoton();
+        };
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
