@@ -8,6 +8,7 @@ using Amaretto.Infraestructure.Repositories;
 using Amaretto.Infraestructure.Repository.Implementations;
 using Amaretto.Infraestructure.Repository.Interfaces;
 using Amaretto.Web.Middleware;
+using Amaretto.Web.Scheduling;
 using Libreria.Application.Config;
 using Libreria.Application.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -39,6 +40,7 @@ builder.Services.AddTransient<IRepositoryEstacion, RepositoryEstacion>();
 builder.Services.AddTransient<IRepositoryUsuario, RepositoryUsuario>();
 builder.Services.AddTransient<IRepositoryIngrediente, RepositoryIngrediente>();
 builder.Services.AddScoped<IRepositoryPedidoDetalle, RepositoryPedidoDetalle>();
+builder.Services.AddScoped<IRepositoryTareaMenuVencido, RepositoryTareaMenuVencido>();
 
 
 //Services
@@ -52,6 +54,16 @@ builder.Services.AddTransient<IServiceEstacion, ServiceEstacion>();
 builder.Services.AddTransient<IServiceUsuario, UsuarioService>();
 builder.Services.AddTransient<IServiceIngrediente, ServiceIngrediente>();
 builder.Services.AddScoped<IServicePedidoDetalle, ServicePedidoDetalle>();
+builder.Services.AddScoped<IServicioDesactivacionMenus, ServicioDesactivacionMenus>();
+
+// Estado en memoria para mostrar el resultado en el panel /TareaProgramada.
+// Debe ser Singleton: tiene que sobrevivir entre las distintas ejecuciones del BackgroundService
+// y ser el mismo objeto que lee el controlador cuando alguien visita la página.
+builder.Services.AddSingleton<ITareaProgramadaEstado, TareaProgramadaEstado>();
+
+// El "programador": se registra como Hosted Service para que arranque junto con la app.
+builder.Services.AddHostedService<DesactivacionMenusBackgroundService>();
+
 
 //Seguridad
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -143,3 +155,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+

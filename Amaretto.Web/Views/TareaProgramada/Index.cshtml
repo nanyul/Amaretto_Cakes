@@ -1,0 +1,83 @@
+﻿@using Amaretto.Application.Services.Interfaces
+@model ITareaProgramadaEstado
+@{
+    ViewData["Title"] = "Panel de Tareas Programadas";
+}
+
+<section class="process-detail-section">
+    <div class="container">
+
+        <div class="process-detail-header">
+            <h1 class="process-detail-title">
+                <span class="process-detail-flourish"><i class="bi bi-stars"></i></span>
+                Panel de Tareas Programadas
+                <span class="process-detail-flourish"><i class="bi bi-stars"></i></span>
+            </h1>
+            <div class="process-detail-underline">
+                <i class="bi bi-arrow-right"></i>
+                <i class="bi bi-heart-fill"></i>
+                <i class="bi bi-arrow-left"></i>
+            </div>
+        </div>
+
+        <div class="process-detail-card">
+
+            <h5 class="form-section-title"><i class="bi bi-clock-history"></i> Desactivación automática de menús vencidos</h5>
+            <p class="field-hint" style="margin-bottom: 20px;">
+                Cada cierto intervalo, un proceso en segundo plano (<code>BackgroundService</code>) revisa si hay
+                menús de productos o combos marcados como "Disponible" cuya fecha de fin ya pasó, y los desactiva
+                automáticamente. Este panel muestra el resultado de la última vez que se ejecutó, sin consultar
+                la base de datos directamente — se lee del estado que la propia tarea deja registrado en memoria.
+            </p>
+
+            @if (Model.UltimaEjecucion == null)
+            {
+                <div class="cocina-order-empty">
+                    <i class="bi bi-hourglass-split"></i>
+                    <p>La tarea todavía no se ha ejecutado desde que la aplicación arrancó. Esperá al siguiente intervalo o reiniciá la app.</p>
+                </div>
+            }
+            else
+            {
+                <div class="product-info-card" style="margin-bottom: 14px;">
+                    <div class="product-info-card-icon"><i class="bi bi-calendar-check"></i></div>
+                    <div>
+                        <span class="product-info-card-label">Última ejecución</span>
+                        <span class="product-info-card-value-link" style="cursor: default;">
+                            @Model.UltimaEjecucion.Value.ToString("dd/MM/yyyy HH:mm:ss")
+                        </span>
+                    </div>
+                </div>
+
+                <div class="product-info-card" style="margin-bottom: 24px;">
+                    <div class="product-info-card-icon"><i class="bi bi-x-circle"></i></div>
+                    <div>
+                        <span class="product-info-card-label">Menús desactivados en la última corrida</span>
+                        <span class="product-info-card-value-link" style="cursor: default;">
+                            @Model.UltimaCantidadDesactivados
+                        </span>
+                    </div>
+                </div>
+
+                @if (Model.UltimaCantidadDesactivados > 0)
+                {
+                    <h5 class="form-section-title"><i class="bi bi-list-check"></i> Detalle</h5>
+                    <ul class="product-ingredients-list" style="max-width: none;">
+                        @foreach (var linea in Model.UltimoDetalle)
+                        {
+                            <li><i class="bi bi-check2-circle"></i> @linea</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="cocina-order-empty">
+                        <i class="bi bi-emoji-smile"></i>
+                        <p>En la última corrida no había menús vencidos por desactivar.</p>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</section>
