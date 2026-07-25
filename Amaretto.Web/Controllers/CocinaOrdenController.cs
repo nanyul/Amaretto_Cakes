@@ -140,9 +140,9 @@ namespace Amaretto.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-    int idDetalle,
-    int[] cocinaOrdenIds, int[] ordenPasos, string[] estados,
-    int[] nuevasEstacionIds, int[] nuevosOrdenPasos)
+            int idDetalle,
+            int[] cocinaOrdenIds, int[] ordenPasos, string[] estados,
+            int[] nuevasEstacionIds, int[] nuevosOrdenPasos)
         {
             cocinaOrdenIds ??= Array.Empty<int>();
             ordenPasos ??= Array.Empty<int>();
