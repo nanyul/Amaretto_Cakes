@@ -11,9 +11,9 @@ public partial class MenuCombo
 
     public string? Descripcion { get; set; }
 
-    public DateOnly FechaInicio { get; set; }
+    public DateOnly? FechaInicio { get; set; }
 
-    public DateOnly FechaFin { get; set; }
+    public DateOnly? FechaFin { get; set; }
 
     public bool Estado { get; set; }
 

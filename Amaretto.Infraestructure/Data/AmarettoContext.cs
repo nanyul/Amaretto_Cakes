@@ -50,9 +50,9 @@ public partial class AmarettoContext : DbContext
     {
         modelBuilder.Entity<Categoria>(entity =>
         {
-            entity.HasKey(e => e.IdCategoria).HasName("PK__Categori__A3C02A1019A7F8FD");
+            entity.HasKey(e => e.IdCategoria).HasName("PK__Categori__A3C02A10F31D4D68");
 
-            entity.HasIndex(e => e.Nombre, "UQ__Categori__75E3EFCF39F9D091").IsUnique();
+            entity.HasIndex(e => e.Nombre, "UQ__Categori__75E3EFCF7D0A8E92").IsUnique();
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(300)
@@ -65,7 +65,7 @@ public partial class AmarettoContext : DbContext
 
         modelBuilder.Entity<CocinaOrden>(entity =>
         {
-            entity.HasKey(e => e.IdCocinaOrden).HasName("PK__CocinaOr__62A9068BE854F277");
+            entity.HasKey(e => e.IdCocinaOrden).HasName("PK__CocinaOr__62A9068BDDF44882");
 
             entity.Property(e => e.Estado)
                 .HasMaxLength(20)
@@ -73,6 +73,7 @@ public partial class AmarettoContext : DbContext
                 .HasDefaultValue("Pendiente");
             entity.Property(e => e.FechaFin).HasColumnType("datetime");
             entity.Property(e => e.FechaInicio).HasColumnType("datetime");
+            entity.Property(e => e.OrdenPaso).HasDefaultValue(1);
 
             entity.HasOne(d => d.IdDetalleNavigation).WithMany(p => p.CocinaOrden)
                 .HasForeignKey(d => d.IdDetalle)
@@ -82,14 +83,14 @@ public partial class AmarettoContext : DbContext
             entity.HasOne(d => d.IdEstacionNavigation).WithMany(p => p.CocinaOrden)
                 .HasForeignKey(d => d.IdEstacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CocinaOrd__IdEst__619B8048");
+                .HasConstraintName("FK__CocinaOrd__IdEst__778AC167");
         });
 
         modelBuilder.Entity<Combo>(entity =>
         {
-            entity.HasKey(e => e.IdCombo).HasName("PK__Combo__D65BF2C8962BA20F");
+            entity.HasKey(e => e.IdCombo).HasName("PK__Combo__D65BF2C87214BBFB");
 
-            entity.HasIndex(e => e.Nombre, "UQ__Combo__75E3EFCF17881A18").IsUnique();
+            entity.HasIndex(e => e.Nombre, "UQ__Combo__75E3EFCF06E7993C").IsUnique();
 
             entity.Property(e => e.IdCombo)
                 .HasMaxLength(10)
@@ -108,7 +109,6 @@ public partial class AmarettoContext : DbContext
                 .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.Precio).HasColumnType("decimal(10, 2)");
-
 
             entity.HasMany(d => d.IdProducto).WithMany(p => p.IdCombo)
                 .UsingEntity<Dictionary<string, object>>(
@@ -135,9 +135,9 @@ public partial class AmarettoContext : DbContext
 
         modelBuilder.Entity<EstacionCocina>(entity =>
         {
-            entity.HasKey(e => e.IdEstacion).HasName("PK__Estacion__F0C18C423B759888");
+            entity.HasKey(e => e.IdEstacion).HasName("PK__Estacion__F0C18C42D7E5F7B4");
 
-            entity.HasIndex(e => e.Nombre, "UQ__Estacion__75E3EFCF756405DC").IsUnique();
+            entity.HasIndex(e => e.Nombre, "UQ__Estacion__75E3EFCF64DE3EBF").IsUnique();
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(300)
@@ -150,9 +150,9 @@ public partial class AmarettoContext : DbContext
 
         modelBuilder.Entity<Ingrediente>(entity =>
         {
-            entity.HasKey(e => e.IdIngrediente).HasName("PK__Ingredie__3DA4DD60A8D068BF");
+            entity.HasKey(e => e.IdIngrediente).HasName("PK__Ingredie__3DA4DD60B7C071C2");
 
-            entity.HasIndex(e => e.Nombre, "UQ__Ingredie__75E3EFCF140FEA3F").IsUnique();
+            entity.HasIndex(e => e.Nombre, "UQ__Ingredie__75E3EFCF6C23C1E5").IsUnique();
 
             entity.Property(e => e.Estado).HasDefaultValue(true);
             entity.Property(e => e.Nombre)
@@ -162,7 +162,7 @@ public partial class AmarettoContext : DbContext
 
         modelBuilder.Entity<MenuCombo>(entity =>
         {
-            entity.HasKey(e => e.IdMenuCombo).HasName("PK__MenuComb__31AA6328BB42BAE1");
+            entity.HasKey(e => e.IdMenuCombo).HasName("PK__MenuComb__31AA63288BDDF8BF");
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(300)
@@ -175,7 +175,7 @@ public partial class AmarettoContext : DbContext
 
         modelBuilder.Entity<MenuDetalleCombo>(entity =>
         {
-            entity.HasKey(e => e.IdMenuDetalleCombo).HasName("PK__MenuDeta__54DB625083E952E0");
+            entity.HasKey(e => e.IdMenuDetalleCombo).HasName("PK__MenuDeta__54DB62505ACD135A");
 
             entity.Property(e => e.IdCombo)
                 .HasMaxLength(10)
@@ -194,7 +194,7 @@ public partial class AmarettoContext : DbContext
 
         modelBuilder.Entity<MenuDetalleProducto>(entity =>
         {
-            entity.HasKey(e => e.IdMenuDetalleProducto).HasName("PK__MenuDeta__CAAB58625AD5C93B");
+            entity.HasKey(e => e.IdMenuDetalleProducto).HasName("PK__MenuDeta__1D14C2858F084DB0");
 
             entity.Property(e => e.IdProducto)
                 .HasMaxLength(10)
@@ -203,16 +203,16 @@ public partial class AmarettoContext : DbContext
             entity.HasOne(d => d.IdMenuProductoNavigation).WithMany(p => p.MenuDetalleProducto)
                 .HasForeignKey(d => d.IdMenuProducto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MenuDetal__IdMen__571DF1D5");
+                .HasConstraintName("FK__MenuDetal__IdMen__7D439ABD");
 
             entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.MenuDetalleProducto)
                 .HasForeignKey(d => d.IdProducto)
-                .HasConstraintName("FK__MenuDetal__IdPro__5812160E");
+                .HasConstraintName("FK__MenuDetal__IdPro__7E37BEF6");
         });
 
         modelBuilder.Entity<MenuProducto>(entity =>
         {
-            entity.HasKey(e => e.IdMenuProducto).HasName("PK__Menu__4D7EA8E1E81E1F98");
+            entity.HasKey(e => e.IdMenuProducto).HasName("PK__MenuProd__1A0FBBDF6682656C");
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(400)
@@ -225,7 +225,7 @@ public partial class AmarettoContext : DbContext
 
         modelBuilder.Entity<Pago>(entity =>
         {
-            entity.HasKey(e => e.IdPago).HasName("PK__Pago__FC851A3A7099CBA6");
+            entity.HasKey(e => e.IdPago).HasName("PK__Pago__FC851A3A803C99B6");
 
             entity.Property(e => e.Estado)
                 .HasMaxLength(20)
@@ -253,12 +253,12 @@ public partial class AmarettoContext : DbContext
             entity.HasOne(d => d.IdPedidoNavigation).WithMany(p => p.Pago)
                 .HasForeignKey(d => d.IdPedido)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Pago__IdPedido__7D439ABD");
+                .HasConstraintName("FK__Pago__IdPedido__7F2BE32F");
         });
 
         modelBuilder.Entity<Pedido>(entity =>
         {
-            entity.HasKey(e => e.IdPedido).HasName("PK__Pedido__9D335DC3E35FCDC7");
+            entity.HasKey(e => e.IdPedido).HasName("PK__Pedido__9D335DC381D2F210");
 
             entity.Property(e => e.CostoEnvio).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.DireccionEntrega)
@@ -281,15 +281,19 @@ public partial class AmarettoContext : DbContext
             entity.Property(e => e.Subtotal).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Total).HasColumnType("decimal(10, 2)");
 
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Pedido)
+            entity.HasOne(d => d.IdEncargadoNavigation).WithMany(p => p.PedidoIdEncargadoNavigation)
+                .HasForeignKey(d => d.IdEncargado)
+                .HasConstraintName("FK_Pedido_Encargado");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.PedidoIdUsuarioNavigation)
                 .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Pedido__IdUsuari__66603565");
+                .HasConstraintName("FK__Pedido__IdUsuari__00200768");
         });
 
         modelBuilder.Entity<PedidoDetalle>(entity =>
         {
-            entity.HasKey(e => e.IdDetalle).HasName("PK__PedidoDe__E43646A5F35D57EE");
+            entity.HasKey(e => e.IdDetalle).HasName("PK__PedidoDe__E43646A5E899F9DD");
 
             entity.Property(e => e.Cantidad).HasDefaultValue(1);
             entity.Property(e => e.IdCombo)
@@ -310,49 +314,58 @@ public partial class AmarettoContext : DbContext
 
             entity.HasOne(d => d.IdComboNavigation).WithMany(p => p.PedidoDetalle)
                 .HasForeignKey(d => d.IdCombo)
-                .HasConstraintName("FK__PedidoDet__IdCom__70DDC3D8");
+                .HasConstraintName("FK__PedidoDet__IdCom__01142BA1");
 
             entity.HasOne(d => d.IdPedidoNavigation).WithMany(p => p.PedidoDetalle)
                 .HasForeignKey(d => d.IdPedido)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PedidoDet__IdPed__6EF57B66");
+                .HasConstraintName("FK__PedidoDet__IdPed__02084FDA");
 
             entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.PedidoDetalle)
                 .HasForeignKey(d => d.IdProducto)
-                .HasConstraintName("FK__PedidoDet__IdPro__6FE99F9F");
+                .HasConstraintName("FK__PedidoDet__IdPro__02FC7413");
         });
 
         modelBuilder.Entity<PedidoDetallePersonalizacion>(entity =>
         {
-            entity.HasKey(e => e.IdPersonalizacion).HasName("PK__PedidoDe__643859B2B5761828");
+            entity.HasKey(e => e.IdPersonalizacion).HasName("PK__PedidoDe__643859B25E141882");
 
-            entity.HasIndex(e => e.IdDetalle, "UQ__PedidoDe__E43646A4119E022B").IsUnique();
+            entity.HasIndex(e => e.IdDetalle, "UQ__PedidoDe__E43646A4C1D8093B").IsUnique();
 
-            entity.Property(e => e.Imagen1)
-                .HasMaxLength(300)
+            entity.Property(e => e.DecoracionDetalle)
+                .HasMaxLength(100)
                 .IsUnicode(false);
-            entity.Property(e => e.Imagen2)
-                .HasMaxLength(300)
-                .IsUnicode(false);
-            entity.Property(e => e.Mensaje)
+            entity.Property(e => e.Dedicatoria)
                 .HasMaxLength(300)
                 .IsUnicode(false);
             entity.Property(e => e.PrecioExtra).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.RutaImagenReferencia)
                 .HasMaxLength(300)
                 .IsUnicode(false);
+            entity.Property(e => e.SaborBizcocho)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.Tamano)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.TipoDecoracion)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.TipoRelleno)
+                .HasMaxLength(40)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.IdDetalleNavigation).WithOne(p => p.PedidoDetallePersonalizacion)
                 .HasForeignKey<PedidoDetallePersonalizacion>(d => d.IdDetalle)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PedidoDet__IdDet__76969D2E");
+                .HasConstraintName("FK_PedidoDetallePersonalizacion_PedidoDetalle");
         });
 
         modelBuilder.Entity<Producto>(entity =>
         {
-            entity.HasKey(e => e.IdProducto).HasName("PK__Producto__098892107F95A74B");
+            entity.HasKey(e => e.IdProducto).HasName("PK__Producto__0988921096D0E7B0");
 
-            entity.HasIndex(e => e.Nombre, "UQ__Producto__75E3EFCF80503EA4").IsUnique();
+            entity.HasIndex(e => e.Nombre, "UQ__Producto__75E3EFCFF2594805").IsUnique();
 
             entity.Property(e => e.IdProducto)
                 .HasMaxLength(10)
@@ -375,12 +388,12 @@ public partial class AmarettoContext : DbContext
             entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.Producto)
                 .HasForeignKey(d => d.IdCategoria)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Producto__IdCate__3D5E1FD2");
+                .HasConstraintName("FK__Producto__IdCate__04E4BC85");
         });
 
         modelBuilder.Entity<ProductoIngrediente>(entity =>
         {
-            entity.HasKey(e => new { e.IdProducto, e.IdIngrediente }).HasName("PK__Producto__1A52DFC6506D966F");
+            entity.HasKey(e => new { e.IdProducto, e.IdIngrediente }).HasName("PK__Producto__1A52DFC639D6CE4C");
 
             entity.Property(e => e.IdProducto)
                 .HasMaxLength(10)
@@ -390,19 +403,19 @@ public partial class AmarettoContext : DbContext
             entity.HasOne(d => d.IdIngredienteNavigation).WithMany(p => p.ProductoIngrediente)
                 .HasForeignKey(d => d.IdIngrediente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ProductoI__IdIng__49C3F6B7");
+                .HasConstraintName("FK__ProductoI__IdIng__05D8E0BE");
 
             entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.ProductoIngrediente)
                 .HasForeignKey(d => d.IdProducto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ProductoI__IdPro__48CFD27E");
+                .HasConstraintName("FK__ProductoI__IdPro__06CD04F7");
         });
 
         modelBuilder.Entity<Rol>(entity =>
         {
-            entity.HasKey(e => e.IdRol).HasName("PK__Rol__2A49584CDF0C5C96");
+            entity.HasKey(e => e.IdRol).HasName("PK__Rol__2A49584C2F236BF4");
 
-            entity.HasIndex(e => e.Descripcion, "UQ__Rol__92C53B6C2646689D").IsUnique();
+            entity.HasIndex(e => e.Descripcion, "UQ__Rol__92C53B6C54160F48").IsUnique();
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
@@ -411,9 +424,9 @@ public partial class AmarettoContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__5B65BF97A7351689");
+            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__5B65BF972113D294");
 
-            entity.HasIndex(e => e.Email, "UQ__Usuario__A9D10534C11BE912").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Usuario__A9D10534DD60C89E").IsUnique();
 
             entity.Property(e => e.Direccion)
                 .HasMaxLength(300)
@@ -440,7 +453,7 @@ public partial class AmarettoContext : DbContext
             entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuario)
                 .HasForeignKey(d => d.IdRol)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Usuario__IdRol__286302EC");
+                .HasConstraintName("FK__Usuario__IdRol__07C12930");
         });
 
         OnModelCreatingPartial(modelBuilder);

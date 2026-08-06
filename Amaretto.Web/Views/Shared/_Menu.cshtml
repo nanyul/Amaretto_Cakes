@@ -160,6 +160,17 @@
                     <div id="google_translate_element" style="display:none;"></div>
                 </li>
 
+                <!-- Carrito -->
+                <li class="nav-item">
+                    <a asp-controller="Pedido"
+                       asp-action="Registrar"
+                       class="nav-link nav-link-amaretto cart-link"
+                       title="Ver pedido">
+                        <i class="bi bi-cart-fill"></i>
+                        <span id="cartBadge" class="cart-badge">0</span>
+                    </a>
+                </li>
+
                 <!-- Separador visual -->
                 <li class="nav-item d-none d-lg-block">
                     <span class="navbar-separator"></span>

@@ -27,6 +27,14 @@ builder.Services.Configure<AppConfig>(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 //***************************
 //Configurar D.I.
 //Repository
@@ -41,7 +49,7 @@ builder.Services.AddTransient<IRepositoryUsuario, RepositoryUsuario>();
 builder.Services.AddTransient<IRepositoryIngrediente, RepositoryIngrediente>();
 builder.Services.AddScoped<IRepositoryPedidoDetalle, RepositoryPedidoDetalle>();
 builder.Services.AddScoped<IRepositoryTareaMenuVencido, RepositoryTareaMenuVencido>();
-
+builder.Services.AddScoped<IRepositoryPedido, RepositoryPedido>();
 
 //Services
 builder.Services.AddTransient<IServiceCombo, ServiceCombo>();
@@ -55,6 +63,9 @@ builder.Services.AddTransient<IServiceUsuario, UsuarioService>();
 builder.Services.AddTransient<IServiceIngrediente, ServiceIngrediente>();
 builder.Services.AddScoped<IServicePedidoDetalle, ServicePedidoDetalle>();
 builder.Services.AddScoped<IServicioDesactivacionMenus, ServicioDesactivacionMenus>();
+builder.Services.AddScoped<IServiceCarrito, ServiceCarrito>();
+builder.Services.AddScoped<IServiceUsuarioActual, ServiceUsuarioActualSimulado>();
+builder.Services.AddScoped<IServicePedido, ServicePedido>();
 
 // Estado en memoria para mostrar el resultado en el panel /TareaProgramada.
 // Debe ser Singleton: tiene que sobrevivir entre las distintas ejecuciones del BackgroundService
@@ -143,6 +154,8 @@ app.UseSerilogRequestLogging();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

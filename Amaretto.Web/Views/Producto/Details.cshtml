@@ -273,17 +273,27 @@
                 icon.className = this.classList.contains('active') ? 'bi bi-heart-fill' : 'bi bi-heart';
             });
 
-            // Carrito — conectar con el endpoint real
+            // Carrito 
             document.getElementById('btnAddCart').addEventListener('click', function () {
-                const id       = this.dataset.id;
-                const cantidad = qtyInput.value;
-                console.log('Agregar producto al carrito ->', { id, cantidad });
-                // fetch('/Carrito/Agregar', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ idProducto: id, cantidad: parseInt(cantidad) })
-                // });
-            });
+            const id = this.dataset.id;
+            const cantidad = parseInt(qtyInput.value);
+
+            fetch('/Carrito/AgregarProducto', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `idProducto=${encodeURIComponent(id)}&cantidad=${cantidad}`
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    window.actualizarContadorCarrito();
+                    Swal.fire({ icon: 'success', title: 'Agregado al pedido', timer: 1200, showConfirmButton: false });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'No se pudo agregar', text: data.mensaje || '' });
+                }
+            })
+            .catch(() => Swal.fire({ icon: 'error', title: 'Error de conexión' }));
+        });
         })();
     </script>
 }

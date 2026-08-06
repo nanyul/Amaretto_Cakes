@@ -52,7 +52,7 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
             foreach (var m in combosVencidos)
             {
-                resultado.Add(("Menú Combo", m.Nombre, m.FechaFin));
+                resultado.Add(((string, string, DateOnly))("Menú Combo", m.Nombre, m.FechaFin));
                 m.Estado = false;
             }
 

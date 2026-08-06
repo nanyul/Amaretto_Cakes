@@ -1,0 +1,237 @@
+﻿@model Amaretto.Application.DTOs.PedidoRegistroViewModel
+@{
+    ViewData["Title"] = "Registrar Pedido";
+}
+
+<section class="pedido-registro-section">
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+            <div>
+                <h1 class="pedido-titulo">Registrar Pedido</h1>
+                <p class="text-muted">Complete los datos para registrar un nuevo pedido.</p>
+            </div>
+            <div class="fecha-pedido-box">
+                <label>Fecha del pedido</label>
+                <div>@DateTime.Now.ToString("dd/MM/yyyy hh:mm tt")</div>
+            </div>
+        </div>
+
+        <!-- Encabezado -->
+        <div class="pedido-header-card">
+
+            <!-- Simulación temporal de usuario (quitar cuando exista login) -->
+            <div class="sim-bar d-flex align-items-center gap-2 mb-3">
+                <i class="bi bi-person-gear text-muted"></i>
+                <span class="text-muted small">Simular:</span>
+                <select id="simRol" class="form-select form-select-sm w-auto">
+                    <option value="Cliente">Cliente</option>
+                    <option value="Encargado">Encargado</option>
+                </select>
+                <select id="simUsuario" class="form-select form-select-sm w-auto"></select>
+                <button type="button" id="btnAplicarSim" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-repeat"></i> Aplicar
+                </button>
+            </div>
+
+            <div class="row g-4">
+
+                <!-- Cliente -->
+                <div class="col-md-4">
+                    <h6 class="pedido-section-label">CLIENTE</h6>
+                    @if (Model.EsEncargado)
+                    {
+                        <select id="idCliente" class="form-select mb-2">
+                            <option value="">Seleccione un cliente...</option>
+                            @foreach (var c in Model.Clientes)
+                            {
+                                <option value="@c.IdUsuario"
+                                        data-telefono="@c.Telefono"
+                                        data-email="@c.Email"
+                                        data-direccion="@c.Direccion">@c.NombreCompleto</option>
+                            }
+                        </select>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <input type="text" id="clienteTelefono" class="form-control form-control-sm" placeholder="Teléfono" disabled />
+                            </div>
+                        </div>
+                        <input type="hidden" id="clienteId" />
+                        <input type="text" id="clienteCorreo" class="form-control form-control-sm mt-2" placeholder="Correo" disabled />
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control mb-2" value="@Model.UsuarioActual.NombreCompleto" disabled />
+                        <input type="hidden" id="idCliente" value="@Model.UsuarioActual.IdUsuario" />
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <input type="text" class="form-control form-control-sm" value="@Model.UsuarioActual.Telefono" disabled />
+                            </div>
+                        </div>
+                        <input type="text" class="form-control form-control-sm mt-2" value="@Model.UsuarioActual.Email" disabled />
+                    }
+                </div>
+
+                <!-- Encargado -->
+                <div class="col-md-3">
+                    <h6 class="pedido-section-label">ENCARGADO</h6>
+                    @if (Model.EsEncargado)
+                    {
+                        <input type="text" id="encargadoNombre" class="form-control" value="@Model.UsuarioActual.NombreCompleto" disabled />
+                        <input type="hidden" id="idEncargado" value="@Model.UsuarioActual.IdUsuario" />
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control" value="No aplica" disabled />
+                        <input type="hidden" id="idEncargado" value="" />
+                    }
+                </div>
+
+                <!-- Método de entrega -->
+                <div class="col-md-3">
+                    <h6 class="pedido-section-label">MÉTODO DE ENTREGA</h6>
+                    <div class="d-flex gap-2" role="group">
+                        <input type="radio" class="btn-check" name="metodoEntrega" id="metDomicilio" value="Domicilio" checked>
+                        <label class="btn btn-outline-success" for="metDomicilio">Domicilio</label>
+                        <input type="radio" class="btn-check" name="metodoEntrega" id="metRecogida" value="Recogida">
+                        <label class="btn btn-outline-success" for="metRecogida">Recogida</label>
+                    </div>
+                    <div id="direccionWrap" class="mt-2">
+                        <input type="text" id="direccionEntrega" class="form-control" placeholder="Dirección de entrega" value="@(!Model.EsEncargado ? Model.UsuarioActual.Direccion : null)" />
+                    </div>
+                    <div id="envioWrap" class="mt-2">
+                        <label class="pedido-section-label mb-1" style="font-size:0.7rem;">Costo de envío</label>
+                        <div class="costo-envio-box" id="txtCostoEnvioHeader">₡@Model.Resumen.CostoEnvio.ToString("N2")</div>
+                    </div>
+                </div>
+
+                <!-- Estado -->
+                <div class="col-md-2">
+                    <h6 class="pedido-section-label">ESTADO DEL PEDIDO</h6>
+                    <span class="badge-estado-pendiente">Pendiente de pago</span>
+                    <p class="text-muted small mt-1">El estado se actualiza automáticamente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalle -->
+        <div class="pedido-detalle-card mt-4">
+            <h6 class="pedido-section-label mb-3">DETALLE DEL PEDIDO</h6>
+
+            <table class="table pedido-detalle-tabla">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Producto / Combo</th>
+                        <th>Precio Unit.</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Impuesto (13%)</th>
+                        <th>Total</th>
+                        <th>Observaciones</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="detalleBody">
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var l in Model.Resumen.Lineas)
+                    {
+                        <tr data-id="@l.IdItem" data-tipo="@l.Tipo">
+                            <td>@(i++)</td>
+                            <td>
+                                <img src="@(l.Imagen ?? "/images/placeholder-producto.png")" class="detalle-thumb" />
+                                @l.Nombre
+                            </td>
+                            <td class="precio-unit">₡@l.PrecioUnitario.ToString("N2")</td>
+                            <td>
+                                <div class="qty-control-sm">
+                                    <button type="button" class="qty-btn-sm btn-menos">-</button>
+                                    <input type="number" class="qty-input-sm" value="@l.Cantidad" min="1" />
+                                    <button type="button" class="qty-btn-sm btn-mas">+</button>
+                                </div>
+                            </td>
+                            <td class="celda-subtotal">₡@l.Subtotal.ToString("N2")</td>
+                            <td class="celda-iva">₡@l.Iva.ToString("N2")</td>
+                            <td class="celda-total">₡@l.Total.ToString("N2")</td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm input-obs" value="@l.Observaciones" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn-eliminar-linea"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <a asp-action="Catalogo" asp-controller="Producto" class="btn btn-outline-danger btn-sm mt-2">
+                <i class="bi bi-plus"></i> Agregar producto o combo
+            </a>
+
+            <div class="d-flex justify-content-end mt-3">
+                <div class="pedido-totales-box">
+                    <div class="d-flex justify-content-between"><span>Subtotal (sin impuestos)</span><strong id="txtSubtotal">₡@Model.Resumen.Subtotal.ToString("N2")</strong></div>
+                    <div class="d-flex justify-content-between"><span>Impuesto (13%)</span><strong id="txtImpuesto">₡@Model.Resumen.Impuesto.ToString("N2")</strong></div>
+                    <div class="d-flex justify-content-between"><span>Costo de envío</span><strong id="txtEnvio">₡@Model.Resumen.CostoEnvio.ToString("N2")</strong></div>
+                    <hr />
+                    <div class="d-flex justify-content-between total-final"><span>TOTAL DEL PEDIDO</span><strong id="txtTotal" data-raw="@Model.Resumen.Total.ToString(System.Globalization.CultureInfo.InvariantCulture)">₡@Model.Resumen.Total.ToString("N2")</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-action="Catalogo" asp-controller="Producto" class="btn btn-outline-secondary"><i class="bi bi-x"></i> Cancelar</a>
+            <button type="button" id="btnGuardarPedido" class="btn btn-success"><i class="bi bi-save"></i> Guardar pedido</button>
+        </div>
+
+        <p class="pedido-nota-seguridad">
+            <i class="bi bi-shield-check"></i>Los datos del pedido están protegidos y se guardan de forma segura.
+        </p>
+
+    </div>
+</section>
+
+<!-- Modal de pago -->
+<div class="modal fade" id="modalPago" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Método de pago</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="btn-group w-100 mb-3" role="group">
+                    <input type="radio" class="btn-check" name="metodoPago" id="pagoTarjeta" value="Tarjeta" checked>
+                    <label class="btn btn-outline-success" for="pagoTarjeta">Tarjeta</label>
+                    <input type="radio" class="btn-check" name="metodoPago" id="pagoEfectivo" value="Efectivo">
+                    <label class="btn btn-outline-success" for="pagoEfectivo">Efectivo</label>
+                </div>
+
+                <div id="panelTarjeta">
+                    <select id="tipoTarjeta" class="form-select mb-2">
+                        <option value="Credito">Crédito</option>
+                        <option value="Debito">Débito</option>
+                    </select>
+                    <input type="text" id="nombreTitular" class="form-control mb-2" placeholder="Nombre del titular" />
+                    <input type="text" id="ultimosDigitos" class="form-control" placeholder="Últimos 4 dígitos" maxlength="4" inputmode="numeric" pattern="\d{4}" />
+                </div>
+
+                <div id="panelEfectivo" class="d-none">
+                    <label>Monto recibido</label>
+                    <input type="number" id="montoRecibido" class="form-control" min="0" step="1" />
+                    <p class="mt-2 mb-0">Vuelto estimado: <strong id="txtVuelto">₡0.00</strong></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnConfirmarPago" class="btn btn-success">Confirmar y guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pedido-registro.js" asp-append-version="true"></script>
+}

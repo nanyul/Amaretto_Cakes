@@ -27,4 +27,13 @@ public class RepositoryUsuario : IRepositoryUsuario
             .Include(u => u.IdRolNavigation)
             .FirstOrDefaultAsync(u => u.IdUsuario == id);
     }
+
+    public async Task<List<Usuario>> ObtenerPorRolAsync(string rol)
+    {
+        return await _context.Usuario
+            .Include(u => u.IdRolNavigation)
+            .Where(u => u.IdRolNavigation.Descripcion == rol && u.Estado)
+            .OrderBy(u => u.NombreCompleto)
+            .ToListAsync();
+    }
 }

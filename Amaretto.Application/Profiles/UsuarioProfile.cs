@@ -9,5 +9,6 @@ public class UsuarioProfile : Profile
     public UsuarioProfile()
     {
         CreateMap<Usuario, UsuarioDTO>().ForMember(dest => dest.NombreRol,opt => opt.MapFrom(src => src.IdRolNavigation.Descripcion));
+
     }
 }
