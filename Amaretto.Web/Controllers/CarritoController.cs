@@ -1,18 +1,21 @@
 ﻿using Amaretto.Application.DTOs;
-using Amaretto.Application.Services;
 using Amaretto.Application.Services.Interfaces;
 using Amaretto.Infraestructure.Data;
 using Microsoft.AspNetCore.Mvc;
+
 namespace Amaretto.Controllers;
+
 public class CarritoController : Controller
 {
     private readonly IServiceCarrito _carritoService;
     private readonly AmarettoContext _context;
+
     public CarritoController(IServiceCarrito carritoService, AmarettoContext context)
     {
         _carritoService = carritoService;
         _context = context;
     }
+
     [HttpPost]
     public IActionResult AgregarProducto(string idProducto, int cantidad)
     {
@@ -30,6 +33,7 @@ public class CarritoController : Controller
         });
         return Json(new { success = true, cantidadTotal = _carritoService.ObtenerCantidadTotal() });
     }
+
     [HttpPost]
     public IActionResult AgregarCombo(string idCombo, int cantidad)
     {
@@ -48,31 +52,30 @@ public class CarritoController : Controller
         });
         return Json(new { success = true, cantidadTotal = _carritoService.ObtenerCantidadTotal() });
     }
+
     [HttpGet]
     public IActionResult Cantidad()
     {
         return Json(new { cantidadTotal = _carritoService.ObtenerCantidadTotal() });
     }
 
-    // ---- Acciones usadas desde Pedido/Registrar ----
-
     [HttpPost]
-    public IActionResult ActualizarCantidad(string idItem, string tipo, int cantidad)
+    public IActionResult ActualizarCantidad(string idItem, string tipo, int cantidad, string? lineaId = null)
     {
         if (string.IsNullOrEmpty(idItem) || string.IsNullOrEmpty(tipo))
             return BadRequest(new { success = false, mensaje = "Ítem inválido." });
 
-        _carritoService.ActualizarCantidad(idItem, tipo, cantidad);
+        _carritoService.ActualizarCantidad(idItem, tipo, cantidad, lineaId);
         return Json(new { success = true, cantidadTotal = _carritoService.ObtenerCantidadTotal() });
     }
 
     [HttpPost]
-    public IActionResult Eliminar(string idItem, string tipo)
+    public IActionResult Eliminar(string idItem, string tipo, string? lineaId = null)
     {
         if (string.IsNullOrEmpty(idItem) || string.IsNullOrEmpty(tipo))
             return BadRequest(new { success = false, mensaje = "Ítem inválido." });
 
-        _carritoService.Eliminar(idItem, tipo);
+        _carritoService.Eliminar(idItem, tipo, lineaId);
         return Json(new { success = true, cantidadTotal = _carritoService.ObtenerCantidadTotal() });
     }
 

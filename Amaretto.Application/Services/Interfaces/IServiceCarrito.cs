@@ -11,10 +11,11 @@ namespace Amaretto.Application.Services.Interfaces
     {
         List<CarritoItem> ObtenerCarrito();
         void Agregar(CarritoItem item);
-        void ActualizarCantidad(string idItem, string tipo, int cantidad);
-        void Eliminar(string idItem, string tipo);
+        void AgregarPersonalizado(CarritoItem item);
+        void ActualizarCantidad(string idItem, string tipo, int cantidad, string? lineaId = null);
+        void Eliminar(string idItem, string tipo, string? lineaId = null);
+        void ActualizarObservaciones(string idItem, string tipo, string? observaciones);
         void Vaciar();
         int ObtenerCantidadTotal();
-        void ActualizarObservaciones(string idItem, string tipo, string? observaciones);
     }
 }

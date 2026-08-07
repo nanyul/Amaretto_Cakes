@@ -4,15 +4,12 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Amaretto.Application.Services.Implementations
 {
     public class ServiceCarrito : IServiceCarrito
     {
-       
         private const string SessionKey = "Carrito";
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -38,7 +35,7 @@ namespace Amaretto.Application.Services.Implementations
         public void Agregar(CarritoItem item)
         {
             var carrito = ObtenerCarrito();
-            var existente = carrito.FirstOrDefault(i => i.IdItem == item.IdItem && i.Tipo == item.Tipo);
+            var existente = carrito.FirstOrDefault(i => i.IdItem == item.IdItem && i.Tipo == item.Tipo && i.Personalizacion == null);
 
             if (existente != null)
                 existente.Cantidad += item.Cantidad;
@@ -48,10 +45,20 @@ namespace Amaretto.Application.Services.Implementations
             Guardar(carrito);
         }
 
-        public void ActualizarCantidad(string idItem, string tipo, int cantidad)
+        public void AgregarPersonalizado(CarritoItem item)
         {
             var carrito = ObtenerCarrito();
-            var existente = carrito.FirstOrDefault(i => i.IdItem == idItem && i.Tipo == tipo);
+            carrito.Add(item); // nunca se fusiona: cada pastel personalizado es único
+            Guardar(carrito);
+        }
+
+        public void ActualizarCantidad(string idItem, string tipo, int cantidad, string? lineaId = null)
+        {
+            var carrito = ObtenerCarrito();
+            var existente = lineaId != null
+                ? carrito.FirstOrDefault(i => i.LineaId == lineaId)
+                : carrito.FirstOrDefault(i => i.IdItem == idItem && i.Tipo == tipo);
+
             if (existente == null) return;
 
             if (cantidad <= 0)
@@ -62,10 +69,14 @@ namespace Amaretto.Application.Services.Implementations
             Guardar(carrito);
         }
 
-        public void Eliminar(string idItem, string tipo)
+        public void Eliminar(string idItem, string tipo, string? lineaId = null)
         {
             var carrito = ObtenerCarrito();
-            carrito.RemoveAll(i => i.IdItem == idItem && i.Tipo == tipo);
+            if (lineaId != null)
+                carrito.RemoveAll(i => i.LineaId == lineaId);
+            else
+                carrito.RemoveAll(i => i.IdItem == idItem && i.Tipo == tipo);
+
             Guardar(carrito);
         }
 

@@ -51,6 +51,7 @@ builder.Services.AddScoped<IRepositoryPedidoDetalle, RepositoryPedidoDetalle>();
 builder.Services.AddScoped<IRepositoryTareaMenuVencido, RepositoryTareaMenuVencido>();
 builder.Services.AddScoped<IRepositoryPedido, RepositoryPedido>();
 
+
 //Services
 builder.Services.AddTransient<IServiceCombo, ServiceCombo>();
 builder.Services.AddTransient<IServiceProducto, ServiceProducto>();
@@ -66,6 +67,7 @@ builder.Services.AddScoped<IServicioDesactivacionMenus, ServicioDesactivacionMen
 builder.Services.AddScoped<IServiceCarrito, ServiceCarrito>();
 builder.Services.AddScoped<IServiceUsuarioActual, ServiceUsuarioActualSimulado>();
 builder.Services.AddScoped<IServicePedido, ServicePedido>();
+builder.Services.AddScoped<IServicePersonalizacion, ServicePersonalizacion>();
 
 // Estado en memoria para mostrar el resultado en el panel /TareaProgramada.
 // Debe ser Singleton: tiene que sobrevivir entre las distintas ejecuciones del BackgroundService

@@ -112,10 +112,25 @@
                             <i class="bi bi-plus"></i>
                         </button>
                     </div>
-                    <button type="button" class="btn-add-cart" id="btnAddCart"
-                            data-id="@Model.IdProducto" data-tipo="producto">
-                        <i class="bi bi-bag-fill"></i> Agregar al carrito
-                    </button>
+
+                    @if (Model.EsPersonalizable)
+                    {
+                        <a id="btnPersonalizar"
+                           asp-controller="Personalizacion" asp-action="Index"
+                           asp-route-idProducto="@Model.IdProducto"
+                           asp-route-cantidad="1"
+                           class="btn-add-cart" style="background:#C0392B;">
+                            <i class="bi bi-magic"></i> Personalizar este pastel
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn-add-cart" id="btnAddCart"
+                                data-id="@Model.IdProducto" data-tipo="producto">
+                            <i class="bi bi-bag-fill"></i> Agregar al carrito
+                        </button>
+                    }
+
                     <button type="button" class="btn-wishlist-detail" id="btnWishlist">
                         <i class="bi bi-heart"></i>
                     </button>
@@ -202,40 +217,38 @@
         </div>
         <div class="detail-benefits-bar">
             <div class="detail-benefit-item">
-                <div class="detail-benefit-item">
-                    <div class="detail-benefit-icon"><i class="bi bi-flower1"></i></div>
-                    <div>
-                        <strong>Ingredientes</strong>
-                        <span>de calidad</span>
-                    </div>
+                <div class="detail-benefit-icon"><i class="bi bi-flower1"></i></div>
+                <div>
+                    <strong>Ingredientes</strong>
+                    <span>de calidad</span>
                 </div>
-                <span class="detail-benefit-sep">✦</span>
-                <div class="detail-benefit-item">
-                    <div class="detail-benefit-icon"><i class="bi bi-heart-fill"></i></div>
-                    <div>
-                        <strong>Hecho</strong>
-                        <span>con amor</span>
-                    </div>
+            </div>
+            <span class="detail-benefit-sep">✦</span>
+            <div class="detail-benefit-item">
+                <div class="detail-benefit-icon"><i class="bi bi-heart-fill"></i></div>
+                <div>
+                    <strong>Hecho</strong>
+                    <span>con amor</span>
                 </div>
-                <span class="detail-benefit-sep">✦</span>
-                <div class="detail-benefit-item">
-                    <div class="detail-benefit-icon"><i class="bi bi-person-badge-fill"></i></div>
-                    <div>
-                        <strong>Chef</strong>
-                        <span>profesionales</span>
-                    </div>
+            </div>
+            <span class="detail-benefit-sep">✦</span>
+            <div class="detail-benefit-item">
+                <div class="detail-benefit-icon"><i class="bi bi-person-badge-fill"></i></div>
+                <div>
+                    <strong>Chef</strong>
+                    <span>profesionales</span>
                 </div>
-                <span class="detail-benefit-sep">✦</span>
-                <div class="detail-benefit-item">
-                    <div class="detail-benefit-icon"><i class="bi bi-truck"></i></div>
-                    <div>
-                        <strong>Entregas</strong>
-                        <span>a tiempo</span>
-                    </div>
+            </div>
+            <span class="detail-benefit-sep">✦</span>
+            <div class="detail-benefit-item">
+                <div class="detail-benefit-icon"><i class="bi bi-truck"></i></div>
+                <div>
+                    <strong>Entregas</strong>
+                    <span>a tiempo</span>
                 </div>
             </div>
         </div>
-
+    </div>
 
 </section>
 
@@ -260,11 +273,22 @@
             document.getElementById('qtyMinus').addEventListener('click', function () {
                 let v = parseInt(qtyInput.value) || 1;
                 if (v > 1) qtyInput.value = v - 1;
+                actualizarLinkPersonalizar();
             });
             document.getElementById('qtyPlus').addEventListener('click', function () {
                 let v = parseInt(qtyInput.value) || 1;
                 if (v < 99) qtyInput.value = v + 1;
+                actualizarLinkPersonalizar();
             });
+
+            // Mantiene sincronizada la cantidad en el link de "Personalizar" con el qtyInput
+            const btnPersonalizar = document.getElementById('btnPersonalizar');
+            function actualizarLinkPersonalizar() {
+                if (!btnPersonalizar) return;
+                const url = new URL(btnPersonalizar.href, window.location.origin);
+                url.searchParams.set('cantidad', qtyInput.value);
+                btnPersonalizar.href = url.pathname + url.search;
+            }
 
             // Wishlist
             document.getElementById('btnWishlist').addEventListener('click', function () {
@@ -273,27 +297,27 @@
                 icon.className = this.classList.contains('active') ? 'bi bi-heart-fill' : 'bi bi-heart';
             });
 
-            // Carrito 
-            document.getElementById('btnAddCart').addEventListener('click', function () {
-            const id = this.dataset.id;
-            const cantidad = parseInt(qtyInput.value);
+            // Carrito
+            document.getElementById('btnAddCart')?.addEventListener('click', function () {
+                const id = this.dataset.id;
+                const cantidad = parseInt(qtyInput.value);
 
-            fetch('/Carrito/AgregarProducto', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `idProducto=${encodeURIComponent(id)}&cantidad=${cantidad}`
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    window.actualizarContadorCarrito();
-                    Swal.fire({ icon: 'success', title: 'Agregado al pedido', timer: 1200, showConfirmButton: false });
-                } else {
-                    Swal.fire({ icon: 'error', title: 'No se pudo agregar', text: data.mensaje || '' });
-                }
-            })
-            .catch(() => Swal.fire({ icon: 'error', title: 'Error de conexión' }));
-        });
+                fetch('/Carrito/AgregarProducto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `idProducto=${encodeURIComponent(id)}&cantidad=${cantidad}`
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        window.actualizarContadorCarrito();
+                        Swal.fire({ icon: 'success', title: 'Agregado al pedido', timer: 1200, showConfirmButton: false });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'No se pudo agregar', text: data.mensaje || '' });
+                    }
+                })
+                .catch(() => Swal.fire({ icon: 'error', title: 'Error de conexión' }));
+            });
         })();
     </script>
 }

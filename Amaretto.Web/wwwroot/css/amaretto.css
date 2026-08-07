@@ -5570,3 +5570,455 @@ body {
         white-space: nowrap;
     }
 }
+
+/* ===========================================================
+   PERSONALIZACIÓN DE PASTEL
+   =========================================================== */
+
+.personalizacion-section {
+    padding: 40px 0 60px;
+}
+
+    .personalizacion-section .container {
+        max-width: 1320px;
+    }
+
+    .personalizacion-section .text-muted {
+        color: var(--midnight-green) !important;
+        font-size: 0.95rem;
+    }
+
+/*  Resumen del producto (esquina superior derecha)  */
+.producto-resumen-box {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 12px 18px;
+    box-shadow: 0 4px 20px rgba(10,51,35,0.07);
+}
+
+.producto-resumen-img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.producto-resumen-box strong {
+    font-family: 'Playfair Display', serif;
+    color: var(--dark-green);
+    font-size: 1rem;
+}
+
+/*  Tarjeta principal del formulario  */
+.personalizacion-card {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 28px 26px;
+    box-shadow: 0 4px 20px rgba(10,51,35,0.07);
+}
+
+.personalizacion-card-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--dark-green);
+    font-size: 1.25rem;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .personalizacion-card-title i {
+        color: var(--moss-green);
+        font-size: 1.15rem;
+    }
+
+.personalizacion-card .form-control,
+.personalizacion-card .form-select {
+    border: 1.5px solid rgba(131,153,88,0.3);
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: var(--dark-green);
+    padding: 9px 14px;
+}
+
+    .personalizacion-card .form-control:disabled,
+    .personalizacion-card .form-control[readonly] {
+        background: rgba(131,153,88,0.06);
+        color: var(--dark-green);
+        opacity: 1;
+    }
+
+    .personalizacion-card .form-control:focus,
+    .personalizacion-card .form-select:focus {
+        border-color: var(--moss-green);
+        box-shadow: 0 0 0 3px rgba(131,153,88,0.15);
+    }
+
+/*  Tarjetas de opciones (radio) — tamaño / decoración  */
+.opciones-card-grupo {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.opcion-card {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1.5px solid rgba(131,153,88,0.25);
+    border-radius: 12px;
+    padding: 12px 10px;
+    cursor: pointer;
+    background: var(--beige-light);
+    transition: all 0.2s ease;
+}
+
+    .opcion-card input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .opcion-card span {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--dark-green);
+        line-height: 1.3;
+    }
+
+        .opcion-card span i {
+            font-size: 1.1rem;
+            color: var(--moss-green);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .opcion-card span small {
+            font-weight: 400;
+            color: var(--midnight-green);
+        }
+
+    .opcion-card:hover {
+        border-color: var(--moss-green);
+        transform: translateY(-1px);
+    }
+
+    .opcion-card:has(input:checked) {
+        border-color: var(--rosy-brown);
+        background: rgba(211,150,140,0.1);
+        box-shadow: 0 0 0 3px rgba(211,150,140,0.12);
+    }
+
+        .opcion-card:has(input:checked) span,
+        .opcion-card:has(input:checked) span small {
+            color: var(--rosy-brown);
+        }
+
+            .opcion-card:has(input:checked) span i {
+                color: var(--rosy-brown);
+            }
+
+/*  Subida de imagen de referencia  */
+.upload-box {
+    border: 1.5px dashed rgba(131,153,88,0.4);
+    border-radius: 12px;
+    background: rgba(131,153,88,0.05);
+    padding: 22px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .upload-box:hover {
+        border-color: var(--moss-green);
+        background: rgba(131,153,88,0.1);
+    }
+
+    .upload-box i {
+        font-size: 1.6rem;
+        color: var(--moss-green);
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .upload-box span {
+        display: block;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 0.88rem;
+        color: var(--dark-green);
+    }
+
+    .upload-box small {
+        display: block;
+        color: var(--midnight-green);
+        font-size: 0.75rem;
+        margin-top: 4px;
+    }
+
+.preview-imagen {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(131,153,88,0.06);
+    border-radius: 12px;
+    padding: 8px 12px;
+}
+
+    .preview-imagen img {
+        width: 46px;
+        height: 46px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .preview-imagen span {
+        flex: 1;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.82rem;
+        color: var(--dark-green);
+        word-break: break-word;
+    }
+
+/*  Resumen de personalización (precio extra)  */
+.resumen-personalizacion-box {
+    background: rgba(131,153,88,0.06);
+    border-radius: 16px;
+    padding: 20px 22px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: var(--dark-green);
+    height: 100%;
+}
+
+    .resumen-personalizacion-box h6 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--dark-green);
+        font-size: 1rem;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .resumen-personalizacion-box h6 i {
+            color: var(--moss-green);
+        }
+
+    .resumen-personalizacion-box > div {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        gap: 12px;
+    }
+
+    .resumen-personalizacion-box hr {
+        border-color: rgba(131,153,88,0.25);
+        margin: 12px 0;
+    }
+
+    .resumen-personalizacion-box .total-final {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--rosy-brown);
+        margin-bottom: 0;
+    }
+
+/*  Alerta de dedicatoria obligatoria  */
+.alert-dedicatoria {
+    background: rgba(211,150,140,0.12);
+    color: var(--rosy-brown);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 0.85rem;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .alert-dedicatoria i {
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+/*  Sección 2: Resumen final antes de guardar  */
+.personalizacion-resumen-final {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 24px 26px;
+    box-shadow: 0 4px 20px rgba(10,51,35,0.07);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+}
+
+    .personalizacion-resumen-final .resumen-final-titulo {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--dark-green);
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-basis: 100%;
+        margin-bottom: 4px;
+    }
+
+        .personalizacion-resumen-final .resumen-final-titulo i {
+            color: var(--moss-green);
+        }
+
+.resumen-final-producto {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 180px;
+}
+
+    .resumen-final-producto img {
+        width: 52px;
+        height: 52px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .resumen-final-producto strong {
+        display: block;
+        font-family: 'Playfair Display', serif;
+        color: var(--dark-green);
+        font-size: 0.95rem;
+    }
+
+    .resumen-final-producto .label-mini {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--moss-green);
+        margin-bottom: 2px;
+    }
+
+.resumen-final-caracteristicas,
+.resumen-final-dedicatoria {
+    flex: 1 1 260px;
+    min-width: 200px;
+}
+
+    .resumen-final-caracteristicas .label-mini,
+    .resumen-final-dedicatoria .label-mini {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--moss-green);
+        margin-bottom: 6px;
+    }
+
+    .resumen-final-caracteristicas p {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.85rem;
+        color: var(--dark-green);
+        margin-bottom: 0;
+        line-height: 1.5;
+    }
+
+    .resumen-final-dedicatoria p {
+        font-family: 'Montserrat', sans-serif;
+        font-style: italic;
+        font-size: 0.85rem;
+        color: var(--midnight-green);
+        margin-bottom: 0;
+        line-height: 1.5;
+        display: flex;
+        gap: 6px;
+    }
+
+        .resumen-final-dedicatoria p i {
+            color: rgba(131,153,88,0.4);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+.resumen-final-precio {
+    text-align: right;
+    margin-left: auto;
+}
+
+    .resumen-final-precio .label-mini {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--moss-green);
+        margin-bottom: 4px;
+    }
+
+    .resumen-final-precio strong {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: var(--rosy-brown);
+    }
+
+/*  Acciones finales  */
+.personalizacion-section .btn-outline-secondary {
+    border: 1.5px solid rgba(10,51,35,0.25) !important;
+    color: var(--dark-green) !important;
+    border-radius: 50px !important;
+    padding: 10px 24px !important;
+    font-weight: 600;
+    background: var(--white) !important;
+}
+
+    .personalizacion-section .btn-outline-secondary:hover {
+        background: rgba(10,51,35,0.06) !important;
+    }
+
+#btnGuardarPersonalizacion {
+    background: var(--dark-green) !important;
+    border: none !important;
+    color: var(--beige) !important;
+    border-radius: 50px !important;
+    padding: 10px 28px !important;
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(10,51,35,0.25);
+    transition: all 0.3s ease;
+}
+
+    #btnGuardarPersonalizacion:hover {
+        box-shadow: 0 12px 30px rgba(10,51,35,0.35);
+        transform: translateY(-1px);
+    }
+
+/*  Responsive  */
+@media (max-width: 768px) {
+    .personalizacion-card,
+    .personalizacion-resumen-final {
+        padding: 20px 18px;
+    }
+
+    .opciones-card-grupo {
+        flex-wrap: wrap;
+    }
+
+    .opcion-card {
+        min-width: 90px;
+    }
+
+    .resumen-final-precio {
+        text-align: left;
+        margin-left: 0;
+    }
+}

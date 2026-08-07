@@ -1,6 +1,5 @@
 ﻿using Amaretto.Application.DTOs;
 using Amaretto.Infraestructure.Models;
-using Amaretto.Infraestructure.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;

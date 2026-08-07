@@ -19,5 +19,7 @@ namespace Amaretto.Application.DTOs
         public decimal Subtotal => Math.Round(PrecioUnitario * Cantidad, 2);
         public decimal Iva => Math.Round(Subtotal * 0.13m, 2);
         public decimal Total => Subtotal + Iva;
+
+        public PersonalizacionDTO? Personalizacion { get; set; }
     }
 }

@@ -71,7 +71,8 @@ namespace Amaretto.Application.Services.Implementations
                     Imagen = c.Imagen,
                     PrecioUnitario = c.Precio,
                     Cantidad = c.Cantidad,
-                    Observaciones = c.Observaciones
+                    Observaciones = c.Observaciones,
+                    Personalizacion = c.Personalizacion
                 }).ToList(),
                 CostoEnvio = metodoEntrega == "Domicilio" ? COSTO_ENVIO : 0m
             };
@@ -122,7 +123,7 @@ namespace Amaretto.Application.Services.Implementations
 
             foreach (var linea in resumen.Lineas)
             {
-                pedido.PedidoDetalle.Add(new PedidoDetalle
+                var detalle = new PedidoDetalle
                 {
                     IdProducto = linea.Tipo == "producto" ? linea.IdItem : null,
                     IdCombo = linea.Tipo == "combo" ? linea.IdItem : null,
@@ -132,8 +133,26 @@ namespace Amaretto.Application.Services.Implementations
                     Iva = linea.Iva,
                     Total = linea.Total,
                     Observaciones = linea.Observaciones,
-                    Personalizado = false
-                });
+                    Personalizado = linea.Personalizacion != null
+                };
+
+                if (linea.Personalizacion != null)
+                {
+                    detalle.PedidoDetallePersonalizacion = new PedidoDetallePersonalizacion
+                    {
+                        Tamano = linea.Personalizacion.Tamano,
+                        MedidaCm = linea.Personalizacion.MedidaCm,
+                        SaborBizcocho = linea.Personalizacion.SaborBizcocho,
+                        TipoRelleno = linea.Personalizacion.TipoRelleno,
+                        TipoDecoracion = linea.Personalizacion.TipoDecoracion,
+                        DecoracionDetalle = linea.Personalizacion.DecoracionDetalle,
+                        RutaImagenReferencia = linea.Personalizacion.RutaImagenReferencia,
+                        Dedicatoria = linea.Personalizacion.Dedicatoria,
+                        PrecioExtra = linea.Personalizacion.PrecioExtra
+                    };
+                }
+
+                pedido.PedidoDetalle.Add(detalle);
             }
 
             decimal? vuelto = null;

@@ -1,0 +1,209 @@
+﻿@model Amaretto.Application.DTOs.PersonalizacionViewModel
+@{
+    ViewData["Title"] = "Personalización de Pastel";
+}
+
+<section class="personalizacion-section">
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+            <div>
+                <h1 class="pedido-titulo">Personalización de Pastel</h1>
+                <p class="text-muted">Personaliza tu pastel a tu gusto. Los detalles de tu personalización se aplicarán a esta línea del pedido.</p>
+            </div>
+
+            <div class="producto-resumen-box">
+                <div class="d-flex align-items-center gap-3">
+                    <img id="resumenImgProducto" src="@(Model.Imagen ?? "/images/placeholder-producto.png")" class="producto-resumen-img" />
+                    <div>
+                        <strong>@Model.NombreProducto</strong>
+                        <div class="text-muted small">@Model.Descripcion</div>
+                    </div>
+                    <div class="qty-control-sm ms-3">
+                        <button type="button" class="qty-btn-sm" id="cantMinus">-</button>
+                        <input type="number" id="cantidadInput" class="qty-input-sm" value="@Model.Cantidad" min="1" />
+                        <button type="button" class="qty-btn-sm" id="cantPlus">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form id="formPersonalizacion" enctype="multipart/form-data">
+            <input type="hidden" name="IdProducto" value="@Model.IdProducto" />
+            <input type="hidden" name="MedidaCm" id="medidaCmHidden" value="20" />
+
+            <div class="personalizacion-card mb-4">
+                <h5 class="personalizacion-card-title"><i class="bi bi-cake2"></i> 1. Selecciona las características de tu pastel</h5>
+
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <label class="pedido-section-label">Tamaño del pastel *</label>
+                        <div class="opciones-card-grupo" id="grupoTamano">
+                            <label class="opcion-card">
+                                <input type="radio" name="Tamano" value="Pequeño" data-cm="15">
+                                <span>Pequeño<br /><small>15 cm</small></span>
+                            </label>
+                            <label class="opcion-card">
+                                <input type="radio" name="Tamano" value="Mediano" data-cm="20" checked>
+                                <span>Mediano<br /><small>20 cm</small></span>
+                            </label>
+                            <label class="opcion-card">
+                                <input type="radio" name="Tamano" value="Grande" data-cm="25">
+                                <span>Grande<br /><small>25 cm</small></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="pedido-section-label">Medida (diámetro) *</label>
+                        <div class="input-group">
+                            <input type="text" id="medidaCmDisplay" class="form-control" value="20" readonly />
+                            <span class="input-group-text">cm</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="pedido-section-label">Sabor del bizcocho *</label>
+                        <select name="SaborBizcocho" id="selectSabor" class="form-select" required>
+                            <option value="Vainilla">Vainilla</option>
+                            <option value="Chocolate">Chocolate</option>
+                            <option value="Red Velvet">Red Velvet</option>
+                            <option value="Limón">Limón</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="pedido-section-label">Tipo de relleno *</label>
+                        <select name="TipoRelleno" id="selectRelleno" class="form-select" required>
+                            <option value="Crema pastelera">Crema pastelera</option>
+                            <option value="Mousse de frutos rojos">Mousse de frutos rojos</option>
+                            <option value="Ganache de chocolate">Ganache de chocolate</option>
+                            <option value="Mermelada de fresa">Mermelada de fresa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-1">
+                    <div class="col-md-4">
+                        <label class="pedido-section-label">Tipo de decoración *</label>
+                        <div class="opciones-card-grupo" id="grupoDecoracion">
+                            <label class="opcion-card">
+                                <input type="radio" name="TipoDecoracion" value="Sin decoración especial" checked>
+                                <span><i class="bi bi-circle"></i>Sin decoración especial</span>
+                            </label>
+                            <label class="opcion-card">
+                                <input type="radio" name="TipoDecoracion" value="Temática de catálogo">
+                                <span><i class="bi bi-balloon"></i>Temática de catálogo</span>
+                            </label>
+                            <label class="opcion-card">
+                                <input type="radio" name="TipoDecoracion" value="Imagen de referencia">
+                                <span><i class="bi bi-image"></i>Imagen de referencia</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sin name: se combina en JS junto al detalle libre y se manda como DecoracionDetalle -->
+                    <div class="col-md-3" id="wrapTematica" style="display:none;">
+                        <label class="pedido-section-label">Temática seleccionada *</label>
+                        <select id="selectTematica" class="form-select">
+                            <option value="">Seleccione...</option>
+                            @foreach (var t in Model.Tematicas)
+                            {
+                                <option value="@t">@t</option>
+                            }
+                        </select>
+                        <small class="text-muted">Temáticas disponibles en nuestro catálogo.</small>
+                    </div>
+
+                    <!-- Sin name: se combina en JS junto a la temática y se manda como DecoracionDetalle -->
+                    <div class="col-md-5">
+                        <label class="pedido-section-label">Detalle de decoración</label>
+                        <textarea id="detalleDecoracion" class="form-control" maxlength="100" rows="2" placeholder="Detalles adicionales (colores, elementos, etc.)"></textarea>
+                        <small class="text-muted float-end"><span id="contDetalle">0</span>/100</small>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-1">
+                    <div class="col-md-4" id="wrapImagen" style="display:none;">
+                        <label class="pedido-section-label">Imagen de referencia (opcional)</label>
+                        <div class="upload-box" id="uploadBox">
+                            <i class="bi bi-cloud-upload"></i>
+                            <span>Sube una imagen de referencia</span>
+                            <small>Formatos: JPG, PNG. Máx. 5MB</small>
+                            <input type="file" name="imagenReferencia" id="imagenInput" accept=".jpg,.jpeg,.png" hidden />
+                        </div>
+                        <div id="previewImagen" class="preview-imagen mt-2" style="display:none;">
+                            <img id="previewImg" src="" />
+                            <span id="previewNombre"></span>
+                            <button type="button" id="btnQuitarImagen" class="btn-eliminar-linea"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label class="pedido-section-label">Dedicatoria para el pastel *</label>
+                        <textarea name="Dedicatoria" id="dedicatoriaInput" class="form-control" maxlength="300" rows="3" required></textarea>
+                        <small class="text-muted float-end"><span id="contDedicatoria">0</span>/300</small>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-1">
+                    <div class="col-md-7">
+                        <div class="alert-dedicatoria">
+                            <i class="bi bi-info-circle"></i>
+                            <span>La dedicatoria es obligatoria y será incluida tal como la escribas. Verificá que no tenga errores.</span>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="resumen-personalizacion-box">
+                            <h6><i class="bi bi-basket"></i> Resumen de personalización</h6>
+                            <div><span>Precio base del pastel</span><strong>₡@Model.PrecioBase.ToString("N2")</strong></div>
+                            <div><span>Precio extra por personalización</span><strong id="txtPrecioExtra">₡0.00</strong></div>
+                            <hr />
+                            <div class="total-final"><span>Precio extra total</span><strong id="txtPrecioExtraTotal">₡0.00</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Resumen -->
+            <div class="personalizacion-resumen-final mb-4">
+                <div class="resumen-final-titulo"><i class="bi bi-journal-check"></i> 2. Resumen</div>
+
+                <div class="resumen-final-producto">
+                    <img id="resumenFinalImg" src="@(Model.Imagen ?? "/images/placeholder-producto.png")" />
+                    <div>
+                        <span class="label-mini">Producto / Combo</span>
+                        <strong>@Model.NombreProducto</strong>
+                    </div>
+                </div>
+
+                <div class="resumen-final-caracteristicas">
+                    <span class="label-mini">Características seleccionadas</span>
+                    <p id="txtCaracteristicas">Mediano (20 cm) • Vainilla • Crema pastelera</p>
+                </div>
+
+                <div class="resumen-final-dedicatoria">
+                    <span class="label-mini">Dedicatoria</span>
+                    <p><i class="bi bi-chat-quote"></i> <span id="txtDedicatoriaResumen">Escribí tu dedicatoria arriba.</span></p>
+                </div>
+
+                <div class="resumen-final-precio">
+                    <span class="label-mini">Precio extra total</span>
+                    <strong id="txtPrecioExtraFinal">₡0.00</strong>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Catalogo" asp-controller="Producto" class="btn btn-outline-secondary"><i class="bi bi-x"></i> Cancelar</a>
+                <button type="submit" class="btn btn-success" id="btnGuardarPersonalizacion">
+                    <i class="bi bi-check2"></i> Guardar personalización
+                </button>
+            </div>
+        </form>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/personalizacion.js" asp-append-version="true"></script>
+}
