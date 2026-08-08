@@ -204,6 +204,17 @@
                             </li>
                             <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
                             <li>
+                                @* El rol decide el alcance: los gestores ven todos los pedidos, el cliente solo los suyos *@
+                                <a class="dropdown-item dropdown-item-amaretto"
+                                   asp-controller="Pedido" asp-action="Historial">
+                                    <i class="bi bi-clock-history me-2"></i>
+                                    @(UsuarioActual.IdRol == 1 || UsuarioActual.IdRol == 4
+                                        ? "Historial de pedidos"
+                                        : "Mis pedidos")
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
+                            <li>
                                 <a class="dropdown-item dropdown-item-amaretto dropdown-item-danger"
                                    asp-controller="Login" asp-action="LogOffGet">
                                     <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión

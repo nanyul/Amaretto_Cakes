@@ -158,6 +158,10 @@ app.UseRouting();
 
 app.UseSession();
 
+// Sin este middleware la cookie de autenticacion nunca se traduce a claims, y
+// IServiceUsuarioActual no podria identificar al usuario ni leer su rol.
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 // Activar Antiforgery 
