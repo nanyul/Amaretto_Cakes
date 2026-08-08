@@ -24,7 +24,7 @@ namespace Amaretto.Web.Controllers
         {
             if (!_serviceCarrito.ObtenerCarrito().Any())
             {
-                TempData["Mensaje"] = "Swal.fire({icon:'info', title:'Tu pedido est\u00e1 vac\u00edo', text:'Agreg\u00e1 productos antes de registrar el pedido.'});";
+                TempData["Mensaje"] = "Swal.fire({icon:'info', title:'Tu pedido est\u00e1 vac\u00edo', text:'Agreg\u00e1 productos antes de registrar el pedido.', toast:true, position:'bottom-end', showConfirmButton:false, timer:1800, timerProgressBar:true});";
                 return RedirectToAction("Catalogo", "Producto");
             }
 

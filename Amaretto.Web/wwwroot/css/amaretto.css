@@ -6202,6 +6202,16 @@ body {
     margin-bottom: 12px;
 }
 
+.login-page footer.text-center {
+    position: relative;
+    z-index: 3;
+    color: var(--midnight-green) !important;
+    opacity: 0.85;
+}
+
+    .login-page footer.text-center p {
+        font-weight: 500;
+    }
 .login-wave {
     position: fixed;
     bottom: 0;
@@ -6249,3 +6259,130 @@ body {
         transform: scale(1.05);
     }
 }
+
+/* Modal de pago (Registrar pedido)  */
+
+#modalPago .modal-content {
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(10, 51, 35, 0.25);
+}
+
+
+
+#modalPago .modal-header {
+    background-color: var(--dark-green);
+    border-bottom: 3px solid var(--moss-green);
+    padding: 1.1rem 1.5rem;
+}
+
+
+
+    #modalPago .modal-header .modal-title {
+        color: var(--beige-light);
+        font-weight: 600;
+    }
+
+
+
+    #modalPago .modal-header .btn-close {
+        filter: invert(1) grayscale(100%) brightness(2);
+        opacity: 0.85;
+    }
+
+
+
+#modalPago .modal-body {
+    background-color: var(--beige-light);
+    padding: 1.5rem;
+}
+
+
+
+    #modalPago .modal-body label {
+        color: var(--dark-green);
+        font-weight: 500;
+    }
+
+
+
+#modalPago .form-control,
+#modalPago .form-select {
+    border: 1px solid rgba(10, 51, 35, 0.15);
+    border-radius: 10px;
+}
+
+
+
+    #modalPago .form-control:focus,
+    #modalPago .form-select:focus {
+        border-color: var(--moss-green);
+        box-shadow: 0 0 0 3px rgba(131, 153, 88, 0.15);
+    }
+
+
+
+#modalPago .btn-check:checked + .btn-outline-success {
+    background-color: var(--moss-green) !important;
+    border-color: var(--moss-green) !important;
+    color: var(--white) !important;
+}
+
+
+
+#modalPago .btn-outline-success {
+    color: var(--dark-green);
+    border-color: var(--moss-green);
+}
+
+
+
+    #modalPago .btn-outline-success:hover {
+        background-color: var(--moss-green);
+        border-color: var(--moss-green);
+        color: var(--white);
+    }
+
+
+
+#modalPago #txtVuelto {
+    color: var(--dark-green);
+}
+
+
+
+#modalPago .modal-footer {
+    background-color: var(--beige-light);
+    border-top: 1px solid rgba(10, 51, 35, 0.1);
+    padding: 1rem 1.5rem;
+}
+
+
+
+    #modalPago .modal-footer .btn-success {
+        background-color: var(--dark-green);
+        border-color: var(--dark-green);
+    }
+
+
+
+        #modalPago .modal-footer .btn-success:hover {
+            background-color: var(--moss-green);
+            border-color: var(--moss-green);
+        }
+
+
+
+    #modalPago .modal-footer .btn-secondary {
+        background-color: transparent;
+        border-color: var(--rosy-brown);
+        color: var(--rosy-brown);
+    }
+
+
+
+        #modalPago .modal-footer .btn-secondary:hover {
+            background-color: var(--rosy-brown);
+            color: var(--white);
+        }

@@ -122,7 +122,7 @@
             return detalleLibre ? `${tematica} — ${detalleLibre}` : tematica;
         }
 
-        // "Sin decoración especial" o "Imagen de referencia": solo el texto libre, si hay.
+        // Sin decoración especial o Imagen de referencia: solo el texto libre, si hay.
         return detalleLibre;
     }
 
@@ -156,12 +156,20 @@
             })
             .then(() => {
                 if (window.actualizarContadorCarrito) window.actualizarContadorCarrito();
-                Swal.fire({ icon: 'success', title: 'Pastel personalizado agregado', timer: 1400, showConfirmButton: false })
-                    .then(() => window.location.href = '/Producto/Catalogo');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pastel personalizado agregado',
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 1600,
+                    timerProgressBar: true
+                }).then(() => window.location.href = '/Producto/Catalogo');
             })
             .catch(err => {
                 Swal.fire({ icon: 'error', title: 'No se pudo agregar', text: err.message });
             });
+
     });
 
     // Sincroniza la medida en cm con el radio de tamaño marcado por defecto al cargar la página.

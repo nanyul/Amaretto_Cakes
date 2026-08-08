@@ -27,7 +27,7 @@
                     @if (Model.EsEncargado)
                     {
                         <!-- Modo Encargado: buscador de clientes -->
-                        <div class="mb-2">
+                        <div class="mb-2 position-relative">
                             <label class="form-label small">Buscar cliente (nombre o email)</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
@@ -83,7 +83,7 @@
                         <label class="btn btn-outline-success" for="metRecogida">Recogida</label>
                     </div>
                     <div id="direccionWrap" class="mt-2">
-                        <input type="text" id="direccionEntrega" class="form-control" placeholder="Dirección de entrega" value="@Model.UsuarioActual.Direccion" />
+                        <input type="text" id="direccionEntrega" class="form-control" placeholder="Dirección de entrega" value="@(Model.EsEncargado ?"" : Model.UsuarioActual.Direccion)" />
                     </div>
                     <div id="envioWrap" class="mt-2">
                         <label class="pedido-section-label mb-1" style="font-size:0.7rem;">Costo de envío</label>
@@ -181,7 +181,7 @@
 
 <!-- Modal de pago -->
 <div class="modal fade" id="modalPago" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Método de pago</h5>

@@ -85,9 +85,7 @@
                 </div>
             </div>
 
-            <footer class="text-center mt-4 text-muted small">
-                <p class="mb-0">© 2026 Amaretto Cakes. Todos los derechos reservados.</p>
-            </footer>
+    
         </div>
     </main>
 
@@ -106,7 +104,25 @@
     @if (TempData["Mensaje"] != null)
     {
         <script>
-            @Html.Raw(TempData["Mensaje"])
+            (function () {
+                var originalFire = window.Swal.fire.bind(window.Swal);
+                var Swal = {
+                    fire: function (options) {
+                        var titulosToast = ['Bienvenido', 'Hasta pronto'];
+                        if (titulosToast.indexOf(options.title) !== -1) {
+                            options = Object.assign({
+                                toast: true,
+                                position: 'bottom-end',
+                                showConfirmButton: false,
+                                timer: 1800,
+                                timerProgressBar: true
+                            }, options);
+                        }
+                        return originalFire(options);
+                    }
+                };
+                @Html.Raw(TempData["Mensaje"])
+            })();
         </script>
     }
 </body>

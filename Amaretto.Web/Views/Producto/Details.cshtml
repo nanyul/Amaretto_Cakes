@@ -296,28 +296,37 @@
                 const icon = this.querySelector('i');
                 icon.className = this.classList.contains('active') ? 'bi bi-heart-fill' : 'bi bi-heart';
             });
-
-            // Carrito
-            document.getElementById('btnAddCart')?.addEventListener('click', function () {
-                const id = this.dataset.id;
-                const cantidad = parseInt(qtyInput.value);
-
-                fetch('/Carrito/AgregarProducto', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `idProducto=${encodeURIComponent(id)}&cantidad=${cantidad}`
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        window.actualizarContadorCarrito();
-                        Swal.fire({ icon: 'success', title: 'Agregado al pedido', timer: 1200, showConfirmButton: false });
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'No se pudo agregar', text: data.mensaje || '' });
-                    }
-                })
-                .catch(() => Swal.fire({ icon: 'error', title: 'Error de conexión' }));
-            });
+        // Carrito
+        document.getElementById('btnAddCart')?.addEventListener('click', function () {
+            const id = this.dataset.id;
+            const cantidad = parseInt(qtyInput.value);
+            fetch('/Carrito/AgregarProducto', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `idProducto=${encodeURIComponent(id)}&cantidad=${cantidad}`
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    window.actualizarContadorCarrito();
+                    const ToastCarrito = Swal.mixin({
+                        toast: true,
+                        position: 'bottom-end',
+                        showConfirmButton: false,
+                        timer: 1600,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    ToastCarrito.fire({ icon: 'success', title: 'Agregado al pedido' });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'No se pudo agregar', text: data.mensaje || '' });
+                }
+            })
+            .catch(() => Swal.fire({ icon: 'error', title: 'Error de conexión' }));
+        });
         })();
     </script>
 }
