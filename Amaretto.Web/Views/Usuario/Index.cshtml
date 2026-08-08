@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Amaretto.Application.DTOs.UsuarioDTO>
 @{
-    ViewData["Title"] = "Listado de Productos";
+    ViewData["Title"] = "Listado de Usuarios";
 }
 
 <section class="user-list-section">
@@ -20,7 +20,8 @@
                         <th>Rol</th>
                         <th>Email</th>
                         <th>Teléfono</th>
-                        <th>Detalle</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,14 +46,27 @@
                             <td data-label="Rol"><span class="user-role-badge @roleClass">@u.NombreRol</span></td>
                             <td data-label="Email"><span class="user-table-email">@u.Email</span></td>
                             <td data-label="Teléfono">@(u.Telefono ?? "—")</td>
-                            <td data-label="Detalle">
-                                <a asp-action="Details"
-                                   asp-route-id="@u.IdUsuario"
-                                   class="btn-table-action btn-view"
-                                   title="Ver detalle">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-
+                            <td data-label="Estado">
+                                <span class="usuario-estado-badge @(u.Estado ? "is-activo" : "is-inactivo")">
+                                    <i class="bi @(u.Estado ? "bi-check-circle-fill" : "bi-slash-circle-fill")"></i>
+                                    @(u.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td data-label="Acciones">
+                                <div class="usuario-acciones">
+                                    <a asp-action="Details"
+                                       asp-route-id="@u.IdUsuario"
+                                       class="btn-table-action btn-view"
+                                       title="Ver detalle">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@u.IdUsuario"
+                                       class="btn-table-action btn-edit"
+                                       title="Editar usuario">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }

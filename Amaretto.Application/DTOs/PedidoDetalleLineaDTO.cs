@@ -8,6 +8,12 @@ namespace Amaretto.Application.DTOs
 {
     public class PedidoDetalleLineaDTO
     {
+        /// <summary>
+        /// Identifica la línea dentro del carrito. Es lo que distingue dos
+        /// pasteles personalizados del mismo producto, que comparten IdItem.
+        /// </summary>
+        public string LineaId { get; set; } = null!;
+
         public string IdItem { get; set; } = null!;
         public string Tipo { get; set; } = null!; // producto o combo
         public string Nombre { get; set; } = null!;

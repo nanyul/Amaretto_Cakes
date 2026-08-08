@@ -162,7 +162,34 @@
                     <div id="google_translate_element" style="display:none;"></div>
                 </li>
 
-                <!-- Carrito -->
+                <!-- Notificaciones -->
+                @if (UsuarioActual.EstaAutenticado)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-amaretto cart-link" href="#" role="button"
+                           id="campanaNotificaciones" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                           title="Notificaciones">
+                            <i class="bi bi-bell-fill"></i>
+                            <span id="notifBadge" class="cart-badge notif-badge d-none">0</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-amaretto dropdown-menu-end notif-panel">
+                            <li class="notif-panel-header">
+                                <span>Notificaciones</span>
+                                <button type="button" id="btnMarcarLeidas" class="notif-marcar">
+                                    Marcar como leídas
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
+                            <li>
+                                <div id="notifLista" class="notif-lista">
+                                    <p class="notif-vacio">Cargando...</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
+                <!-- Carrito: la cantidad es la suma de todas las líneas del pedido -->
                 <li class="nav-item">
                     <a asp-controller="Pedido"
                        asp-action="Registrar"

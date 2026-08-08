@@ -26,35 +26,39 @@
                     <h6 class="pedido-section-label">CLIENTE</h6>
                     @if (Model.EsEncargado)
                     {
-                        <!-- Modo Encargado: buscador de clientes -->
+                        @* Modo Encargado: la lista muestra únicamente el nombre; el resto
+                           de los datos identificadores aparecen a la par al seleccionarlo. *@
                         <div class="mb-2">
-                            <label class="form-label small">Buscar cliente (nombre o email)</label>
+                            <label class="form-label small">Buscar cliente por nombre</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" id="buscarCliente" class="form-control form-control-sm" 
+                                <input type="text" id="buscarCliente" class="form-control form-control-sm"
                                        placeholder="Escribe para buscar..." autocomplete="off" />
                             </div>
-                            <div id="resultadosBusqueda" class="dropdown-menu w-100 mt-1" style="display:none; max-height:200px; overflow:auto;"></div>
+                            <div id="resultadosBusqueda" class="dropdown-menu w-100 mt-1" style="display:none; max-height:220px; overflow:auto;"></div>
                         </div>
                         <input type="hidden" id="idCliente" />
-                        <div class="row g-2">
-                            <div class="col-12">
-                                <input type="text" id="clienteTelefono" class="form-control form-control-sm" placeholder="Teléfono" disabled />
-                            </div>
+
+                        <div id="fichaCliente" class="cliente-ficha d-none">
+                            <p class="cliente-ficha-nombre" id="fichaNombre"></p>
+                            <p class="cliente-ficha-linea"><i class="bi bi-envelope"></i> <span id="fichaCorreo">-</span></p>
+                            <p class="cliente-ficha-linea"><i class="bi bi-telephone"></i> <span id="fichaTelefono">-</span></p>
+                            <p class="cliente-ficha-linea"><i class="bi bi-geo-alt"></i> <span id="fichaDireccion">-</span></p>
                         </div>
-                        <input type="text" id="clienteCorreo" class="form-control form-control-sm mt-2" placeholder="Correo" disabled />
+                        <p id="fichaClienteVacia" class="text-muted small mb-0">
+                            <i class="bi bi-info-circle"></i> Seleccioná un cliente para ver sus datos.
+                        </p>
                     }
                     else
                     {
-                        <!-- Modo Cliente: datos propios (readonly) -->
-                        <input type="text" class="form-control mb-2" value="@Model.UsuarioActual.NombreCompleto" disabled />
+                        @* Modo Cliente: sus propios datos, no editables y sin selección. *@
                         <input type="hidden" id="idCliente" value="@Model.UsuarioActual.IdUsuario" />
-                        <div class="row g-2">
-                            <div class="col-12">
-                                <input type="text" class="form-control form-control-sm" value="@Model.UsuarioActual.Telefono" disabled />
-                            </div>
+                        <div class="cliente-ficha">
+                            <p class="cliente-ficha-nombre">@Model.UsuarioActual.NombreCompleto</p>
+                            <p class="cliente-ficha-linea"><i class="bi bi-envelope"></i> @Model.UsuarioActual.Email</p>
+                            <p class="cliente-ficha-linea"><i class="bi bi-telephone"></i> @(string.IsNullOrWhiteSpace(Model.UsuarioActual.Telefono) ? "-" : Model.UsuarioActual.Telefono)</p>
+                            <p class="cliente-ficha-linea"><i class="bi bi-geo-alt"></i> @(string.IsNullOrWhiteSpace(Model.UsuarioActual.Direccion) ? "-" : Model.UsuarioActual.Direccion)</p>
                         </div>
-                        <input type="text" class="form-control form-control-sm mt-2" value="@Model.UsuarioActual.Email" disabled />
                     }
                 </div>
 
@@ -104,6 +108,28 @@
         <div class="pedido-detalle-card mt-4">
             <h6 class="pedido-section-label mb-3">DETALLE DEL PEDIDO</h6>
 
+            <!-- Agregar línea: al elegir el ítem se muestra su precio -->
+            <div class="linea-nueva">
+                <div class="linea-nueva-campo linea-nueva-item">
+                    <label for="selItem">Producto o combo</label>
+                    <select id="selItem" class="form-select form-select-sm">
+                        <option value="">Seleccioná un ítem...</option>
+                    </select>
+                </div>
+                <div class="linea-nueva-campo">
+                    <label for="precioItem">Precio</label>
+                    <div class="linea-nueva-precio" id="precioItem">₡0.00</div>
+                </div>
+                <div class="linea-nueva-campo linea-nueva-cantidad">
+                    <label for="cantItem">Cantidad</label>
+                    <input type="text" id="cantItem" class="form-control form-control-sm"
+                           inputmode="numeric" autocomplete="off" value="1" />
+                </div>
+                <button type="button" id="btnAgregarLinea" class="btn-agregar-linea">
+                    <i class="bi bi-plus-lg"></i> Agregar
+                </button>
+            </div>
+
             <table class="table pedido-detalle-tabla">
                 <thead>
                     <tr>
@@ -124,7 +150,7 @@
                     }
                     @foreach (var l in Model.Resumen.Lineas)
                     {
-                        <tr data-id="@l.IdItem" data-tipo="@l.Tipo">
+                        <tr data-linea="@l.LineaId" data-id="@l.IdItem" data-tipo="@l.Tipo">
                             <td>@(i++)</td>
                             <td>
                                 <img src="@(l.Imagen ?? "/images/placeholder-producto.png")" class="detalle-thumb" />
@@ -134,7 +160,9 @@
                             <td>
                                 <div class="qty-control-sm">
                                     <button type="button" class="qty-btn-sm btn-menos">-</button>
-                                    <input type="number" class="qty-input-sm" value="@l.Cantidad" min="1" />
+                                    @* type=text + inputmode: con type=number el navegador acepta "e", "+" y "-" *@
+                                    <input type="text" class="qty-input-sm" inputmode="numeric"
+                                           autocomplete="off" value="@l.Cantidad" data-cantidad="@l.Cantidad" />
                                     <button type="button" class="qty-btn-sm btn-mas">+</button>
                                 </div>
                             </td>

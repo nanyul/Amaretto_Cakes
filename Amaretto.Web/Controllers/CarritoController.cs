@@ -80,12 +80,12 @@ public class CarritoController : Controller
     }
 
     [HttpPost]
-    public IActionResult ActualizarObservaciones(string idItem, string tipo, string? observaciones)
+    public IActionResult ActualizarObservaciones(string idItem, string tipo, string? observaciones, string? lineaId = null)
     {
         if (string.IsNullOrEmpty(idItem) || string.IsNullOrEmpty(tipo))
             return BadRequest(new { success = false, mensaje = "Ítem inválido." });
 
-        _carritoService.ActualizarObservaciones(idItem, tipo, observaciones);
+        _carritoService.ActualizarObservaciones(idItem, tipo, observaciones, lineaId);
         return Json(new { success = true });
     }
 }

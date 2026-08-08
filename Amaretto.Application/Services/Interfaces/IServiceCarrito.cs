@@ -14,7 +14,7 @@ namespace Amaretto.Application.Services.Interfaces
         void AgregarPersonalizado(CarritoItem item);
         void ActualizarCantidad(string idItem, string tipo, int cantidad, string? lineaId = null);
         void Eliminar(string idItem, string tipo, string? lineaId = null);
-        void ActualizarObservaciones(string idItem, string tipo, string? observaciones);
+        void ActualizarObservaciones(string idItem, string tipo, string? observaciones, string? lineaId = null);
         void Vaciar();
         int ObtenerCantidadTotal();
     }

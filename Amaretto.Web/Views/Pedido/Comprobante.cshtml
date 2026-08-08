@@ -1,6 +1,7 @@
-﻿@model Amaretto.Application.DTOs.PedidoDetalleCompletoDTO
+@model Amaretto.Application.DTOs.PedidoDetalleCompletoDTO
 @{
-    ViewData["Title"] = $"Detalle del Pedido #{Model.IdPedido}";
+    ViewData["Title"] = $"Comprobante del Pedido #{Model.IdPedido}";
+    var notificacion = ViewBag.Notificacion as Amaretto.Application.DTOs.NotificacionDTO;
 
     string ClaseEstado(string estado) => estado switch
     {
@@ -10,40 +11,46 @@
         "Cancelado" => "is-cancelado",
         _ => "is-pendiente"
     };
-
-    string IconoEstado(string estado) => estado switch
-    {
-        "Pagado" => "bi-cash-coin",
-        "Entregado" => "bi-check-circle-fill",
-        "En Preparacion" => "bi-fire",
-        "Cancelado" => "bi-x-circle-fill",
-        _ => "bi-hourglass-split"
-    };
 }
 
 <section class="historial-section">
     <div class="container">
 
-        <div class="historial-header">
-            <h1 class="historial-title">
-                <span class="historial-flourish"><i class="bi bi-stars"></i></span>
-                Detalle del Pedido #@Model.IdPedido
-                <span class="historial-flourish"><i class="bi bi-stars"></i></span>
-            </h1>
-            <p class="historial-subtitle">
-                <i class="bi bi-calendar-heart"></i>
-                @Model.FechaPedido.ToString("dd 'de' MMMM 'de' yyyy, hh:mm tt")
-                <i class="bi bi-calendar-heart"></i>
-            </p>
-            <span class="historial-estado-badge @ClaseEstado(Model.Estado) mt-2">
-                <i class="bi @IconoEstado(Model.Estado)"></i> @Model.Estado
-            </span>
+        <!-- Confirmación: esta es la notificación en pantalla, servida por el servidor -->
+        <div class="comprobante-aviso">
+            <div class="comprobante-aviso-icono"><i class="bi bi-check-circle-fill"></i></div>
+            <div>
+                <h1 class="comprobante-aviso-titulo">¡Tu pedido quedó registrado!</h1>
+                <p class="comprobante-aviso-texto">
+                    Pedido <strong>#@Model.IdPedido</strong> del
+                    @Model.FechaPedido.ToString("dd/MM/yyyy 'a las' hh:mm tt").
+                    Estado actualizado a
+                    <span class="historial-estado-badge @ClaseEstado(Model.Estado)">@Model.Estado</span>
+                </p>
+
+                @if (notificacion != null)
+                {
+                    @if (notificacion.CorreoEnviado)
+                    {
+                        <p class="comprobante-correo is-ok">
+                            <i class="bi bi-envelope-check-fill"></i>
+                            Enviamos el comprobante a <strong>@Model.EmailCliente</strong>
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="comprobante-correo is-pendiente">
+                            <i class="bi bi-envelope-exclamation-fill"></i>
+                            El comprobante quedó guardado en tus notificaciones, pero el correo no pudo enviarse.
+                            <span class="comprobante-correo-detalle">@notificacion.DetalleEnvio</span>
+                        </p>
+                    }
+                }
+            </div>
         </div>
 
-        <!-- Encabezado del pedido -->
+        <!-- Encabezado de la factura -->
         <div class="historial-detalle-grid">
-
-            @* Cliente: dos campos identificadores, nombre y correo, más el teléfono. *@
             <div class="historial-detalle-box">
                 <h6 class="historial-box-label"><i class="bi bi-person-fill"></i> Cliente</h6>
                 <p class="historial-box-main">@Model.NombreCliente</p>
@@ -58,11 +65,6 @@
                 <h6 class="historial-box-label"><i class="bi bi-person-badge-fill"></i> Encargado</h6>
                 <p class="historial-box-main">
                     @(string.IsNullOrWhiteSpace(Model.NombreEncargado) ? "Pedido en línea" : Model.NombreEncargado)
-                </p>
-                <p class="historial-box-line">
-                    @(string.IsNullOrWhiteSpace(Model.NombreEncargado)
-                        ? "Registrado por el propio cliente"
-                        : "Registrado en tienda")
                 </p>
             </div>
 
@@ -83,8 +85,7 @@
                     @if (!string.IsNullOrWhiteSpace(Model.Pago.TipoTarjeta))
                     {
                         <p class="historial-box-line">
-                            <i class="bi bi-credit-card"></i>
-                            @Model.Pago.TipoTarjeta
+                            <i class="bi bi-credit-card"></i> @Model.Pago.TipoTarjeta
                             @if (!string.IsNullOrWhiteSpace(Model.Pago.UltimosDigitos))
                             {
                                 <span>&nbsp;•••• @Model.Pago.UltimosDigitos</span>
@@ -100,9 +101,6 @@
                             <i class="bi bi-arrow-return-left"></i> Vuelto: ₡@((Model.Pago.Vuelto ?? 0m).ToString("N2"))
                         </p>
                     }
-                    <p class="historial-box-line">
-                        <i class="bi bi-clock"></i> @Model.Pago.FechaPago.ToString("dd/MM/yyyy hh:mm tt") — @Model.Pago.Estado
-                    </p>
                 }
                 else
                 {
@@ -111,17 +109,18 @@
             </div>
         </div>
 
-        <!-- Líneas del pedido -->
+        <!-- Detalle -->
         <div class="historial-card mt-4">
             <div class="historial-table-wrap">
                 <table class="historial-table">
                     <thead>
                         <tr>
                             <th><i class="bi bi-cake2"></i> Producto / Combo</th>
-                            <th><i class="bi bi-tag"></i> Precio Unit.</th>
+                            <th><i class="bi bi-tag"></i> Precio</th>
                             <th><i class="bi bi-123"></i> Cantidad</th>
                             <th><i class="bi bi-calculator"></i> Subtotal</th>
                             <th><i class="bi bi-percent"></i> Impuesto</th>
+                            <th><i class="bi bi-chat-left-text"></i> Observaciones</th>
                             <th><i class="bi bi-cash"></i> Total</th>
                         </tr>
                     </thead>
@@ -145,45 +144,18 @@
                                             <strong>@linea.Nombre</strong>
                                             @if (linea.Personalizado)
                                             {
-                                                <span class="historial-tag-personalizado">
-                                                    <i class="bi bi-stars"></i> Personalizado
-                                                </span>
-                                            }
-                                            @if (!string.IsNullOrWhiteSpace(linea.Observaciones))
-                                            {
-                                                <span class="historial-linea-obs">
-                                                    <i class="bi bi-chat-left-text"></i> @linea.Observaciones
-                                                </span>
+                                                <span class="historial-tag-personalizado"><i class="bi bi-stars"></i> Personalizado</span>
                                             }
                                         </div>
                                     </div>
-
-                                    @if (linea.Personalizacion != null)
-                                    {
-                                        var p = linea.Personalizacion;
-                                        <ul class="historial-personalizacion">
-                                            <li><span>Tamaño</span> @p.Tamano (@p.MedidaCm cm)</li>
-                                            <li><span>Bizcocho</span> @p.SaborBizcocho</li>
-                                            <li><span>Relleno</span> @p.TipoRelleno</li>
-                                            <li>
-                                                <span>Decoración</span> @p.TipoDecoracion
-                                                @if (!string.IsNullOrWhiteSpace(p.DecoracionDetalle))
-                                                {
-                                                    <text> — @p.DecoracionDetalle</text>
-                                                }
-                                            </li>
-                                            <li><span>Dedicatoria</span> @p.Dedicatoria</li>
-                                            @if (p.PrecioExtra > 0)
-                                            {
-                                                <li><span>Precio extra</span> ₡@p.PrecioExtra.ToString("N2")</li>
-                                            }
-                                        </ul>
-                                    }
                                 </td>
-                                <td data-label="Precio Unit.">₡@linea.PrecioUnitario.ToString("N2")</td>
+                                <td data-label="Precio">₡@linea.PrecioUnitario.ToString("N2")</td>
                                 <td data-label="Cantidad">@linea.Cantidad</td>
                                 <td data-label="Subtotal">₡@linea.Subtotal.ToString("N2")</td>
                                 <td data-label="Impuesto">₡@linea.Iva.ToString("N2")</td>
+                                <td data-label="Observaciones">
+                                    @(string.IsNullOrWhiteSpace(linea.Observaciones) ? "-" : linea.Observaciones)
+                                </td>
                                 <td data-label="Total"><strong class="historial-total">₡@linea.Total.ToString("N2")</strong></td>
                             </tr>
                         }
@@ -201,18 +173,23 @@
                 }
 
                 <div class="historial-totales-box">
-                    <div><span>Subtotal (sin impuestos)</span><strong>₡@Model.Subtotal.ToString("N2")</strong></div>
+                    <div><span>Total sin impuestos</span><strong>₡@Model.Subtotal.ToString("N2")</strong></div>
                     <div><span>Impuesto (13%)</span><strong>₡@Model.Impuesto.ToString("N2")</strong></div>
                     <div><span>Costo de envío</span><strong>₡@Model.CostoEnvio.ToString("N2")</strong></div>
                     <hr />
-                    <div class="historial-total-final"><span>TOTAL DEL PEDIDO</span><strong>₡@Model.Total.ToString("N2")</strong></div>
+                    <div class="historial-total-final"><span>TOTAL CON IMPUESTO</span><strong>₡@Model.Total.ToString("N2")</strong></div>
                 </div>
             </div>
         </div>
 
-        <a asp-action="Historial" class="btn-volver-historial mt-4">
-            <i class="bi bi-arrow-left"></i> Volver al historial
-        </a>
+        <div class="comprobante-acciones mt-4">
+            <a asp-action="Historial" class="btn-volver-historial">
+                <i class="bi bi-clock-history"></i> Ver mis pedidos
+            </a>
+            <a asp-controller="Producto" asp-action="Catalogo" class="btn-ver-detalle">
+                <i class="bi bi-cake2"></i> Seguir comprando
+            </a>
+        </div>
 
     </div>
 </section>

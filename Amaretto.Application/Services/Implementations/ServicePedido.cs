@@ -31,15 +31,19 @@ namespace Amaretto.Application.Services.Implementations
         /// </summary>
         private readonly IServiceUsuarioActual _usuarioActual;
 
+        private readonly IServiceNotificacion _serviceNotificacion;
+
         public ServicePedido(
             IServiceCarrito carritoService,
             IRepositoryPedido repoPedido,
             IServiceUsuarioActual usuarioActual,
+            IServiceNotificacion serviceNotificacion,
             IMapper mapper)
         {
             _carritoService = carritoService;
             _repoPedido = repoPedido;
             _usuarioActual = usuarioActual;
+            _serviceNotificacion = serviceNotificacion;
             _mapper = mapper;
         }
 
@@ -73,6 +77,7 @@ namespace Amaretto.Application.Services.Implementations
             {
                 Lineas = carrito.Select(c => new PedidoDetalleLineaDTO
                 {
+                    LineaId = c.LineaId,
                     IdItem = c.IdItem,
                     Tipo = c.Tipo,
                     Nombre = c.Nombre,
@@ -182,11 +187,22 @@ namespace Amaretto.Application.Services.Implementations
             await _repoPedido.CrearAsync(pedido);
             _carritoService.Vaciar();
 
+            // Ya registrado y con el estado actualizado, se notifica al cliente:
+            // el comprobante sale por correo y queda en su campana de avisos.
+            // Se relee con los Include para armar el comprobante completo.
+            var registrado = await _repoPedido.FindByIdAsync(pedido.IdPedido);
+            var notificacion = registrado != null
+                ? await _serviceNotificacion.NotificarPedidoRegistradoAsync(MapearDetalle(registrado, esGestor: false))
+                : new ResultadoNotificacionDTO { CorreoEnviado = false, Detalle = "No se pudo recuperar el pedido para notificar." };
+
             return new PedidoResultadoDTO
             {
                 IdPedido = pedido.IdPedido,
                 Total = pedido.Total,
-                Vuelto = vuelto
+                Vuelto = vuelto,
+                Estado = pedido.Estado,
+                CorreoEnviado = notificacion.CorreoEnviado,
+                DetalleNotificacion = notificacion.Detalle
             };
         }
 
@@ -240,6 +256,11 @@ namespace Amaretto.Application.Services.Implementations
             if (!esGestor && pedido.IdUsuario != usuario.IdUsuario)
                 throw new UnauthorizedAccessException("El pedido no pertenece al usuario en sesión.");
 
+            return MapearDetalle(pedido, esGestor);
+        }
+
+        private static PedidoDetalleCompletoDTO MapearDetalle(Pedido pedido, bool esGestor)
+        {
             return new PedidoDetalleCompletoDTO
             {
                 IdPedido = pedido.IdPedido,
