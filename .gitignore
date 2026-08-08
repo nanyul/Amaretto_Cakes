@@ -1,5 +1,27 @@
+# Visual Studio
 .vs/
 [Bb]in/
 [Oo]bj/
 *.user
 *.suo
+
+NancyObsidian/
+
+.opencode/
+AGENTS.md
+agents.md
+*.md~
+
+# User Secrets / Local config
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+
+# Logs
+Logs/
+*.log
+
+# Database backups
+*.bak
+*.mdf
+*.ldf
