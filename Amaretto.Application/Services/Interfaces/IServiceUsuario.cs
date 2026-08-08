@@ -11,5 +11,9 @@ namespace Amaretto.Application.Services.Interfaces
     {
         Task<ICollection<UsuarioDTO>> ListAsync();
         Task<UsuarioDTO> FindByIdAsync(int id);
+        Task<UsuarioLoginResultDTO> LoginAsync(string email, string password);
+        Task<UsuarioLoginResultDTO> RegisterAsync(RegisterDTO dto);
+        Task<UsuarioDTO?> FindByEmailAsync(string email);
+        Task<ICollection<UsuarioDTO>> BuscarClientesAsync(string termino);
     }
 }

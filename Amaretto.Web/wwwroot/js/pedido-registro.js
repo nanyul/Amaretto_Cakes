@@ -36,28 +36,6 @@
         });
     });
 
-    // Cliente: al seleccionar, autocompletar teléfono/correo/ID y cargar su dirección guardada (editable)
-    const selectCliente = document.getElementById('idCliente');
-    if (selectCliente && selectCliente.tagName === 'SELECT') {
-        selectCliente.addEventListener('change', function () {
-            const opt = this.selectedOptions[0];
-            const telefono = opt?.dataset.telefono || '';
-            const email = opt?.dataset.email || '';
-            const direccion = opt?.dataset.direccion || '';
-
-            const telefonoInput = document.getElementById('clienteTelefono');
-            const correoInput = document.getElementById('clienteCorreo');
-            const idInput = document.getElementById('clienteId');
-            if (telefonoInput) telefonoInput.value = telefono;
-            if (correoInput) correoInput.value = email;
-            if (idInput) idInput.value = this.value ? `C-${this.value}` : '';
-
-            const direccionInput = document.getElementById('direccionEntrega');
-            if (direccionInput) direccionInput.value = direccion;
-        });
-    }
-
-
     // Cantidad +/-
     document.getElementById('detalleBody').addEventListener('click', function (e) {
         const fila = e.target.closest('tr');
@@ -246,27 +224,59 @@
             });
     });
 
-    // Simulación temporal de usuario (quitar cuando exista login)
-    function cargarUsuariosSimulacion() {
-        const rol = document.getElementById('simRol').value;
-        fetch(`/Pedido/ObtenerUsuariosPorRol?rol=${rol}`)
-            .then(r => r.json())
-            .then(data => {
-                const sel = document.getElementById('simUsuario');
-                sel.innerHTML = data.map(u => `<option value="${u.idUsuario}">${u.nombreCompleto}</option>`).join('');
-            });
-    }
-    document.getElementById('simRol')?.addEventListener('change', cargarUsuariosSimulacion);
-    cargarUsuariosSimulacion();
+    // Búsqueda de clientes (solo si es Encargado)
+    const buscarClienteInput = document.getElementById('buscarCliente');
+    const resultadosDiv = document.getElementById('resultadosBusqueda');
+    let searchTimeout;
 
-    document.getElementById('btnAplicarSim')?.addEventListener('click', function () {
-        const idUsuario = document.getElementById('simUsuario').value;
-        const rol = document.getElementById('simRol').value;
-        if (!idUsuario) return;
-        fetch('/Pedido/SimularUsuario', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `idUsuario=${idUsuario}&rol=${rol}`
-        }).then(() => location.reload());
-    });
+    if (buscarClienteInput) {
+        buscarClienteInput.addEventListener('input', function () {
+            const termino = this.value.trim();
+            clearTimeout(searchTimeout);
+
+            if (termino.length < 2) {
+                resultadosDiv.style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`/Pedido/BuscarClientes?termino=${encodeURIComponent(termino)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            resultadosDiv.innerHTML = '<div class="dropdown-item text-muted">No se encontraron clientes</div>';
+                        } else {
+                            resultadosDiv.innerHTML = data.map(c =>
+                                `<a class="dropdown-item" href="#" data-id="${c.idUsuario}" data-telefono="${c.telefono || ''}" data-email="${c.email || ''}" data-direccion="${c.direccion || ''}">
+                                    <strong>${c.nombreCompleto}</strong><br>
+                                    <small class="text-muted">${c.email}</small>
+                                </a>`
+                            ).join('');
+                        }
+                        resultadosDiv.style.display = 'block';
+                    });
+            }, 300);
+        });
+
+        // Click en resultado
+        resultadosDiv.addEventListener('click', function (e) {
+            const item = e.target.closest('.dropdown-item[data-id]');
+            if (!item) return;
+            e.preventDefault();
+
+            document.getElementById('idCliente').value = item.dataset.id;
+            document.getElementById('clienteTelefono').value = item.dataset.telefono;
+            document.getElementById('clienteCorreo').value = item.dataset.email;
+            document.getElementById('direccionEntrega').value = item.dataset.direccion;
+            buscarClienteInput.value = item.querySelector('strong')?.textContent || '';
+            resultadosDiv.style.display = 'none';
+        });
+
+        // Cerrar al hacer click fuera
+        document.addEventListener('click', function (e) {
+            if (!resultadosDiv.contains(e.target) && e.target !== buscarClienteInput) {
+                resultadosDiv.style.display = 'none';
+            }
+        });
+    }
 })();

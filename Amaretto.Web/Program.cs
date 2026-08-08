@@ -10,7 +10,6 @@ using Amaretto.Infraestructure.Repository.Interfaces;
 using Amaretto.Web.Middleware;
 using Amaretto.Web.Scheduling;
 using Libreria.Application.Config;
-using Libreria.Application.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,13 +64,13 @@ builder.Services.AddTransient<IServiceIngrediente, ServiceIngrediente>();
 builder.Services.AddScoped<IServicePedidoDetalle, ServicePedidoDetalle>();
 builder.Services.AddScoped<IServicioDesactivacionMenus, ServicioDesactivacionMenus>();
 builder.Services.AddScoped<IServiceCarrito, ServiceCarrito>();
-builder.Services.AddScoped<IServiceUsuarioActual, ServiceUsuarioActualSimulado>();
+builder.Services.AddScoped<IServiceUsuarioActual, ServiceUsuarioActual>();
 builder.Services.AddScoped<IServicePedido, ServicePedido>();
 builder.Services.AddScoped<IServicePersonalizacion, ServicePersonalizacion>();
 
 // Estado en memoria para mostrar el resultado en el panel /TareaProgramada.
 // Debe ser Singleton: tiene que sobrevivir entre las distintas ejecuciones del BackgroundService
-// y ser el mismo objeto que lee el controlador cuando alguien visita la página.
+// y ser el mismo objeto que lee el controlador cuando alguien visita la pï¿½gina.
 builder.Services.AddSingleton<ITareaProgramadaEstado, TareaProgramadaEstado>();
 
 // El "programador": se registra como Hosted Service para que arranque junto con la app.
@@ -110,7 +109,7 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile<UsuarioProfile>();
     config.AddProfile<PedidoDetalleProfile>();
 });
-// Configuar Conexión a la Base de Datos SQL
+// Configuar Conexiï¿½n a la Base de Datos SQL
 builder.Services.AddDbContext<AmarettoContext>(options =>
 {
     // it read appsettings.json file
@@ -119,13 +118,13 @@ builder.Services.AddDbContext<AmarettoContext>(options =>
     if (builder.Environment.IsDevelopment())
         options.EnableSensitiveDataLogging();
 });
-//Configuración Serilog
+//Configuraciï¿½n Serilog
 // Logger. P.E. Verbose = muestra SQl Statement
 var logger = new LoggerConfiguration()
-                    // Limitar la información de depuración
+                    // Limitar la informaciï¿½n de depuraciï¿½n
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
                     .Enrich.FromLogContext()
-                    // Log LogEventLevel.Verbose muestra mucha información, pero no es necesaria solo para el proceso de depuración
+                    // Log LogEventLevel.Verbose muestra mucha informaciï¿½n, pero no es necesaria solo para el proceso de depuraciï¿½n
                     .WriteTo.Console(LogEventLevel.Information)
                     .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Information).WriteTo.File(@"Logs\Info-.log", shared: true, encoding: Encoding.ASCII, rollingInterval: RollingInterval.Day))
                     .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Debug).WriteTo.File(@"Logs\Debug-.log", shared: true, encoding: System.Text.Encoding.ASCII, rollingInterval: RollingInterval.Day))

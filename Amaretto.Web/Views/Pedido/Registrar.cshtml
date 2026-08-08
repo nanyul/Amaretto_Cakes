@@ -19,21 +19,6 @@
 
         <!-- Encabezado -->
         <div class="pedido-header-card">
-
-            <!-- Simulación temporal de usuario (quitar cuando exista login) -->
-            <div class="sim-bar d-flex align-items-center gap-2 mb-3">
-                <i class="bi bi-person-gear text-muted"></i>
-                <span class="text-muted small">Simular:</span>
-                <select id="simRol" class="form-select form-select-sm w-auto">
-                    <option value="Cliente">Cliente</option>
-                    <option value="Encargado">Encargado</option>
-                </select>
-                <select id="simUsuario" class="form-select form-select-sm w-auto"></select>
-                <button type="button" id="btnAplicarSim" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-arrow-repeat"></i> Aplicar
-                </button>
-            </div>
-
             <div class="row g-4">
 
                 <!-- Cliente -->
@@ -41,26 +26,27 @@
                     <h6 class="pedido-section-label">CLIENTE</h6>
                     @if (Model.EsEncargado)
                     {
-                        <select id="idCliente" class="form-select mb-2">
-                            <option value="">Seleccione un cliente...</option>
-                            @foreach (var c in Model.Clientes)
-                            {
-                                <option value="@c.IdUsuario"
-                                        data-telefono="@c.Telefono"
-                                        data-email="@c.Email"
-                                        data-direccion="@c.Direccion">@c.NombreCompleto</option>
-                            }
-                        </select>
+                        <!-- Modo Encargado: buscador de clientes -->
+                        <div class="mb-2">
+                            <label class="form-label small">Buscar cliente (nombre o email)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" id="buscarCliente" class="form-control form-control-sm" 
+                                       placeholder="Escribe para buscar..." autocomplete="off" />
+                            </div>
+                            <div id="resultadosBusqueda" class="dropdown-menu w-100 mt-1" style="display:none; max-height:200px; overflow:auto;"></div>
+                        </div>
+                        <input type="hidden" id="idCliente" />
                         <div class="row g-2">
                             <div class="col-12">
                                 <input type="text" id="clienteTelefono" class="form-control form-control-sm" placeholder="Teléfono" disabled />
                             </div>
                         </div>
-                        <input type="hidden" id="clienteId" />
                         <input type="text" id="clienteCorreo" class="form-control form-control-sm mt-2" placeholder="Correo" disabled />
                     }
                     else
                     {
+                        <!-- Modo Cliente: datos propios (readonly) -->
                         <input type="text" class="form-control mb-2" value="@Model.UsuarioActual.NombreCompleto" disabled />
                         <input type="hidden" id="idCliente" value="@Model.UsuarioActual.IdUsuario" />
                         <div class="row g-2">
@@ -97,7 +83,7 @@
                         <label class="btn btn-outline-success" for="metRecogida">Recogida</label>
                     </div>
                     <div id="direccionWrap" class="mt-2">
-                        <input type="text" id="direccionEntrega" class="form-control" placeholder="Dirección de entrega" value="@(!Model.EsEncargado ? Model.UsuarioActual.Direccion : null)" />
+                        <input type="text" id="direccionEntrega" class="form-control" placeholder="Dirección de entrega" value="@Model.UsuarioActual.Direccion" />
                     </div>
                     <div id="envioWrap" class="mt-2">
                         <label class="pedido-section-label mb-1" style="font-size:0.7rem;">Costo de envío</label>

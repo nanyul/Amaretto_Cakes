@@ -9,6 +9,12 @@ namespace Amaretto.Application.Services.Interfaces
     public interface IServiceUsuarioActual
     {
         int IdUsuario { get; }
-        string Rol { get; }
+        string Email { get; }
+        string NombreCompleto { get; }
+        int IdRol { get; }
+        string NombreRol { get; }
+        string? Telefono { get; }
+        string? Direccion { get; }
+        bool EstaAutenticado { get; }
     }
 }

@@ -17,42 +17,37 @@ namespace Amaretto.Application.Services.Implementations
         private const decimal PORCENTAJE_IVA = 0.13m;
 
         private readonly IServiceCarrito _carritoService;
-        private readonly IServiceUsuarioActual _usuarioActual;
-        private readonly IRepositoryUsuario _repoUsuario;
         private readonly IRepositoryPedido _repoPedido;
         private readonly IMapper _mapper;
 
         public ServicePedido(
             IServiceCarrito carritoService,
-            IServiceUsuarioActual usuarioActual,
-            IRepositoryUsuario repoUsuario,
             IRepositoryPedido repoPedido,
             IMapper mapper)
         {
             _carritoService = carritoService;
-            _usuarioActual = usuarioActual;
-            _repoUsuario = repoUsuario;
             _repoPedido = repoPedido;
             _mapper = mapper;
         }
 
-        public async Task<PedidoRegistroViewModel> PrepararRegistroAsync()
+        public async Task<PedidoRegistroViewModel> PrepararRegistroAsync(IServiceUsuarioActual usuarioActual)
         {
-            var usuario = await _repoUsuario.FindByIdAsync(_usuarioActual.IdUsuario);
+            var esEncargado = usuarioActual.EstaAutenticado && usuarioActual.IdRol == 4; // Encargado = 4
+
             var vm = new PedidoRegistroViewModel
             {
                 Resumen = ObtenerResumen("Domicilio"),
-                EsEncargado = _usuarioActual.Rol == "Encargado",
-                UsuarioActual = usuario != null
-                    ? _mapper.Map<UsuarioDTO>(usuario)
-                    : new UsuarioDTO { IdUsuario = 0, NombreCompleto = "(sin simular)", Email = "", NombreRol = _usuarioActual.Rol }
+                EsEncargado = esEncargado,
+                UsuarioActual = new UsuarioDTO 
+                { 
+                    IdUsuario = usuarioActual.IdUsuario,
+                    NombreCompleto = usuarioActual.NombreCompleto,
+                    Email = usuarioActual.Email,
+                    Telefono = usuarioActual.Telefono,
+                    Direccion = usuarioActual.Direccion,
+                    NombreRol = usuarioActual.NombreRol
+                }
             };
-
-            if (vm.EsEncargado)
-            {
-                var clientes = await _repoUsuario.ObtenerPorRolAsync("Cliente");
-                vm.Clientes = _mapper.Map<List<UsuarioDTO>>(clientes);
-            }
 
             return vm;
         }

@@ -11,6 +11,10 @@ namespace Amaretto.Infraestructure.Repository.Interfaces
     {
         Task<ICollection<Usuario>> ListAsync();
         Task<Usuario> FindByIdAsync(int id);
+        Task<Usuario?> FindByEmailAsync(string email);
+        Task<Usuario> AddAsync(Usuario usuario);
+        Task<bool> ExistsByEmailAsync(string email);
         Task<List<Usuario>> ObtenerPorRolAsync(string rol);
+        Task<List<Usuario>> BuscarClientesAsync(string termino);
     }
 }
