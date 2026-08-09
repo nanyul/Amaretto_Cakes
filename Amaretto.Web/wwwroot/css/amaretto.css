@@ -5298,6 +5298,7 @@ body {
         border-color: var(--dark-green);
         color: var(--beige);
     }
+
     .pedido-header-card .btn-check:focus + .btn-outline-success {
         box-shadow: 0 0 0 3px rgba(131,153,88,0.15);
     }
@@ -5382,6 +5383,195 @@ body {
     border-radius: 10px;
     margin-right: 10px;
     vertical-align: middle;
+}
+
+/* Modal Catalogo - filas compactas estilo tabla detalle */
+.catalogo-row {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .4rem .6rem;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+    .catalogo-row:last-child {
+        border-bottom: none;
+    }
+
+    .catalogo-row:hover {
+        background-color: rgba(0,0,0,.03);
+    }
+
+    .catalogo-row.row-active {
+        background-color: rgba(70,110,80,.08);
+    }
+
+    .catalogo-row input[type="checkbox"] {
+        flex: 0 0 auto;
+    }
+
+.catalogo-thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex: 0 0 auto;
+}
+
+.catalogo-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.catalogo-nombre {
+    font-weight: 600;
+    font-size: .9rem;
+    color: var(--dark-green);
+}
+
+.catalogo-desc {
+    font-size: .75rem;
+    opacity: .65;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--midnight-green);
+}
+
+.catalogo-precio {
+    flex: 0 0 auto;
+    font-weight: 600;
+    font-size: .85rem;
+    color: var(--dark-green);
+}
+
+/* Ajuste checklist en modal */
+#modalCatalogo .producto-checklist {
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: 10px;
+}
+
+#modalCatalogo .producto-search-wrap {
+    position: relative;
+    margin-top: .5rem;
+}
+
+#modalCatalogo .producto-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: .55;
+}
+
+#modalCatalogo .producto-search-input {
+    padding-left: 40px;
+}
+
+/* Modal Catálogo (Registrar pedido) - mismo estilo que el modal de pago */
+#modalCatalogo .modal-content {
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(10, 51, 35, 0.25);
+}
+
+#modalCatalogo .modal-header {
+    background-color: var(--dark-green);
+    border-bottom: 3px solid var(--moss-green);
+    padding: 1.1rem 1.5rem;
+}
+
+    #modalCatalogo .modal-header .modal-title {
+        color: var(--beige-light);
+        font-weight: 600;
+    }
+
+    #modalCatalogo .modal-header .btn-close {
+        filter: invert(1) grayscale(100%) brightness(2);
+        opacity: 0.85;
+    }
+
+#modalCatalogo .modal-body {
+    background-color: var(--beige-light);
+    padding: 1.5rem;
+}
+
+#modalCatalogo .producto-search-input {
+    border: 1px solid rgba(10, 51, 35, 0.15);
+    border-radius: 10px;
+}
+
+    #modalCatalogo .producto-search-input:focus {
+        border-color: var(--moss-green);
+        box-shadow: 0 0 0 3px rgba(131, 153, 88, 0.15);
+        outline: none;
+    }
+
+#modalCatalogo .nav-tabs {
+    border-bottom: 1px solid rgba(10, 51, 35, 0.15);
+}
+
+    #modalCatalogo .nav-tabs .nav-link {
+        color: var(--dark-green);
+        font-weight: 500;
+        border: none;
+        border-bottom: 3px solid transparent;
+        border-radius: 0;
+    }
+
+        #modalCatalogo .nav-tabs .nav-link.active {
+            color: var(--dark-green);
+            background: transparent;
+            border-bottom: 3px solid var(--moss-green);
+        }
+
+#modalCatalogo .producto-checklist {
+    background-color: var(--white);
+    border: 1px solid rgba(10, 51, 35, 0.1);
+}
+
+#modalCatalogo .modal-footer {
+    background-color: var(--beige-light);
+    border-top: 1px solid rgba(10, 51, 35, 0.1);
+    padding: 1rem 1.5rem;
+}
+
+    #modalCatalogo .modal-footer .btn-success {
+        background-color: var(--dark-green);
+        border-color: var(--dark-green);
+    }
+
+        #modalCatalogo .modal-footer .btn-success:hover {
+            background-color: var(--moss-green);
+            border-color: var(--moss-green);
+        }
+
+    #modalCatalogo .modal-footer .btn-secondary {
+        background-color: transparent;
+        border-color: var(--rosy-brown);
+        color: var(--rosy-brown);
+    }
+
+        #modalCatalogo .modal-footer .btn-secondary:hover {
+            background-color: var(--rosy-brown);
+            color: var(--white);
+        }
+
+/* Checkboxes redondeados en las filas del catálogo */
+#modalCatalogo .catalogo-row input[type="checkbox"] {
+    width: 19px;
+    height: 19px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(131, 153, 88, 0.5);
+    accent-color: var(--moss-green);
+    cursor: pointer;
 }
 
 .precio-unit,
@@ -6067,16 +6257,14 @@ body {
     transition: transform 0.3s ease;
 }
 
-.login-logo:hover {
-    transform: scale(1.02) rotate(-1deg);
-}
+    .login-logo:hover {
+        transform: scale(1.02) rotate(-1deg);
+    }
 
 .login-card {
     background: var(--white);
     border-radius: 24px;
-    box-shadow: 
-        0 20px 60px rgba(10, 51, 35, 0.12),
-        0 0 0 1px rgba(131, 153, 88, 0.08);
+    box-shadow: 0 20px 60px rgba(10, 51, 35, 0.12), 0 0 0 1px rgba(131, 153, 88, 0.08);
 }
 
 .login-title {
@@ -6105,10 +6293,10 @@ body {
     background: var(--white);
 }
 
-.login-form .input-group:focus-within {
-    border-color: var(--moss-green) !important;
-    box-shadow: 0 0 0 4px rgba(131, 153, 88, 0.15) !important;
-}
+    .login-form .input-group:focus-within {
+        border-color: var(--moss-green) !important;
+        box-shadow: 0 0 0 4px rgba(131, 153, 88, 0.15) !important;
+    }
 
 .login-form .input-group-text {
     background: transparent;
@@ -6134,12 +6322,12 @@ body {
     height: auto !important;
 }
 
-.login-form .form-control.login-input:focus,
-.login-form .form-select.login-input:focus {
-    box-shadow: none !important;
-    border: none !important;
-    outline: none;
-}
+    .login-form .form-control.login-input:focus,
+    .login-form .form-select.login-input:focus {
+        box-shadow: none !important;
+        border: none !important;
+        outline: none;
+    }
 
 /* Placeholder color */
 .login-form .form-control::placeholder {
@@ -6195,12 +6383,12 @@ body {
     margin-top: 8px;
 }
 
-.login-footer p {
-    color: var(--midnight-green);
-    font-size: 0.9rem;
-    font-weight: 400;
-    margin-bottom: 12px;
-}
+    .login-footer p {
+        color: var(--midnight-green);
+        font-size: 0.9rem;
+        font-weight: 400;
+        margin-bottom: 12px;
+    }
 
 .login-page footer.text-center {
     position: relative;
@@ -6212,6 +6400,7 @@ body {
     .login-page footer.text-center p {
         font-weight: 500;
     }
+
 .login-wave {
     position: fixed;
     bottom: 0;
@@ -6223,11 +6412,11 @@ body {
     pointer-events: none;
 }
 
-.login-wave svg {
-    display: block;
-    width: 100%;
-    height: 80px;
-}
+    .login-wave svg {
+        display: block;
+        width: 100%;
+        height: 80px;
+    }
 
 @media (max-width: 576px) {
     .login-title {
@@ -6255,6 +6444,7 @@ body {
     0%, 100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
@@ -6386,6 +6576,7 @@ body {
             background-color: var(--rosy-brown);
             color: var(--white);
         }
+
 }
 
 /*

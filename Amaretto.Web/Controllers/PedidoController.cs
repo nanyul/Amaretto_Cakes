@@ -54,11 +54,11 @@ namespace Amaretto.Web.Controllers
                 productos = productos
                     .Where(p => p.Estado)
                     .OrderBy(p => p.Nombre)
-                    .Select(p => new { id = p.IdProducto, nombre = p.Nombre, precio = p.Precio, tipo = "producto" }),
+                    .Select(p => new { id = p.IdProducto, nombre = p.Nombre, descripcion = p.Descripcion, precio = p.Precio, imagen = p.Imagen1, tipo = "producto" }),
                 combos = combos
                     .Where(c => c.Estado)
                     .OrderBy(c => c.Nombre)
-                    .Select(c => new { id = c.IdCombo, nombre = c.Nombre, precio = c.Precio, tipo = "combo" })
+                    .Select(c => new { id = c.IdCombo, nombre = c.Nombre, descripcion = c.Descripcion, precio = c.Precio, imagen = c.Imagen1, tipo = "combo" })
             });
         }
 

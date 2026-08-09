@@ -107,27 +107,9 @@
         <div class="pedido-detalle-card mt-4">
             <h6 class="pedido-section-label mb-3">DETALLE DEL PEDIDO</h6>
 
-            <!-- Agregar línea: al elegir el ítem se muestra su precio -->
-            <div class="linea-nueva">
-                <div class="linea-nueva-campo linea-nueva-item">
-                    <label for="selItem">Producto o combo</label>
-                    <select id="selItem" class="form-select form-select-sm">
-                        <option value="">Seleccioná un ítem...</option>
-                    </select>
-                </div>
-                <div class="linea-nueva-campo">
-                    <label for="precioItem">Precio</label>
-                    <div class="linea-nueva-precio" id="precioItem">₡0.00</div>
-                </div>
-                <div class="linea-nueva-campo linea-nueva-cantidad">
-                    <label for="cantItem">Cantidad</label>
-                    <input type="text" id="cantItem" class="form-control form-control-sm"
-                           inputmode="numeric" autocomplete="off" value="1" />
-                </div>
-                <button type="button" id="btnAgregarLinea" class="btn-agregar-linea">
-                    <i class="bi bi-plus-lg"></i> Agregar
-                </button>
-            </div>
+            <a asp-action="Catalogo" asp-controller="Producto" class="btn btn-outline-danger btn-sm mt-2" id="btnAbrirCatalogo" tabindex="-1">
+                <i class="bi bi-plus"></i> Agregar producto o combo
+            </a>
 
             <table class="table pedido-detalle-tabla">
                 <thead>
@@ -179,9 +161,35 @@
                 </tbody>
             </table>
 
-            <a asp-action="Catalogo" asp-controller="Producto" class="btn btn-outline-danger btn-sm mt-2">
-                <i class="bi bi-plus"></i> Agregar producto o combo
-            </a>
+            <!-- Modal Catalogo -->
+            <div class="modal fade" id="modalCatalogo" tabindex="-1" aria-labelledby="modalCatalogoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalCatalogoLabel">Seleccionar productos y combos</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="producto-search-wrap mb-3">
+                                <i class="bi bi-search producto-search-icon"></i>
+                                <input type="text" id="buscarCatalogo" class="form-control producto-search-input" placeholder="Buscar por nombre..." autocomplete="off" />
+                            </div>
+                            <ul class="nav nav-tabs mb-3" role="tablist">
+                                <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabProductos" role="tab">Productos</button></li>
+                                <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabCombos" role="tab">Combos</button></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="tabProductos" role="tabpanel"><div class="producto-checklist" id="checklistProductos"></div></div>
+                                <div class="tab-pane fade" id="tabCombos" role="tabpanel"><div class="producto-checklist" id="checklistCombos"></div></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" id="btnAgregarSeleccionados" class="btn btn-success"><i class="bi bi-plus-lg"></i> Agregar seleccionados</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="d-flex justify-content-end mt-3">
                 <div class="pedido-totales-box">

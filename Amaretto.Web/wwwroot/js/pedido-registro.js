@@ -185,72 +185,73 @@
         });
     });
 
-    /*  Agregar línea desde el propio formulario  */
+    /*  Agregar línea desde catálogo modal  */
 
-    const selItem = document.getElementById('selItem');
-    const cantItem = document.getElementById('cantItem');
-    const precioItem = document.getElementById('precioItem');
+    const modalCatalogo = document.getElementById('modalCatalogo');
+    const btnAbrirCatalogo = document.getElementById('btnAbrirCatalogo');
+    const buscarCatalogo = document.getElementById('buscarCatalogo');
+    const checklistProductos = document.getElementById('checklistProductos');
+    const checklistCombos = document.getElementById('checklistCombos');
+    const btnAgregarSeleccionados = document.getElementById('btnAgregarSeleccionados');
+    let catalogoData = { productos: [], combos: [] };
 
-    fetch('/Pedido/ItemsDisponibles')
-        .then(r => r.json())
-        .then(data => {
-            const grupo = (etiqueta, items) => {
-                if (!items.length) return '';
-                const opciones = items.map(i =>
-                    `<option value="${i.id}" data-tipo="${i.tipo}" data-precio="${i.precio}">${i.nombre}</option>`
-                ).join('');
-                return `<optgroup label="${etiqueta}">${opciones}</optgroup>`;
-            };
-            selItem.insertAdjacentHTML('beforeend', grupo('Productos', data.productos) + grupo('Combos', data.combos));
-        })
-        .catch(() => {
-            Swal.fire({ icon: 'error', title: 'No se pudo cargar el catálogo de ítems' });
-        });
-
-    selItem.addEventListener('change', function () {
-        const opcion = this.selectedOptions[0];
-        precioItem.textContent = money(opcion?.dataset.precio || 0);
+    btnAbrirCatalogo?.addEventListener('click', async function (e) {
+        e.preventDefault();
+        if (!catalogoData.productos.length && !catalogoData.combos.length) {
+            try {
+                const resp = await fetch('/Pedido/ItemsDisponibles');
+                catalogoData = await resp.json();
+                renderChecklists(catalogoData);
+            } catch {
+                Swal.fire({ icon: 'error', title: 'No se pudo cargar el catálogo' });
+                return;
+            }
+        }
+        buscarCatalogo.value = '';
+        filtrarCatalogo('');
+        document.querySelectorAll('#checklistProductos input, #checklistCombos input').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.producto-row').forEach(r => r.classList.remove('row-active'));
+        new bootstrap.Modal(modalCatalogo).show();
     });
 
-    cantItem.addEventListener('input', function () { soloNumeros(this); });
-    cantItem.addEventListener('focusout', function () { if (this.value.trim() === '') this.value = 1; });
+    function renderChecklists(data) {
+        const row = (item, tipo) => `<label class="catalogo-row" data-nombre="${item.nombre.toLowerCase()}" data-tipo="${tipo}" data-id="${item.id}" data-precio="${item.precio}"><input type="checkbox" name="selectedItems" value="${item.id}" data-tipo="${tipo}" /><img src="${item.imagen || '/images/placeholder-producto.png'}" alt="${item.nombre}" class="catalogo-thumb" /><span class="catalogo-info"><span class="catalogo-nombre">${item.nombre}</span><span class="catalogo-desc">${item.descripcion || ''}</span></span><span class="catalogo-precio">₡${Number(item.precio).toFixed(2)}</span></label>`;
+        checklistProductos.innerHTML = data.productos.map(p => row(p, 'producto')).join('');
+        checklistCombos.innerHTML = data.combos.map(c => row(c, 'combo')).join('');
+        document.querySelectorAll('.catalogo-row input[type="checkbox"]').forEach(cb => cb.addEventListener('change', function () { this.closest('.catalogo-row').classList.toggle('row-active', this.checked); }));
+    }
 
-    document.getElementById('btnAgregarLinea').addEventListener('click', function () {
-        const opcion = selItem.selectedOptions[0];
-        if (!selItem.value) {
-            Swal.fire({ icon: 'warning', title: 'Elegí un producto o combo' });
-            return;
-        }
+    function filtrarCatalogo(termino) {
+        const term = termino.toLowerCase().trim();
+        document.querySelectorAll('#checklistProductos .catalogo-row, #checklistCombos .catalogo-row').forEach(fila => fila.style.display = (fila.dataset.nombre || '').includes(term) ? '' : 'none');
+    }
 
-        const cantidad = parseInt(cantItem.value || '0', 10);
-        if (!cantidad || cantidad < 1) {
-            Swal.fire({ icon: 'warning', title: 'Indicá una cantidad mayor a cero' });
-            return;
-        }
+    buscarCatalogo?.addEventListener('input', function () { filtrarCatalogo(this.value); });
 
-        const esCombo = opcion.dataset.tipo === 'combo';
-        const url = esCombo ? '/Carrito/AgregarCombo' : '/Carrito/AgregarProducto';
-        const campo = esCombo ? 'idCombo' : 'idProducto';
+    btnAgregarSeleccionados?.addEventListener('click', async function () {
+        const checkboxes = document.querySelectorAll('#checklistProductos input:checked, #checklistCombos input:checked');
+        if (!checkboxes.length) { Swal.fire({ icon: 'warning', title: 'Seleccioná al menos un ítem' }); return; }
+        this.disabled = true;
+        try {
+            await Promise.all([...checkboxes].map(cb => {
+                const tipo = cb.dataset.tipo;
+                return fetch(tipo === 'combo' ? '/Carrito/AgregarCombo' : '/Carrito/AgregarProducto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `${tipo === 'combo' ? 'idCombo' : 'idProducto'}=${encodeURIComponent(cb.value)}&cantidad=1`
+                });
+            }));
+            bootstrap.Modal.getInstance(modalCatalogo).hide();
+            await actualizarResumen();
+        } catch {
+            Swal.fire({ icon: 'error', title: 'Error al agregar algunos ítems' });
+        } finally { this.disabled = false; }
+    });
 
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `${campo}=${encodeURIComponent(selItem.value)}&cantidad=${cantidad}`
-        })
-            .then(async r => {
-                const data = await r.json().catch(() => ({}));
-                if (!r.ok) throw new Error(data.mensaje || 'No se pudo agregar el ítem');
-                return data;
-            })
-            .then(() => {
-                selItem.value = '';
-                cantItem.value = 1;
-                precioItem.textContent = money(0);
-                return actualizarResumen();
-            })
-            .catch(err => {
-                Swal.fire({ icon: 'error', title: 'No se pudo agregar', text: err.message });
-            });
+    modalCatalogo?.addEventListener('hidden.bs.modal', function () {
+        buscarCatalogo.value = '';
+        filtrarCatalogo('');
+        document.querySelectorAll('.catalogo-row input[type="checkbox"]').forEach(cb => { cb.checked = false; cb.closest('.catalogo-row').classList.remove('row-active'); });
     });
 
     /*  Pago  */
@@ -404,7 +405,11 @@
                                 `<a class="dropdown-item" href="#" data-id="${c.idUsuario}"
                                     data-nombre="${c.nombreCompleto}" data-telefono="${c.telefono || ''}"
                                     data-email="${c.email || ''}" data-direccion="${c.direccion || ''}">
-                                    <i class="bi bi-person-circle me-2"></i>${c.nombreCompleto}
+                                    <i class="bi bi-person-circle me-2"></i>
+                                    <div class="d-inline-block">
+                                         <div>${c.nombreCompleto}</div>
+                                         <div class="small text-muted">${c.email || ''}</div>
+                                    </div>
                                 </a>`
                             ).join('');
                         }
