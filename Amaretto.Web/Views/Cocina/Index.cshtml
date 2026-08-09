@@ -1,0 +1,52 @@
+@model ICollection<Amaretto.Application.DTOs.CocinaEstacionViewModel>
+@{
+    ViewData["Title"] = "Estaciones de Cocina";
+}
+
+<section class="historial-section">
+    <div class="container">
+
+        <div class="historial-header">
+            <h1 class="historial-title">
+                <span class="historial-flourish"><i class="bi bi-stars"></i></span>
+                Estaciones de Cocina
+                <span class="historial-flourish"><i class="bi bi-stars"></i></span>
+            </h1>
+            <p class="historial-subtitle">
+                <i class="bi bi-fire"></i> Elegí tu estación para ver la cola de trabajo <i class="bi bi-fire"></i>
+            </p>
+        </div>
+
+        <div class="estacion-grid">
+            @foreach (var e in Model)
+            {
+                <a class="estacion-card" asp-action="Estacion" asp-route-id="@e.IdEstacion">
+                    <div class="estacion-card-icono"><i class="bi bi-fire"></i></div>
+                    <h3 class="estacion-card-nombre">@e.Nombre</h3>
+                    <p class="estacion-card-desc">@e.Descripcion</p>
+
+                    <div class="estacion-card-conteos">
+                        <span class="estacion-conteo is-pendiente">
+                            <strong>@e.Pendientes</strong> pendientes
+                        </span>
+                        <span class="estacion-conteo is-proceso">
+                            <strong>@e.EnProceso</strong> en proceso
+                        </span>
+                        <span class="estacion-conteo is-completado">
+                            <strong>@e.Completadas</strong> listas
+                        </span>
+                    </div>
+                </a>
+            }
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="historial-empty">
+                <i class="bi bi-fire"></i>
+                <p>No hay estaciones activas configuradas.</p>
+            </div>
+        }
+
+    </div>
+</section>

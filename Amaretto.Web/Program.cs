@@ -73,6 +73,7 @@ builder.Services.AddScoped<IServiceUsuarioActual, ServiceUsuarioActual>();
 builder.Services.AddScoped<IServicePedido, ServicePedido>();
 builder.Services.AddScoped<IServicePersonalizacion, ServicePersonalizacion>();
 builder.Services.AddScoped<IServiceNotificacion, ServiceNotificacion>();
+builder.Services.AddScoped<IServiceCocina, ServiceCocina>();
 
 // Estado en memoria para mostrar el resultado en el panel /TareaProgramada.
 // Debe ser Singleton: tiene que sobrevivir entre las distintas ejecuciones del BackgroundService

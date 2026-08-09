@@ -156,34 +156,20 @@ namespace Amaretto.Application.Services.Implementations
 
         private static string NombreArchivo(int idPedido) => $"Factura-Pedido-{idPedido}.pdf";
 
+
         /// <summary>
         /// Texto que acompaña al adjunto. El detalle completo va en la factura
         /// PDF, así que aquí solo se repiten los datos de referencia.
         /// </summary>
+        /// <summary>
+        /// Solo el saludo. Todos los datos del pedido van en la factura adjunta,
+        /// así que el cuerpo no repite nada.
+        /// </summary>
         private static string CuerpoHtml(PedidoDetalleCompletoDTO p)
         {
             return $@"
-<div style=""font-family:Arial,Helvetica,sans-serif;color:#0A3323;max-width:600px;"">
-    <h2 style=""color:#0A3323;margin-bottom:4px;"">Amaretto Cakes</h2>
-    <p style=""color:#839958;margin-top:0;"">Factura del pedido #{p.IdPedido}</p>
-
-    <p>Hola <strong>{Escapar(p.NombreCliente)}</strong>, tu pedido quedó registrado correctamente.</p>
-
-    <p style=""background:#F7F4D5;padding:12px 16px;border-radius:8px;"">
-        Adjuntamos la factura en PDF: <strong>{NombreArchivo(p.IdPedido)}</strong>
-    </p>
-
-    <table style=""border-collapse:collapse;margin:16px 0;"">
-        <tr><td style=""padding:3px 12px 3px 0;""><strong>Fecha</strong></td><td>{p.FechaPedido.ToString("dd/MM/yyyy hh:mm tt", Cultura)}</td></tr>
-        <tr><td style=""padding:3px 12px 3px 0;""><strong>Estado</strong></td><td>{Escapar(p.Estado)}</td></tr>
-        <tr><td style=""padding:3px 12px 3px 0;""><strong>Entrega</strong></td><td>{Escapar(p.MetodoEntrega)}</td></tr>
-        <tr><td style=""padding:3px 12px 3px 0;""><strong>Pago</strong></td><td>{Escapar(p.Pago?.MetodoPago ?? "-")}</td></tr>
-        <tr><td style=""padding:3px 12px 3px 0;""><strong>Total</strong></td><td><strong>{Moneda(p.Total)}</strong></td></tr>
-    </table>
-
-    <p style=""color:#105666;font-size:13px;"">
-        Gracias por tu compra.<br/>Amaretto Cakes — San José, Costa Rica
-    </p>
+<div style=""font-family:Arial,Helvetica,sans-serif;color:#0A3323;"">
+    <p>Hola <strong>{Escapar(p.NombreCliente)}</strong>, tu pedido quedó pago correctamente.</p>
 </div>";
         }
 

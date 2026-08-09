@@ -46,7 +46,6 @@ namespace Amaretto.Infraestructure.Repository.Implementations
             return @object!;
         }
 
-        // ESTACIONES DE UN PROCESO (por IdDetalle)
         public async Task<ICollection<CocinaOrden>> ListByDetalleAsync(int idDetalle)
         {
             return await _context.Set<CocinaOrden>()
@@ -59,7 +58,6 @@ namespace Amaretto.Infraestructure.Repository.Implementations
                 .ToListAsync();
         }
 
-        // CREAR PROCESO
         public async Task AddRangoAsync(int idDetalle, List<CocinaOrdenEstacionInput> estaciones)
         {
             foreach (var e in estaciones)
@@ -75,8 +73,7 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
             await _context.SaveChangesAsync();
         }
-
-        // EDITAR PROCESO: 
+ 
         public async Task ActualizarEstadosAsync(int idDetalle, List<CocinaOrdenUpdateInput> filasExistentes, List<CocinaOrdenEstacionInput> filasNuevas)
         {
             var registros = await _context.Set<CocinaOrden>()
@@ -151,6 +148,117 @@ namespace Amaretto.Infraestructure.Repository.Implementations
             await _context.SaveChangesAsync();
         }
 
+        /*  Panel de estación  */
 
+        /// <summary>
+        /// El estado final depende de cómo se entrega el pedido. Se detecta por
+        /// palabra clave porque en la base conviven métodos viejos (Retiro,
+        /// Retiro en tienda, Express) con los actuales (Domicilio, Recogida).
+        /// </summary>
+        private static string EstadoListo(string metodoEntrega)
+        {
+            var metodo = metodoEntrega ?? string.Empty;
+
+            var esRetiro = metodo.Contains("Retiro", StringComparison.OrdinalIgnoreCase)
+                        || metodo.Contains("Recogida", StringComparison.OrdinalIgnoreCase);
+
+            return esRetiro ? "Listo para retirar" : "Listo para enviar";
+        }
+
+        public async Task<ICollection<CocinaOrden>> ListarPorEstacionAsync(int idEstacion)
+        {
+            return await _context.Set<CocinaOrden>()
+                .AsNoTracking()
+                .Include(x => x.IdEstacionNavigation)
+                .Include(x => x.IdDetalleNavigation).ThenInclude(d => d.IdProductoNavigation)
+                .Include(x => x.IdDetalleNavigation).ThenInclude(d => d.IdComboNavigation)
+                .Include(x => x.IdDetalleNavigation).ThenInclude(d => d.IdPedidoNavigation)
+                .Where(x => x.IdEstacion == idEstacion)
+                .OrderBy(x => x.IdDetalleNavigation.IdPedidoNavigation.FechaPedido)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<CocinaOrden>> ListarHermanosAsync(IEnumerable<int> idsDetalle)
+        {
+            var ids = idsDetalle.Distinct().ToList();
+
+            return await _context.Set<CocinaOrden>()
+                .AsNoTracking()
+                .Include(x => x.IdEstacionNavigation)
+                .Where(x => ids.Contains(x.IdDetalle))
+                .OrderBy(x => x.OrdenPaso)
+                .ToListAsync();
+        }
+
+        public async Task<CocinaAvanceResultado> AvanzarAsync(int idCocinaOrden, string nuevoEstado)
+        {
+            if (nuevoEstado != "En Proceso" && nuevoEstado != "Completado")
+                throw new InvalidOperationException("Estado no válido para la estación.");
+
+            var tarea = await _context.Set<CocinaOrden>()
+                .Include(x => x.IdEstacionNavigation)
+                .Include(x => x.IdDetalleNavigation)
+                    .ThenInclude(d => d.IdPedidoNavigation)
+                    .ThenInclude(p => p.IdUsuarioNavigation)
+                .FirstOrDefaultAsync(x => x.IdCocinaOrden == idCocinaOrden);
+
+            if (tarea == null)
+                throw new InvalidOperationException("La tarea de cocina no existe.");
+
+            // Misma regla que el mantenimiento de procesos: no se puede adelantar
+            // una estación si otra anterior del mismo producto sigue sin terminar.
+            var hermanos = await _context.Set<CocinaOrden>()
+                .Include(x => x.IdEstacionNavigation)
+                .Where(x => x.IdDetalle == tarea.IdDetalle)
+                .ToListAsync();
+
+            var anteriorPendiente = hermanos
+                .Where(h => h.OrdenPaso < tarea.OrdenPaso && h.Estado != "Completado")
+                .OrderBy(h => h.OrdenPaso)
+                .FirstOrDefault();
+
+            if (anteriorPendiente != null)
+                throw new InvalidOperationException(
+                    $"Primero debe completarse \"{anteriorPendiente.IdEstacionNavigation.Nombre}\".");
+
+            var ahora = DateTime.Now;
+            tarea.Estado = nuevoEstado;
+
+            if (tarea.FechaInicio == null)
+                tarea.FechaInicio = ahora;
+
+            tarea.FechaFin = nuevoEstado == "Completado" ? ahora : null;
+
+            // Recalcular el estado del pedido a partir de todos sus pasos
+            var pedido = tarea.IdDetalleNavigation.IdPedidoNavigation;
+            var estadoAnterior = pedido.Estado;
+
+            var pasosDelPedido = await _context.Set<CocinaOrden>()
+                .Where(x => x.IdDetalleNavigation.IdPedido == pedido.IdPedido)
+                .ToListAsync();
+
+            // La tarea actual ya está modificada en memoria pero la consulta la
+            // devuelve con el valor viejo: se fuerza el nuevo antes de evaluar.
+            foreach (var p in pasosDelPedido.Where(p => p.IdCocinaOrden == tarea.IdCocinaOrden))
+                p.Estado = nuevoEstado;
+
+            if (pasosDelPedido.Any())
+            {
+                if (pasosDelPedido.All(p => p.Estado == "Completado"))
+                    pedido.Estado = EstadoListo(pedido.MetodoEntrega);
+                else if (pasosDelPedido.Any(p => p.Estado == "En Proceso" || p.Estado == "Completado"))
+                    pedido.Estado = "En Preparacion";
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new CocinaAvanceResultado(
+                pedido.IdPedido,
+                pedido.IdUsuario,
+                pedido.IdUsuarioNavigation?.NombreCompleto ?? "",
+                pedido.IdUsuarioNavigation?.Email ?? "",
+                pedido.Estado,
+                pedido.Estado != estadoAnterior);
+        }
     }
 }

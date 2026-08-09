@@ -69,6 +69,10 @@ namespace Amaretto.Web.Controllers
                 $"¡Hola, {usuario.NombreCompleto}!",
                 Util.SweetAlertMessageType.success);
 
+            // El cocinero (rol 3) entra directo a su panel de estaciones
+            if (usuario.IdRol == 3)
+                return RedirectToAction("Index", "Cocina");
+
             return RedirectToAction("Index", "Home");
         }
 
