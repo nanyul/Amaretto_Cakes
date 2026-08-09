@@ -20,6 +20,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Licencia de QuestPDF, usada para generar la factura del pedido en PDF.
+// Debe quedar establecida antes de generar cualquier documento.
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
 // Mapeo de la clase AppConfig para leer appsettings.json
 builder.Services.Configure<AppConfig>(builder.Configuration);
 
@@ -49,6 +53,7 @@ builder.Services.AddTransient<IRepositoryIngrediente, RepositoryIngrediente>();
 builder.Services.AddScoped<IRepositoryPedidoDetalle, RepositoryPedidoDetalle>();
 builder.Services.AddScoped<IRepositoryTareaMenuVencido, RepositoryTareaMenuVencido>();
 builder.Services.AddScoped<IRepositoryPedido, RepositoryPedido>();
+builder.Services.AddScoped<IRepositoryNotificacion, RepositoryNotificacion>();
 
 
 //Services
@@ -67,6 +72,7 @@ builder.Services.AddScoped<IServiceCarrito, ServiceCarrito>();
 builder.Services.AddScoped<IServiceUsuarioActual, ServiceUsuarioActual>();
 builder.Services.AddScoped<IServicePedido, ServicePedido>();
 builder.Services.AddScoped<IServicePersonalizacion, ServicePersonalizacion>();
+builder.Services.AddScoped<IServiceNotificacion, ServiceNotificacion>();
 
 // Estado en memoria para mostrar el resultado en el panel /TareaProgramada.
 // Debe ser Singleton: tiene que sobrevivir entre las distintas ejecuciones del BackgroundService
@@ -157,6 +163,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
+
+// Sin este middleware la cookie de autenticacion nunca se traduce a claims, y
+// IServiceUsuarioActual no podria identificar al usuario ni leer su rol.
+app.UseAuthentication();
 
 app.UseAuthorization();
 

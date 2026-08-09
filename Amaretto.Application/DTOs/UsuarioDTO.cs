@@ -15,5 +15,6 @@ namespace Amaretto.Application.DTOs
         public string Email { get; set; } = null!;
         public string? Telefono { get; set; }
         public string? Direccion { get; set; }
+        public bool Estado { get; set; }
     }
 }

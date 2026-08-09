@@ -1,0 +1,138 @@
+@model Amaretto.Application.DTOs.UsuarioMantenimientoDTO
+@using Amaretto.Application.DTOs
+
+@{
+    ViewData["Title"] = "Crear Usuario";
+    var roles = (ICollection<RolDTO>)ViewBag.ListRoles;
+}
+
+<section class="product-form-section">
+    <div class="container">
+        <div class="product-form-header-row">
+            <h1 class="product-form-title">Crear Usuario</h1>
+            <p class="product-form-subtitle">Completa la información para dar de alta una cuenta.</p>
+            <nav class="product-breadcrumb">
+                <a asp-controller="Home" asp-action="Index" class="breadcrumb-link"><i class="bi bi-house-door-fill"></i></a>
+                <span class="breadcrumb-sep">›</span>
+                <a asp-action="Index" class="breadcrumb-link">Usuarios</a>
+                <span class="breadcrumb-sep">›</span>
+                <span class="breadcrumb-current">Crear nuevo</span>
+            </nav>
+        </div>
+
+        <form asp-action="Create" method="post" class="product-form-card">
+            @Html.AntiForgeryToken()
+
+            <h5 class="form-section-title"><i class="bi bi-person-badge"></i> Datos de la cuenta</h5>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <div class="col-md-7 form-field">
+                    <label asp-for="NombreCompleto" class="form-label-custom">
+                        Nombre completo <span class="required-mark">*</span>
+                    </label>
+                    <small class="field-hint">Nombre y apellidos de la persona.</small>
+                    <input asp-for="NombreCompleto" class="form-control-amaretto" placeholder="Ej. María Rodríguez" />
+                    <span asp-validation-for="NombreCompleto" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-5 form-field">
+                    <label asp-for="IdRol" class="form-label-custom">Rol <span class="required-mark">*</span></label>
+                    <small class="field-hint">Define qué puede hacer dentro del sistema.</small>
+                    <select asp-for="IdRol" class="form-control-amaretto"
+                            asp-items="@(new SelectList(roles, "IdRol", "Descripcion"))">
+                        <option value="0">Seleccionar rol</option>
+                    </select>
+                    <span asp-validation-for="IdRol" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-md-7 form-field">
+                    <label asp-for="Email" class="form-label-custom">
+                        Correo electrónico <span class="required-mark">*</span>
+                    </label>
+                    <small class="field-hint">Con este correo inicia sesión. No puede repetirse.</small>
+                    <input asp-for="Email" class="form-control-amaretto" placeholder="nombre@correo.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-5 form-field">
+                    <label asp-for="Telefono" class="form-label-custom">Teléfono</label>
+                    <small class="field-hint">Número de contacto.</small>
+                    <input asp-for="Telefono" class="form-control-amaretto" placeholder="8888 0000" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-md-8 form-field">
+                    <label asp-for="Direccion" class="form-label-custom">Dirección</label>
+                    <small class="field-hint">Dirección de entrega habitual.</small>
+                    <input asp-for="Direccion" class="form-control-amaretto" placeholder="San José, Costa Rica" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 form-field">
+                    <label asp-for="Sexo" class="form-label-custom">Sexo</label>
+                    <small class="field-hint">Opcional.</small>
+                    <select asp-for="Sexo" class="form-control-amaretto">
+                        <option value="">Sin especificar</option>
+                        <option value="F">Femenino</option>
+                        <option value="M">Masculino</option>
+                    </select>
+                </div>
+            </div>
+
+            <h5 class="form-section-title mt-4"><i class="bi bi-shield-lock"></i> Contraseña</h5>
+            <p class="field-hint mb-3">
+                <i class="bi bi-lock-fill"></i>
+                Se guarda encriptada; ni el administrador puede verla después.
+            </p>
+
+            <div class="row g-3">
+                <div class="col-md-6 form-field">
+                    <label asp-for="Password" class="form-label-custom">
+                        Contraseña <span class="required-mark">*</span>
+                    </label>
+                    <small class="field-hint">Mínimo 6 caracteres.</small>
+                    <input asp-for="Password" type="password" class="form-control-amaretto" autocomplete="new-password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 form-field">
+                    <label asp-for="ConfirmPassword" class="form-label-custom">
+                        Confirmar contraseña <span class="required-mark">*</span>
+                    </label>
+                    <small class="field-hint">Debe coincidir con la anterior.</small>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control-amaretto" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-field mt-4">
+                <label class="form-label-custom">Estado</label>
+                <small class="field-hint">Un usuario inactivo no puede iniciar sesión.</small>
+                <div class="status-toggle-wrap">
+                    <label class="switch-toggle">
+                        <input asp-for="Estado" type="checkbox" id="estadoToggle" />
+                        <span class="switch-slider"></span>
+                    </label>
+                    <span id="estadoLabel" class="status-toggle-label"></span>
+                </div>
+            </div>
+
+            <div class="product-form-footer">
+                <a asp-action="Index" class="btn-form-cancel">Cancelar</a>
+                <div class="footer-actions-right">
+                    <button type="submit" class="btn-form-submit"><i class="bi bi-save"></i> Guardar usuario</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/usuario-form.js" asp-append-version="true"></script>
+}

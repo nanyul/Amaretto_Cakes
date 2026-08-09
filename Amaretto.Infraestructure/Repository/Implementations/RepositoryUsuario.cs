@@ -42,10 +42,30 @@ public class RepositoryUsuario : IRepositoryUsuario
         return usuario;
     }
 
+    public async Task UpdateAsync(Usuario usuario)
+    {
+        _context.Usuario.Update(usuario);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<bool> ExistsByEmailAsync(string email)
     {
         return await _context.Usuario
             .AnyAsync(u => u.Email == email);
+    }
+
+    public async Task<bool> ExistsByEmailAsync(string email, int idExcluir)
+    {
+        return await _context.Usuario
+            .AnyAsync(u => u.Email == email && u.IdUsuario != idExcluir);
+    }
+
+    public async Task<ICollection<Rol>> ListarRolesAsync()
+    {
+        return await _context.Rol
+            .AsNoTracking()
+            .OrderBy(r => r.Descripcion)
+            .ToListAsync();
     }
 
     public async Task<List<Usuario>> ObtenerPorRolAsync(string rol)

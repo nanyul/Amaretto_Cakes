@@ -84,10 +84,13 @@ namespace Amaretto.Application.Services.Implementations
 
         public int ObtenerCantidadTotal() => ObtenerCarrito().Sum(i => i.Cantidad);
 
-        public void ActualizarObservaciones(string idItem, string tipo, string? observaciones)
+        public void ActualizarObservaciones(string idItem, string tipo, string? observaciones, string? lineaId = null)
         {
             var carrito = ObtenerCarrito();
-            var existente = carrito.FirstOrDefault(i => i.IdItem == idItem && i.Tipo == tipo);
+            var existente = lineaId != null
+                ? carrito.FirstOrDefault(i => i.LineaId == lineaId)
+                : carrito.FirstOrDefault(i => i.IdItem == idItem && i.Tipo == tipo);
+
             if (existente == null) return;
             existente.Observaciones = observaciones;
             Guardar(carrito);

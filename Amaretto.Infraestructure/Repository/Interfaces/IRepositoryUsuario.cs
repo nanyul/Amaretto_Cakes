@@ -13,8 +13,17 @@ namespace Amaretto.Infraestructure.Repository.Interfaces
         Task<Usuario> FindByIdAsync(int id);
         Task<Usuario?> FindByEmailAsync(string email);
         Task<Usuario> AddAsync(Usuario usuario);
+        Task UpdateAsync(Usuario usuario);
         Task<bool> ExistsByEmailAsync(string email);
+
+        /// <summary>
+        /// Igual que ExistsByEmailAsync pero ignorando un usuario concreto, para
+        /// que al editar no choque contra su propio correo.
+        /// </summary>
+        Task<bool> ExistsByEmailAsync(string email, int idExcluir);
+
         Task<List<Usuario>> ObtenerPorRolAsync(string rol);
         Task<List<Usuario>> BuscarClientesAsync(string termino);
+        Task<ICollection<Rol>> ListarRolesAsync();
     }
 }

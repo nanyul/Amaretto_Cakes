@@ -30,6 +30,8 @@ public partial class AmarettoContext : DbContext
 
     public virtual DbSet<MenuProducto> MenuProducto { get; set; }
 
+    public virtual DbSet<Notificacion> Notificacion { get; set; }
+
     public virtual DbSet<Pago> Pago { get; set; }
 
     public virtual DbSet<Pedido> Pedido { get; set; }
@@ -254,6 +256,38 @@ public partial class AmarettoContext : DbContext
                 .HasForeignKey(d => d.IdPedido)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Pago__IdPedido__7F2BE32F");
+        });
+
+        modelBuilder.Entity<Notificacion>(entity =>
+        {
+            entity.HasKey(e => e.IdNotificacion).HasName("PK_Notificacion");
+
+            entity.Property(e => e.Titulo)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.Mensaje)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.Tipo)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasDefaultValue("Pedido");
+            entity.Property(e => e.DetalleEnvio)
+                .HasMaxLength(300)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            // Navegación en un solo sentido: no hace falta tocar Usuario ni Pedido
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany()
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Notificacion_Usuario");
+
+            entity.HasOne(d => d.IdPedidoNavigation).WithMany()
+                .HasForeignKey(d => d.IdPedido)
+                .HasConstraintName("FK_Notificacion_Pedido");
         });
 
         modelBuilder.Entity<Pedido>(entity =>
