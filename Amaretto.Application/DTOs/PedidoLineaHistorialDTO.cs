@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace Amaretto.Application.DTOs
 {
-    /// <summary>
-    /// Línea ya registrada de un pedido. A diferencia de PedidoDetalleLineaDTO
-    /// (que calcula los montos del carrito), aquí los importes se leen tal cual
-    /// quedaron guardados en la base de datos.
-    /// </summary>
     public class PedidoLineaHistorialDTO
     {
         public int IdDetalle { get; set; }

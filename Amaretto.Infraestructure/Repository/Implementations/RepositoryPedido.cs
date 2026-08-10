@@ -38,16 +38,12 @@ namespace Amaretto.Infraestructure.Repository.Implementations
                 .Include(p => p.PedidoDetalle)
                 .AsQueryable();
 
-            // Un cliente solo puede ver sus propios pedidos; para los gestores
-            // llega en null y la consulta devuelve el historial completo.
             if (idCliente.HasValue)
                 query = query.Where(p => p.IdUsuario == idCliente.Value);
 
             if (fechaDesde.HasValue)
                 query = query.Where(p => p.FechaPedido >= fechaDesde.Value.Date);
 
-            // La fecha final es inclusiva: se compara contra el inicio del día
-            // siguiente para no perder los pedidos hechos durante ese mismo día.
             if (fechaHasta.HasValue)
             {
                 var limite = fechaHasta.Value.Date.AddDays(1);

@@ -1,13 +1,4 @@
-/*
-    Amaretto Cakes - Tabla de notificaciones
-    ----------------------------------------
-    Guarda la notificación que se genera al registrar un pedido. Alimenta la
-    campana del encabezado y deja constancia de si el correo de confirmación
-    salió o no.
 
-    Ejecutar una sola vez sobre la base AmarettoDB. El script es idempotente:
-    si la tabla ya existe no hace nada.
-*/
 
 USE [AmarettoDB]
 GO
@@ -47,6 +38,4 @@ BEGIN
 END
 GO
 
-/*  Para revertir:
-    DROP TABLE [dbo].[Notificacion]
-*/
+

@@ -28,10 +28,8 @@ namespace Amaretto.Application.DTOs
         public decimal Total { get; set; }
         public decimal? Vuelto { get; set; }
 
-        /// <summary>Estado con el que quedó el pedido tras el pago.</summary>
         public string Estado { get; set; } = null!;
 
-        /// <summary>Resultado del envío del comprobante por correo.</summary>
         public bool CorreoEnviado { get; set; }
         public string? DetalleNotificacion { get; set; }
     }

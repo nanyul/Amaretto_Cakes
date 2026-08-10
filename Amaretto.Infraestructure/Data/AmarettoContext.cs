@@ -279,7 +279,6 @@ public partial class AmarettoContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
 
-            // Navegación en un solo sentido: no hace falta tocar Usuario ni Pedido
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany()
                 .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)

@@ -56,7 +56,7 @@ namespace Amaretto.Infraestructure.Repository.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Notificacion?> UltimaPorPedidoAsync(int idPedido)
+        public async Task<Notificacion?> BuscarPorPedidoAsync(int idPedido)
         {
             return await _context.Notificacion
                 .AsNoTracking()

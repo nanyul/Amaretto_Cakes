@@ -5,10 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Amaretto.Web.Controllers
 {
-    /// <summary>
-    /// Todo el módulo de pedidos exige sesión: el usuario identificado es el que
-    /// determina si se registra como cliente o como encargado y qué historial ve.
-    /// </summary>
     [Authorize]
     public class PedidoController : Controller
     {
@@ -38,11 +34,6 @@ namespace Amaretto.Web.Controllers
             _serviceNotificacion = serviceNotificacion;
         }
 
-        /// <summary>
-        /// Productos y combos activos para el selector de líneas del formulario.
-        /// Devuelve el precio junto al nombre para que la interfaz lo muestre
-        /// apenas se selecciona el ítem, sin una segunda ida al servidor.
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> ItemsDisponibles()
         {
@@ -113,8 +104,6 @@ namespace Amaretto.Web.Controllers
         }
 
         // HISTORIAL DE PEDIDOS
-        // El alcance del listado lo decide el rol del usuario en sesión, que el
-        // servicio resuelve a partir de IServiceUsuarioActual.
         [HttpGet]
         public async Task<IActionResult> Historial(DateTime? fechaDesde, DateTime? fechaHasta, string? estado)
         {
@@ -139,10 +128,6 @@ namespace Amaretto.Web.Controllers
             }
         }
 
-        /// <summary>
-        /// Comprobante que confirma el registro del pedido. Es la notificación
-        /// en pantalla: se sirve desde el servidor, no es un mensaje de JavaScript.
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> Comprobante(int id)
         {
@@ -151,11 +136,11 @@ namespace Amaretto.Web.Controllers
 
             try
             {
-                var detalle = await _servicePedido.ObtenerDetalleHistorialAsync(id);
+                var detalle = await _servicePedido.ObtenerDetalleAsync(id);
                 if (detalle == null)
                     return RedirectToAction("Historial");
 
-                ViewBag.Notificacion = await _serviceNotificacion.ObtenerDePedidoAsync(id);
+                ViewBag.Notificacion = await _serviceNotificacion.ObtenerPorPedidoAsync(id);
                 return View(detalle);
             }
             catch (UnauthorizedAccessException)
@@ -172,7 +157,7 @@ namespace Amaretto.Web.Controllers
 
             try
             {
-                var detalle = await _servicePedido.ObtenerDetalleHistorialAsync(id);
+                var detalle = await _servicePedido.ObtenerDetalleAsync(id);
 
                 if (detalle == null)
                 {

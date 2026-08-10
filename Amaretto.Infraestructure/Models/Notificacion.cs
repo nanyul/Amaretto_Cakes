@@ -21,14 +21,8 @@ public partial class Notificacion
 
     public DateTime FechaCreacion { get; set; }
 
-    /// <summary>
-    /// Indica si el correo de confirmación salió del servidor SMTP.
-    /// </summary>
     public bool CorreoEnviado { get; set; }
 
-    /// <summary>
-    /// Motivo cuando el envío falla, para poder mostrarlo en el comprobante.
-    /// </summary>
     public string? DetalleEnvio { get; set; }
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;

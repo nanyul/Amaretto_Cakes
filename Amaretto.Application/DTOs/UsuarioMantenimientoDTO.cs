@@ -8,11 +8,6 @@ using System.Threading.Tasks;
 
 namespace Amaretto.Application.DTOs
 {
-    /// <summary>
-    /// Datos del formulario de crear y editar usuarios. La contraseña viaja en
-    /// texto plano solo desde el formulario hasta el servicio, que es el único
-    /// que la encripta antes de guardarla.
-    /// </summary>
     public class UsuarioMantenimientoDTO
     {
         [ValidateNever]
@@ -48,10 +43,6 @@ namespace Amaretto.Application.DTOs
         [Display(Name = "Estado")]
         public bool Estado { get; set; } = true;
 
-        /// <summary>
-        /// Al crear es obligatoria. Al editar, si se deja vacía se conserva la
-        /// contraseña que el usuario ya tenía.
-        /// </summary>
         [Display(Name = "Contraseña")]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
@@ -60,9 +51,6 @@ namespace Amaretto.Application.DTOs
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; }
 
-        /// <summary>
-        /// Distingue el alta de la edición para aplicar las reglas de contraseña.
-        /// </summary>
         [ValidateNever]
         public bool EsEdicion => IdUsuario > 0;
     }

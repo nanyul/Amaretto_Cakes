@@ -4,7 +4,7 @@
     var esAdministrador = UsuarioActual.EstaAutenticado && UsuarioActual.IdRol == 1;
     var esCocinero = UsuarioActual.EstaAutenticado && UsuarioActual.IdRol == 3;
     var esEncargado = UsuarioActual.EstaAutenticado && UsuarioActual.IdRol == 4;
-    var esGestor = esAdministrador || esEncargado;
+    var esAdminOEncargado = esAdministrador || esEncargado;
 }
 
 <nav class="navbar navbar-expand-lg navbar-amaretto">
@@ -61,8 +61,8 @@
                     </ul>
                 </li>
 
-                <!-- Cocina: el cocinero solo ve esto; los gestores además supervisan -->
-                @if (esCocinero || esGestor)
+                <!-- Cocina -->
+                @if (esCocinero || esAdminOEncargado)
                 {
                     <li class="nav-item">
                         <a asp-controller="Cocina" asp-action="Index" class="nav-link nav-link-amaretto">
@@ -73,7 +73,7 @@
                 }
 
                 <!-- Mantenimiento -->
-                @if (esGestor)
+                @if (esAdminOEncargado)
                 {
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -117,7 +117,7 @@
                 }
 
                 <!-- Proceso -->
-                @if (esGestor)
+                @if (esAdminOEncargado)
                 {
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -140,7 +140,7 @@
                 }
 
                 <!-- Reportes -->
-                @if (esGestor)
+                @if (esAdminOEncargado)
                 {
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -216,7 +216,7 @@
                     </li>
                 }
 
-                <!-- Carrito: la cantidad es la suma de todas las líneas del pedido -->
+                <!-- Carrito -->
                 <li class="nav-item">
                     <a asp-controller="Pedido"
                        asp-action="Registrar"
@@ -258,7 +258,6 @@
                             </li>
                             <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
                             <li>
-                                @* El rol decide el alcance: los gestores ven todos los pedidos, el cliente solo los suyos *@
                                 <a class="dropdown-item dropdown-item-amaretto"
                                    asp-controller="Pedido" asp-action="Historial">
                                     <i class="bi bi-clock-history me-2"></i>

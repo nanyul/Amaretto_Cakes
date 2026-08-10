@@ -19,10 +19,6 @@ namespace Amaretto.Application.DTOs
         public string? DetalleEnvio { get; set; }
     }
 
-    /// <summary>
-    /// Resultado del intento de notificación: sirve para que el comprobante
-    /// diga si el correo de confirmación salió y, si no, por qué.
-    /// </summary>
     public class ResultadoNotificacionDTO
     {
         public bool CorreoEnviado { get; set; }

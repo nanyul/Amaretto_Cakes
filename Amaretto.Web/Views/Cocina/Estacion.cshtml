@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = $"Estación: {Model.Nombre}";
 
-    // Primero lo que falta hacer, al final lo ya terminado
     var orden = new Dictionary<string, int> { ["En Proceso"] = 0, ["Pendiente"] = 1, ["Completado"] = 2 };
     var tareas = Model.Tareas
         .OrderBy(t => orden.TryGetValue(t.Estado, out var o) ? o : 3)
@@ -130,7 +129,7 @@
                                     else if (t.Bloqueada)
                                     {
                                         <span class="cocina-bloqueada">
-                                            <i class="bi bi-lock-fill"></i> Esperando @t.EsperandoA
+                                            <i class="bi bi-lock-fill"></i> Esperando @t.EstacionAnterior
                                         </span>
                                     }
                                     else

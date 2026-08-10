@@ -150,11 +150,6 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
         /*  Panel de estación  */
 
-        /// <summary>
-        /// El estado final depende de cómo se entrega el pedido. Se detecta por
-        /// palabra clave porque en la base conviven métodos viejos (Retiro,
-        /// Retiro en tienda, Express) con los actuales (Domicilio, Recogida).
-        /// </summary>
         private static string EstadoListo(string metodoEntrega)
         {
             var metodo = metodoEntrega ?? string.Empty;
@@ -178,7 +173,7 @@ namespace Amaretto.Infraestructure.Repository.Implementations
                 .ToListAsync();
         }
 
-        public async Task<ICollection<CocinaOrden>> ListarHermanosAsync(IEnumerable<int> idsDetalle)
+        public async Task<ICollection<CocinaOrden>> ListarPasosAsync(IEnumerable<int> idsDetalle)
         {
             var ids = idsDetalle.Distinct().ToList();
 
@@ -205,14 +200,12 @@ namespace Amaretto.Infraestructure.Repository.Implementations
             if (tarea == null)
                 throw new InvalidOperationException("La tarea de cocina no existe.");
 
-            // Misma regla que el mantenimiento de procesos: no se puede adelantar
-            // una estación si otra anterior del mismo producto sigue sin terminar.
-            var hermanos = await _context.Set<CocinaOrden>()
+            var pasos = await _context.Set<CocinaOrden>()
                 .Include(x => x.IdEstacionNavigation)
                 .Where(x => x.IdDetalle == tarea.IdDetalle)
                 .ToListAsync();
 
-            var anteriorPendiente = hermanos
+            var anteriorPendiente = pasos
                 .Where(h => h.OrdenPaso < tarea.OrdenPaso && h.Estado != "Completado")
                 .OrderBy(h => h.OrdenPaso)
                 .FirstOrDefault();
@@ -229,7 +222,6 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
             tarea.FechaFin = nuevoEstado == "Completado" ? ahora : null;
 
-            // Recalcular el estado del pedido a partir de todos sus pasos
             var pedido = tarea.IdDetalleNavigation.IdPedidoNavigation;
             var estadoAnterior = pedido.Estado;
 
@@ -237,8 +229,6 @@ namespace Amaretto.Infraestructure.Repository.Implementations
                 .Where(x => x.IdDetalleNavigation.IdPedido == pedido.IdPedido)
                 .ToListAsync();
 
-            // La tarea actual ya está modificada en memoria pero la consulta la
-            // devuelve con el valor viejo: se fuerza el nuevo antes de evaluar.
             foreach (var p in pasosDelPedido.Where(p => p.IdCocinaOrden == tarea.IdCocinaOrden))
                 p.Estado = nuevoEstado;
 

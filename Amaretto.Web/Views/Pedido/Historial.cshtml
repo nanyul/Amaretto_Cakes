@@ -1,8 +1,7 @@
 @model Amaretto.Application.DTOs.PedidoHistorialViewModel
 @{
-    ViewData["Title"] = Model.EsGestor ? "Historial de Pedidos" : "Mis Pedidos";
+    ViewData["Title"] = Model.EsAdminOEncargado ? "Historial de Pedidos" : "Mis Pedidos";
 
-    // Clase del badge según el estado guardado del pedido
     string ClaseEstado(string estado) => estado switch
     {
         "Pagado" => "is-pagado",
@@ -36,7 +35,7 @@
                 </h1>
                 <p class="historial-subtitle">
                     <i class="bi bi-heart-fill"></i>
-                    @(Model.EsGestor
+                    @(Model.EsAdminOEncargado
                         ? "Todos los pedidos de la pastelería, del más reciente al más antiguo"
                         : "Tus pedidos, del más reciente al más antiguo")
                     <i class="bi bi-heart-fill"></i>
@@ -46,7 +45,6 @@
                 </span>
             </div>
 
-            <!-- Usuario identificado en la sesión: define qué pedidos se listan -->
             <div class="historial-user-chip">
                 <i class="bi bi-person-circle"></i>
                 <div>
@@ -56,7 +54,7 @@
             </div>
         </div>
 
-        @if (Model.EsGestor)
+        @if (Model.EsAdminOEncargado)
         {
             <form asp-action="Historial" method="get" class="historial-filtros">
                 <div class="historial-filtro-campo">
@@ -103,7 +101,7 @@
                         <tr>
                             <th><i class="bi bi-hash"></i> Pedido</th>
                             <th><i class="bi bi-calendar3"></i> Fecha</th>
-                            @if (Model.EsGestor)
+                            @if (Model.EsAdminOEncargado)
                             {
                                 <th><i class="bi bi-person-fill"></i> Cliente</th>
                                 <th><i class="bi bi-person-badge-fill"></i> Encargado</th>
@@ -126,7 +124,7 @@
                                     <span class="historial-fecha">@pedido.FechaPedido.ToString("dd/MM/yyyy")</span>
                                     <span class="historial-hora">@pedido.FechaPedido.ToString("hh:mm tt")</span>
                                 </td>
-                                @if (Model.EsGestor)
+                                @if (Model.EsAdminOEncargado)
                                 {
                                     <td data-label="Cliente">@pedido.NombreCliente</td>
                                     <td data-label="Encargado">
@@ -165,7 +163,7 @@
                         {
                             @:No hay pedidos que coincidan con los filtros seleccionados.
                         }
-                        else if (Model.EsGestor)
+                        else if (Model.EsAdminOEncargado)
                         {
                             @:Todavía no hay pedidos registrados.
                         }
@@ -174,7 +172,7 @@
                             @:Todavía no has realizado ningún pedido.
                         }
                     </p>
-                    @if (!Model.EsGestor)
+                    @if (!Model.EsAdminOEncargado)
                     {
                         <a asp-controller="Producto" asp-action="Catalogo" class="btn-ver-detalle mt-3">
                             <i class="bi bi-cake2"></i> Ver catálogo

@@ -24,11 +24,6 @@ namespace Amaretto.Application.Services.Implementations
         private readonly IRepositoryPedido _repoPedido;
         private readonly IMapper _mapper;
 
-        /// <summary>
-        /// Variable que identifica al usuario en sesión. Lee los claims en cada
-        /// acceso, así que si cambia el usuario que inició sesión cambian también
-        /// su Id y su rol, y con ellos las gestiones que el servicio permite.
-        /// </summary>
         private readonly IServiceUsuarioActual _usuarioActual;
 
         private readonly IServiceNotificacion _serviceNotificacion;
@@ -187,12 +182,9 @@ namespace Amaretto.Application.Services.Implementations
             await _repoPedido.CrearAsync(pedido);
             _carritoService.Vaciar();
 
-            // Ya registrado y con el estado actualizado, se notifica al cliente:
-            // el comprobante sale por correo y queda en su campana de avisos.
-            // Se relee con los Include para armar el comprobante completo.
             var registrado = await _repoPedido.FindByIdAsync(pedido.IdPedido);
             var notificacion = registrado != null
-                ? await _serviceNotificacion.NotificarPedidoRegistradoAsync(MapearDetalle(registrado, esGestor: false))
+                ? await _serviceNotificacion.NotificarPedidoRegistradoAsync(MapearDetalle(registrado, esAdminOEncargado: false))
                 : new ResultadoNotificacionDTO { CorreoEnviado = false, Detalle = "No se pudo recuperar el pedido para notificar." };
 
             return new PedidoResultadoDTO
@@ -209,24 +201,22 @@ namespace Amaretto.Application.Services.Implementations
         public async Task<PedidoHistorialViewModel> ObtenerHistorialAsync(DateTime? fechaDesde, DateTime? fechaHasta, string? estado)
         {
             var usuario = ObtenerUsuarioEnSesion();
-            var esGestor = EsGestor(usuario.IdRol);
+            var esAdminOEncargado = EsAdminOEncargado(usuario.IdRol);
 
-            // El cliente solo ve sus propios pedidos y sin filtros; el
-            // administrador y el encargado ven todos y sí pueden filtrar.
             var pedidos = await _repoPedido.ListarHistorialAsync(
-                idCliente: esGestor ? null : usuario.IdUsuario,
-                fechaDesde: esGestor ? fechaDesde : null,
-                fechaHasta: esGestor ? fechaHasta : null,
-                estado: esGestor ? estado : null);
+                idCliente: esAdminOEncargado ? null : usuario.IdUsuario,
+                fechaDesde: esAdminOEncargado ? fechaDesde : null,
+                fechaHasta: esAdminOEncargado ? fechaHasta : null,
+                estado: esAdminOEncargado ? estado : null);
 
             return new PedidoHistorialViewModel
             {
                 UsuarioActual = usuario,
-                EsGestor = esGestor,
-                FechaDesde = esGestor ? fechaDesde : null,
-                FechaHasta = esGestor ? fechaHasta : null,
-                Estado = esGestor ? estado : null,
-                EstadosDisponibles = esGestor
+                EsAdminOEncargado = esAdminOEncargado,
+                FechaDesde = esAdminOEncargado ? fechaDesde : null,
+                FechaHasta = esAdminOEncargado ? fechaHasta : null,
+                Estado = esAdminOEncargado ? estado : null,
+                EstadosDisponibles = esAdminOEncargado
                     ? (await _repoPedido.ListarEstadosAsync()).ToList()
                     : new List<string>(),
                 Pedidos = pedidos.Select(p => new PedidoHistorialDTO
@@ -243,23 +233,22 @@ namespace Amaretto.Application.Services.Implementations
             };
         }
 
-        public async Task<PedidoDetalleCompletoDTO?> ObtenerDetalleHistorialAsync(int idPedido)
+        public async Task<PedidoDetalleCompletoDTO?> ObtenerDetalleAsync(int idPedido)
         {
             var usuario = ObtenerUsuarioEnSesion();
-            var esGestor = EsGestor(usuario.IdRol);
+            var esAdminOEncargado = EsAdminOEncargado(usuario.IdRol);
 
             var pedido = await _repoPedido.FindByIdAsync(idPedido);
             if (pedido == null)
                 return null;
 
-            // Quien no gestiona pedidos solo puede abrir el detalle de los propios.
-            if (!esGestor && pedido.IdUsuario != usuario.IdUsuario)
+            if (!esAdminOEncargado && pedido.IdUsuario != usuario.IdUsuario)
                 throw new UnauthorizedAccessException("El pedido no pertenece al usuario en sesión.");
 
-            return MapearDetalle(pedido, esGestor);
+            return MapearDetalle(pedido, esAdminOEncargado);
         }
 
-        private static PedidoDetalleCompletoDTO MapearDetalle(Pedido pedido, bool esGestor)
+        private static PedidoDetalleCompletoDTO MapearDetalle(Pedido pedido, bool esAdminOEncargado)
         {
             return new PedidoDetalleCompletoDTO
             {
@@ -278,7 +267,7 @@ namespace Amaretto.Application.Services.Implementations
                 Impuesto = pedido.Impuesto,
                 CostoEnvio = pedido.CostoEnvio,
                 Total = pedido.Total,
-                EsGestor = esGestor,
+                EsAdminOEncargado = esAdminOEncargado,
                 Lineas = pedido.PedidoDetalle.Select(MapearLinea).ToList(),
                 Pago = pedido.Pago
                     .OrderByDescending(pg => pg.FechaPago)
@@ -299,7 +288,6 @@ namespace Amaretto.Application.Services.Implementations
 
         private static PedidoLineaHistorialDTO MapearLinea(PedidoDetalle detalle)
         {
-            // Cada línea apunta a un producto o a un combo, nunca a los dos.
             var esCombo = detalle.IdCombo != null;
 
             var linea = new PedidoLineaHistorialDTO
@@ -343,16 +331,9 @@ namespace Amaretto.Application.Services.Implementations
             return linea;
         }
 
-        /// <summary>
-        /// Administrador y Encargado gestionan el historial completo.
-        /// </summary>
-        private static bool EsGestor(int idRol) =>
+        private static bool EsAdminOEncargado(int idRol) =>
             idRol == ROL_ADMINISTRADOR || idRol == ROL_ENCARGADO;
 
-        /// <summary>
-        /// Toma los datos del usuario identificado en la sesión. Si nadie inició
-        /// sesión no hay historial que mostrar.
-        /// </summary>
         private UsuarioDTO ObtenerUsuarioEnSesion()
         {
             if (!_usuarioActual.EstaAutenticado)

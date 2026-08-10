@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Amaretto.Web.Controllers
 {
-    /// <summary>
-    /// Alimenta la campana de notificaciones del encabezado.
-    /// </summary>
     [Authorize]
     public class NotificacionController : Controller
     {
@@ -18,9 +15,9 @@ namespace Amaretto.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Mias()
+        public async Task<IActionResult> Listar()
         {
-            var lista = await _serviceNotificacion.ListarMiasAsync();
+            var lista = await _serviceNotificacion.ListarAsync();
             var noLeidas = await _serviceNotificacion.ContarNoLeidasAsync();
 
             return Json(new
@@ -42,7 +39,7 @@ namespace Amaretto.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> MarcarLeidas()
         {
-            await _serviceNotificacion.MarcarMiasLeidasAsync();
+            await _serviceNotificacion.MarcarLeidasAsync();
             return Json(new { success = true });
         }
     }
