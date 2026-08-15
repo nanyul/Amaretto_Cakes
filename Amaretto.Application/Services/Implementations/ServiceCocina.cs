@@ -36,7 +36,7 @@ namespace Amaretto.Application.Services.Implementations
 
             foreach (var estacion in estaciones)
             {
-                var vm = await ArmarEstacionAsync(estacion);
+                var vm = await CargarEstacionAsync(estacion);
                 resultado.Add(vm);
             }
 
@@ -48,7 +48,7 @@ namespace Amaretto.Application.Services.Implementations
             var estacion = (await _repoEstacion.ListAsync())
                 .FirstOrDefault(e => e.IdEstacion == idEstacion);
 
-            return estacion == null ? null : await ArmarEstacionAsync(estacion);
+            return estacion == null ? null : await CargarEstacionAsync(estacion);
         }
 
         public async Task<string> AvanzarTareaAsync(int idCocinaOrden, string nuevoEstado)
@@ -58,8 +58,6 @@ namespace Amaretto.Application.Services.Implementations
             if (!avance.CambioEstado)
                 return nuevoEstado == "Completado" ? "Estación completada." : "Estación iniciada.";
 
-            // El pedido cambió de estado: le queda el aviso en la campana.
-            // No se manda correo: el único correo del flujo es la factura.
             await _repoNotificacion.CrearAsync(new Notificacion
             {
                 IdUsuario = avance.IdCliente,
@@ -76,10 +74,6 @@ namespace Amaretto.Application.Services.Implementations
             return $"El pedido #{avance.IdPedido} pasó a \"{avance.EstadoPedido}\". Se notificó al cliente.";
         }
 
-        /// <summary>
-        /// Texto del aviso según dónde va el pedido en su proceso. El estado
-        /// final ya viene diferenciado entre retiro en tienda y envío.
-        /// </summary>
         private static string MensajeEstado(int idPedido, string estado) => estado switch
         {
             "En Preparacion" => $"Tu pedido #{idPedido} entró en preparación: ya estamos trabajando en él.",
@@ -88,16 +82,12 @@ namespace Amaretto.Application.Services.Implementations
             _ => $"Tu pedido #{idPedido} cambió de estado a {estado}."
         };
 
-        /// <summary>
-        /// Arma la cola de una estación resolviendo, para cada tarea, si está
-        /// bloqueada por una estación anterior del mismo producto.
-        /// </summary>
-        private async Task<CocinaEstacionViewModel> ArmarEstacionAsync(EstacionCocina estacion)
+        private async Task<CocinaEstacionViewModel> CargarEstacionAsync(EstacionCocina estacion)
         {
             var tareas = await _repoCocina.ListarPorEstacionAsync(estacion.IdEstacion);
 
-            var hermanos = tareas.Any()
-                ? await _repoCocina.ListarHermanosAsync(tareas.Select(t => t.IdDetalle))
+            var pasos = tareas.Any()
+                ? await _repoCocina.ListarPasosAsync(tareas.Select(t => t.IdDetalle))
                 : new List<CocinaOrden>();
 
             var vm = new CocinaEstacionViewModel
@@ -112,7 +102,7 @@ namespace Amaretto.Application.Services.Implementations
                 var detalle = t.IdDetalleNavigation;
                 var esCombo = detalle.IdCombo != null;
 
-                var anterior = hermanos
+                var anterior = pasos
                     .Where(h => h.IdDetalle == t.IdDetalle
                              && h.OrdenPaso < t.OrdenPaso
                              && h.Estado != "Completado")
@@ -138,7 +128,7 @@ namespace Amaretto.Application.Services.Implementations
                     FechaInicio = t.FechaInicio,
                     FechaFin = t.FechaFin,
                     Bloqueada = anterior != null,
-                    EsperandoA = anterior?.IdEstacionNavigation?.Nombre
+                    EstacionAnterior = anterior?.IdEstacionNavigation?.Nombre
                 });
             }
 

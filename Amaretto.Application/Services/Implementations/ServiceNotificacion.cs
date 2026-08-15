@@ -18,11 +18,6 @@ using System.Threading.Tasks;
 
 namespace Amaretto.Application.Services.Implementations
 {
-    /// <summary>
-    /// Notificación de pedidos. El comprobante se envía al cliente a través del
-    /// servicio de correo SMTP configurado en appsettings y la notificación
-    /// queda guardada para mostrarla en la campana del encabezado.
-    /// </summary>
     public class ServiceNotificacion : IServiceNotificacion
     {
         private readonly IRepositoryNotificacion _repoNotificacion;
@@ -65,7 +60,7 @@ namespace Amaretto.Application.Services.Implementations
             return resultado;
         }
 
-        public async Task<ICollection<NotificacionDTO>> ListarMiasAsync(int cantidad = 10)
+        public async Task<ICollection<NotificacionDTO>> ListarAsync(int cantidad = 10)
         {
             if (!_usuarioActual.EstaAutenticado)
                 return new List<NotificacionDTO>();
@@ -80,15 +75,15 @@ namespace Amaretto.Application.Services.Implementations
             return await _repoNotificacion.ContarNoLeidasAsync(_usuarioActual.IdUsuario);
         }
 
-        public async Task MarcarMiasLeidasAsync()
+        public async Task MarcarLeidasAsync()
         {
             if (!_usuarioActual.EstaAutenticado) return;
             await _repoNotificacion.MarcarLeidasAsync(_usuarioActual.IdUsuario);
         }
 
-        public async Task<NotificacionDTO?> ObtenerDePedidoAsync(int idPedido)
+        public async Task<NotificacionDTO?> ObtenerPorPedidoAsync(int idPedido)
         {
-            var entidad = await _repoNotificacion.UltimaPorPedidoAsync(idPedido);
+            var entidad = await _repoNotificacion.BuscarPorPedidoAsync(idPedido);
             return entidad == null ? null : Mapear(entidad);
         }
 
@@ -98,8 +93,6 @@ namespace Amaretto.Application.Services.Implementations
         {
             var resultado = new ResultadoNotificacionDTO { DestinatarioEmail = pedido.EmailCliente };
 
-            // Sin credenciales el pedido igual se registra: se deja constancia del
-            // motivo para mostrarlo en el comprobante en vez de romper el flujo.
             if (string.IsNullOrWhiteSpace(_smtp?.UserName) || string.IsNullOrWhiteSpace(_smtp?.Password))
             {
                 resultado.CorreoEnviado = false;
@@ -116,8 +109,6 @@ namespace Amaretto.Application.Services.Implementations
 
             try
             {
-                // La factura se genera con QuestPDF y viaja como adjunto; el
-                // cuerpo del correo solo acompaña con los datos mínimos.
                 var pdf = new FacturaPedidoDocument(pedido).GeneratePdf();
 
                 using var cliente = new SmtpClient(_smtp.Server, _smtp.PortNumber)
@@ -157,14 +148,6 @@ namespace Amaretto.Application.Services.Implementations
         private static string NombreArchivo(int idPedido) => $"Factura-Pedido-{idPedido}.pdf";
 
 
-        /// <summary>
-        /// Texto que acompaña al adjunto. El detalle completo va en la factura
-        /// PDF, así que aquí solo se repiten los datos de referencia.
-        /// </summary>
-        /// <summary>
-        /// Solo el saludo. Todos los datos del pedido van en la factura adjunta,
-        /// así que el cuerpo no repite nada.
-        /// </summary>
         private static string CuerpoHtml(PedidoDetalleCompletoDTO p)
         {
             return $@"

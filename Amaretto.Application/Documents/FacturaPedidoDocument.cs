@@ -8,11 +8,6 @@ using System.Linq;
 
 namespace Amaretto.Application.Documents
 {
-    /// <summary>
-    /// Factura del pedido en PDF. Se adjunta al correo de confirmación y usa la
-    /// misma paleta de la aplicación para que el comprobante impreso y el de
-    /// pantalla se vean iguales.
-    /// </summary>
     public class FacturaPedidoDocument : IDocument
     {
         // Paleta de amaretto.css
@@ -96,7 +91,7 @@ namespace Amaretto.Application.Documents
             });
         }
 
-        /*  Encabezado del pedido: cliente, encargado, entrega y pago  */
+        /*  Encabezado del pedido  */
 
         private void ComponerDatosGenerales(IContainer container)
         {

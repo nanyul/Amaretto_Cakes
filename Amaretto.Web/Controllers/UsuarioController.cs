@@ -6,10 +6,6 @@ using Amaretto.Application.Services.Interfaces;
 
 namespace Amaretto.Web.Controllers;
 
-/// <summary>
-/// Mantenimiento de usuarios. Solo el Administrador puede entrar: el rol se
-/// resuelve a partir del usuario identificado en la sesión.
-/// </summary>
 [Authorize]
 public class UsuarioController : Controller
 {
@@ -118,10 +114,6 @@ public class UsuarioController : Controller
         return RedirectToAction("Index");
     }
 
-    /// <summary>
-    /// Devuelve el formulario recargando la lista de roles y sin arrastrar la
-    /// contraseña escrita, para no reenviarla al navegador.
-    /// </summary>
     private async Task<IActionResult> VolverAlFormulario(string vista, UsuarioMantenimientoDTO dto)
     {
         dto.Password = null;

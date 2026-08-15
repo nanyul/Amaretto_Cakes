@@ -173,7 +173,6 @@ public class UsuarioService : IServiceUsuario
         var entity = await _repository.FindByIdAsync(id);
         if (entity == null) return null;
 
-        // El Password se deja vacío a propósito: no se muestra ni se devuelve.
         return new UsuarioMantenimientoDTO
         {
             IdUsuario = entity.IdUsuario,
@@ -207,7 +206,6 @@ public class UsuarioService : IServiceUsuario
             Direccion = Limpiar(dto.Direccion),
             Sexo = Limpiar(dto.Sexo),
             Estado = dto.Estado,
-            // La contraseña se guarda encriptada, nunca en texto plano
             Password = Cryptography.Encrypt(dto.Password!, _cryptoSecret)
         };
 
@@ -233,7 +231,6 @@ public class UsuarioService : IServiceUsuario
         if (await _repository.ExistsByEmailAsync(email, dto.IdUsuario))
             return Fallo("El correo ya está registrado por otro usuario");
 
-        // En edición la contraseña es opcional: vacía significa "no cambiarla".
         var cambiaPassword = !string.IsNullOrWhiteSpace(dto.Password);
         if (cambiaPassword)
         {

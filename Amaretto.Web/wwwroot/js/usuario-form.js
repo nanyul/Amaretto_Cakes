@@ -1,5 +1,3 @@
-// Formulario de mantenimiento de usuarios: etiqueta del estado y ayuda visual
-// para la contraseña.
 (function () {
     const estadoToggle = document.getElementById('estadoToggle');
     const estadoLabel = document.getElementById('estadoLabel');
@@ -21,7 +19,6 @@
         actualizarEstadoLabel();
     }
 
-    // Avisa en el momento si las dos contraseñas no coinciden
     const password = document.getElementById('Password');
     const confirmar = document.getElementById('ConfirmPassword');
 

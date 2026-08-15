@@ -25,7 +25,7 @@ namespace Amaretto.Application.DTOs
         public DateTime? FechaFin { get; set; }
 
         public bool Bloqueada { get; set; }
-        public string? EsperandoA { get; set; }
+        public string? EstacionAnterior { get; set; }
     }
 
     public class CocinaEstacionViewModel

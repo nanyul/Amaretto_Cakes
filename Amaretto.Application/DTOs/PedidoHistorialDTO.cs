@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace Amaretto.Application.DTOs
 {
-    /// <summary>
-    /// Fila del listado de historial de pedidos.
-    /// </summary>
     public class PedidoHistorialDTO
     {
         public int IdPedido { get; set; }

@@ -9,8 +9,6 @@
         return document.querySelector('input[name="metodoEntrega"]:checked').value;
     }
 
-    // Solo dígitos. Se usa sobre inputs type=text porque en type=number el
-    // navegador deja escribir "e", "+" y "-" y devuelve value vacío al leerlos.
     function soloNumeros(input) {
         const limpio = input.value.replace(/\D/g, '');
         if (input.value !== limpio) input.value = limpio;
@@ -42,8 +40,6 @@
             </tr>`;
     }
 
-    // Sincroniza la tabla con el carrito del servidor: agrega las líneas nuevas,
-    // quita las que ya no están y refresca los montos de las que siguen.
     function pintarLineas(lineas) {
         const vistas = new Set();
 
@@ -62,7 +58,6 @@
 
             const qty = fila.querySelector('.qty-input-sm');
             qty.dataset.cantidad = l.cantidad;
-            // No se pisa mientras el usuario escribe en ese mismo campo
             if (document.activeElement !== qty) qty.value = l.cantidad;
         });
 
@@ -145,9 +140,6 @@
         }
     });
 
-    // Cantidad escrita a mano: se filtran los no dígitos y se envía con retardo.
-    // Si la caja queda vacía NO se envía nada, así el usuario puede borrar el
-    // número para escribir otro sin que se elimine la línea.
     let temporizadorCantidad;
     detalleBody.addEventListener('input', function (e) {
         if (!e.target.classList.contains('qty-input-sm')) return;
@@ -162,7 +154,6 @@
         temporizadorCantidad = setTimeout(() => enviarCantidad(fila, cantidad), 450);
     });
 
-    // Al salir del campo vacío se restaura la última cantidad válida
     detalleBody.addEventListener('focusout', function (e) {
         if (!e.target.classList.contains('qty-input-sm')) return;
         if (e.target.value.trim() === '') e.target.value = e.target.dataset.cantidad || 1;
@@ -326,8 +317,6 @@
         new bootstrap.Modal(document.getElementById('modalPago')).show();
     });
 
-    // Confirmar pago -> guardar pedido. La notificación al usuario la da el
-    // comprobante del servidor, no un mensaje de JavaScript.
     document.getElementById('btnConfirmarPago').addEventListener('click', function () {
         const metodoPago = document.querySelector('input[name="metodoPago"]:checked').value;
         if (!validarPago(metodoPago)) return;
@@ -399,8 +388,6 @@
                         if (data.length === 0) {
                             resultadosDiv.innerHTML = '<div class="dropdown-item text-muted">No se encontraron clientes</div>';
                         } else {
-                            // La lista muestra solo el nombre; el correo, el teléfono y la
-                            // dirección se despliegan en la ficha al seleccionar.
                             resultadosDiv.innerHTML = data.map(c =>
                                 `<a class="dropdown-item" href="#" data-id="${c.idUsuario}"
                                     data-nombre="${c.nombreCompleto}" data-telefono="${c.telefono || ''}"

@@ -26,7 +26,7 @@
                     <h6 class="pedido-section-label">CLIENTE</h6>
                     @if (Model.EsEncargado)
                     {
-                        <!-- Modo Encargado: buscador de clientes -->
+                        <!-- Modo Encargado -->
                         <div class="mb-2 position-relative">
                             <label class="form-label small">Buscar cliente (nombre o email)</label>
                             <div class="input-group">
@@ -50,7 +50,7 @@
                     }
                     else
                     {
-                        @* Modo Cliente: sus propios datos, no editables y sin selección. *@
+                        @* Modo Cliente *@
                         <input type="hidden" id="idCliente" value="@Model.UsuarioActual.IdUsuario" />
                         <div class="cliente-ficha">
                             <p class="cliente-ficha-nombre">@Model.UsuarioActual.NombreCompleto</p>
@@ -141,7 +141,6 @@
                             <td>
                                 <div class="qty-control-sm">
                                     <button type="button" class="qty-btn-sm btn-menos">-</button>
-                                    @* type=text + inputmode: con type=number el navegador acepta "e", "+" y "-" *@
                                     <input type="text" class="qty-input-sm" inputmode="numeric"
                                            autocomplete="off" value="@l.Cantidad" data-cantidad="@l.Cantidad" />
                                     <button type="button" class="qty-btn-sm btn-mas">+</button>

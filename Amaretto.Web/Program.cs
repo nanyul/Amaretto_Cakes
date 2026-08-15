@@ -20,8 +20,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Licencia de QuestPDF, usada para generar la factura del pedido en PDF.
-// Debe quedar establecida antes de generar cualquier documento.
+// Licencia de QuestPDF
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 // Mapeo de la clase AppConfig para leer appsettings.json
@@ -165,8 +164,6 @@ app.UseRouting();
 
 app.UseSession();
 
-// Sin este middleware la cookie de autenticacion nunca se traduce a claims, y
-// IServiceUsuarioActual no podria identificar al usuario ni leer su rol.
 app.UseAuthentication();
 
 app.UseAuthorization();

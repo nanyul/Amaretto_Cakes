@@ -4,8 +4,6 @@
 // Write your JavaScript code.
 
 /*  Cantidad del pedido en el encabezado  */
-// Muestra la sumatoria de las cantidades de todos los productos y combos del
-// pedido. Se llama desde cada acción que modifica el carrito.
 function actualizarContadorCarrito() {
     fetch('/Carrito/Cantidad')
         .then(r => r.json())
@@ -60,7 +58,7 @@ window.actualizarContadorCarrito = actualizarContadorCarrito;
     }
 
     function cargarNotificaciones() {
-        fetch('/Notificacion/Mias')
+        fetch('/Notificacion/Listar')
             .then(r => r.json())
             .then(pintar)
             .catch(() => {
