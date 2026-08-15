@@ -350,5 +350,27 @@ namespace Amaretto.Application.Services.Implementations
                 Direccion = _usuarioActual.Direccion
             };
         }
+
+        public async Task<ReporteDashboardDTO> ObtenerReporteAsync(DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            var usuario = ObtenerUsuarioEnSesion();
+            if (!EsAdminOEncargado(usuario.IdRol))
+                throw new UnauthorizedAccessException("Solo administradores y encargados pueden acceder a reportes.");
+
+            // Defaults: últimos 30 días
+            var desde = fechaDesde ?? DateTime.Today.AddDays(-30);
+            var hasta = fechaHasta ?? DateTime.Today;
+
+            var topItems = await _repoPedido.ObtenerTop3ItemsAsync(desde, hasta);
+            var pedidosPorEstado = await _repoPedido.ObtenerPedidosPorEstadoAsync(desde, hasta);
+
+            return new ReporteDashboardDTO
+            {
+                FechaDesde = desde,
+                FechaHasta = hasta,
+                TopItems = topItems.Select(t => new TopItemDTO { Nombre = t.Nombre, Cantidad = t.Cantidad }).ToList(),
+                PedidosPorEstado = pedidosPorEstado.Select(kvp => new EstadoCantidadDTO { Estado = kvp.Key, Cantidad = kvp.Value }).ToList()
+            };
+        }
     }
 }

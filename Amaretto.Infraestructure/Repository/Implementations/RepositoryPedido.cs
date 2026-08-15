@@ -81,5 +81,59 @@ namespace Amaretto.Infraestructure.Repository.Implementations
                 .OrderBy(e => e)
                 .ToListAsync();
         }
+
+        public async Task<List<(string Nombre, int Cantidad)>> ObtenerTop3ItemsAsync(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            var fechaHastaInclusive = fechaHasta.Date.AddDays(1);
+
+            var topProductos = await _context.PedidoDetalle
+                .AsNoTracking()
+                .Where(d => d.IdPedidoNavigation.FechaPedido >= fechaDesde.Date
+                         && d.IdPedidoNavigation.FechaPedido < fechaHastaInclusive
+                         && d.IdProducto != null)
+                .GroupBy(d => d.IdProductoNavigation.Nombre)
+                .Select(g => new { Nombre = g.Key, Cantidad = g.Sum(d => d.Cantidad) })
+                .OrderByDescending(x => x.Cantidad)
+                .Take(3)
+                .ToListAsync();
+
+            var topCombos = await _context.PedidoDetalle
+                .AsNoTracking()
+                .Where(d => d.IdPedidoNavigation.FechaPedido >= fechaDesde.Date
+                         && d.IdPedidoNavigation.FechaPedido < fechaHastaInclusive
+                         && d.IdCombo != null)
+                .GroupBy(d => d.IdComboNavigation.Nombre)
+                .Select(g => new { Nombre = g.Key, Cantidad = g.Sum(d => d.Cantidad) })
+                .OrderByDescending(x => x.Cantidad)
+                .Take(3)
+                .ToListAsync();
+
+            // Combinar y ordenar ambos conjuntos, tomar top 3 global
+            var combinados = topProductos
+                .Concat(topCombos)
+                .GroupBy(x => x.Nombre)
+                .Select(g => new { Nombre = g.Key, Cantidad = g.Sum(x => x.Cantidad) })
+                .OrderByDescending(x => x.Cantidad)
+                .Take(3)
+                .ToList();
+
+            return combinados.Select(x => (x.Nombre, x.Cantidad)).ToList();
+        }
+
+        public async Task<Dictionary<string, int>> ObtenerPedidosPorEstadoAsync(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            var fechaHastaInclusive = fechaHasta.Date.AddDays(1);
+
+            var resultado = await _context.Pedido
+                .AsNoTracking()
+                .Where(p => p.FechaPedido >= fechaDesde.Date
+                         && p.FechaPedido < fechaHastaInclusive)
+                .GroupBy(p => p.Estado)
+                .Select(g => new { Estado = g.Key, Cantidad = g.Count() })
+                .OrderByDescending(x => x.Cantidad)
+                .ToDictionaryAsync(x => x.Estado, x => x.Cantidad);
+
+            return resultado;
+        }
     }
 }
