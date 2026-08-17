@@ -140,7 +140,7 @@
                 }
 
                 <!-- Reportes -->
-                @if (esAdminOEncargado)
+                @if (esAdministrador)
                 {
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -151,6 +151,11 @@
                         <li>
                             <a asp-controller="Reporte" asp-action="Grafico" class="dropdown-item dropdown-item-amaretto">
                                 <i class="bi bi-bar-chart-fill me-2"></i> Panel de Reportes
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Reporte" asp-action="ReportePedidos" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-receipt me-2"></i> Reporte Pedidos
                             </a>
                         </li>
                     </ul>

@@ -8,6 +8,9 @@ namespace Amaretto.Web.Controllers
     [Authorize]
     public class ReporteController : Controller
     {
+        private const int ROL_ADMINISTRADOR = 1;
+        private const int ROL_ENCARGADO = 4;
+
         private readonly IServicePedido _servicePedido;
         private readonly IServiceUsuarioActual _usuarioActual;
 
@@ -17,12 +20,38 @@ namespace Amaretto.Web.Controllers
             _usuarioActual = usuarioActual;
         }
 
+        private bool EsAdministrador => _usuarioActual.IdRol == ROL_ADMINISTRADOR;
+
+        private bool EsAdminOEncargado =>
+            _usuarioActual.IdRol == ROL_ADMINISTRADOR || _usuarioActual.IdRol == ROL_ENCARGADO;
+
+        // REPORTE DE PEDIDOS
+
+        [HttpGet]
+        public async Task<IActionResult> ReportePedidos(string? cliente, DateTime? fechaDesde, DateTime? fechaHasta, string? estado)
+        {
+            if (!EsAdministrador) return RedirectToAction("Forbidden", "Login");
+
+            if (fechaDesde.HasValue && fechaHasta.HasValue && fechaDesde > fechaHasta)
+            {
+                TempData["Mensaje"] = Util.SweetAlertHelper.Mensaje(
+                    "Reporte de Pedidos",
+                    "La fecha inicial no puede ser mayor que la fecha final.",
+                    Util.SweetAlertMessageType.error);
+
+                return RedirectToAction("ReportePedidos");
+            }
+
+            var vm = await _servicePedido.ObtenerReportePedidosAsync(cliente, fechaDesde, fechaHasta, estado);
+            return View(vm);
+        }
+
+        // GRAFICO DE VENTAS
+
         [HttpGet]
         public async Task<IActionResult> Grafico(DateTime? fechaDesde, DateTime? fechaHasta)
         {
-            // Verificación rol (reutiliza patrón ServicePedido)
-            if (!_usuarioActual.EstaAutenticado || !EsAdminOEncargado(_usuarioActual.IdRol))
-                return RedirectToAction("Forbidden", "Login");
+            if (!EsAdminOEncargado) return RedirectToAction("Forbidden", "Login");
 
             // Defaults: últimos 30 días
             var desde = fechaDesde ?? DateTime.Today.AddDays(-30);
@@ -30,7 +59,6 @@ namespace Amaretto.Web.Controllers
 
             var reporte = await _servicePedido.ObtenerReporteAsync(desde, hasta);
 
-            // ViewBag para Charts (patrón del ejemplo)
             ViewBag.FechaDesde = desde.ToString("yyyy-MM-dd");
             ViewBag.FechaHasta = hasta.ToString("yyyy-MM-dd");
 
@@ -51,7 +79,5 @@ namespace Amaretto.Web.Controllers
 
             return View();
         }
-
-        private bool EsAdminOEncargado(int idRol) => idRol == 1 || idRol == 4; // Admin=1, Encargado=4
     }
 }

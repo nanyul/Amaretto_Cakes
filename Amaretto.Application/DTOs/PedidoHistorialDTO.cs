@@ -13,6 +13,7 @@ namespace Amaretto.Application.DTOs
         public string Estado { get; set; } = null!;
         public string MetodoEntrega { get; set; } = null!;
         public string NombreCliente { get; set; } = null!;
+        public string EmailCliente { get; set; } = "";
         public string? NombreEncargado { get; set; }
         public int CantidadArticulos { get; set; }
         public decimal Total { get; set; }
