@@ -1,64 +1,311 @@
-﻿@model IEnumerable<Amaretto.Application.DTOs.ComboDTO>
-
+﻿@using Amaretto.Application.DTOs
+@model IEnumerable<Amaretto.Application.DTOs.ComboDTO>
 @{
     ViewData["Title"] = "Combos";
 }
 
-<div class="container">
-    <h2 class="text-center mb-4">Nuestros Combos</h2>
+@{
+    //  CONFETI 
+    var pieces = new[] { "✦", "🌸", "✦", "🎂", "✦", "🍰", "✦", "🌸", "✦", "🎂", "✦", "🍰" };
+    var colors = new[] { "var(--moss-green)", "var(--rosy-brown)", "var(--beige)" };
+    var rnd = new Random();
 
-    <div class="row">
+    string FloatPieceStyle(int index)
+    {
+        var left = rnd.Next(2, 96);
+        var top = rnd.Next(5, 85);
+        var size = (rnd.Next(7, 16) / 10.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+        var duration = rnd.Next(5, 9).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var delay = ((index % pieces.Length) * 0.3).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+        var color = colors[rnd.Next(colors.Length)];
+        return $"--fp-left:{left}%; --fp-top:{top}%; --fp-size:{size}rem; --fp-duration:{duration}s; --fp-delay:{delay}s; --fp-color:{color};";
+    }
+}
 
-        @foreach (var item in Model)
+<!--  ENCABEZADO  -->
+<section class="catalog-header">
+    <div class="container position-relative" style="z-index:2;">
+        <span class="catalog-badge">✦ Hecho para compartir ✦</span>
+        <h1 class="catalog-title">
+            Combos que
+            <span>endulzan todo</span>
+        </h1>
+        <p class="catalog-subtitle">
+            Combinaciones pensadas para cada celebración: lo mejor de Amaretto Cakes,
+            reunido en un solo lugar.
+        </p>
+    </div>
+
+    <!-- Confeti animado -->
+    <div class="hero-confeti" aria-hidden="true">
+        @for (int i = 0; i < pieces.Length; i++)
         {
-            <div class="col-md-4 mb-4">
+            <span class="float-piece" style="@FloatPieceStyle(i)">@pieces[i]</span>
+        }
+    </div>
 
-                <div class="card h-100 shadow">
+    <!-- Ola inferior -->
+    <div class="wave-bottom" aria-hidden="true">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,40 C480,80 960,0 1440,50 L1440,80 L0,80 Z" fill="#FFFDF6" />
+        </svg>
+    </div>
+</section>
 
-                    <img src="@item.Imagen1"
-                         class="card-img-top"
-                         style="height:250px; object-fit:cover;"
-                         alt="@item.Nombre">
+<!--  SECCIÓN PRINCIPAL  -->
+<section class="catalog-section">
+    <div class="container">
+        <div class="catalog-layout">
 
-                    <div class="card-body">
+            <!--  SIDEBAR  -->
+            <aside class="catalog-sidebar">
 
-                        <h5 class="card-title">
-                            @item.Nombre
-                        </h5>
-
-                        <p class="card-text">
-                            ₡@item.Precio.ToString("N2")
-                        </p>
-
-                        @if (item.Estado)
-                        {
-                            <span class="badge bg-success">
-                                Disponible
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">
-                                Inactivo
-                            </span>
-                        }
-
-                    </div>
-
-                    <div class="card-footer text-center">
-
-                        <a asp-action="Details"
-                           asp-route-id="@item.IdCombo"
-                           class="btn btn-primary">
-                            Ver Detalle
-                        </a>
-
-                    </div>
-
+                <!-- Filtrar por estado -->
+                <div class="sidebar-panel">
+                    <p class="sidebar-panel-title">
+                        <i class="bi bi-funnel-fill"></i> Filtrar por
+                    </p>
+                    <p class="sidebar-panel-title" style="font-size:0.8rem; color:var(--midnight-green); font-weight:600; margin-bottom:10px; margin-top:-6px;">Estado</p>
+                    <ul class="filter-category-list">
+                        <li>
+                            <label>
+                                <input type="radio" name="estado" value="todos" checked />
+                                <span>Todos</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="estado" value="disponible" />
+                                <span>Disponibles</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="estado" value="inactivo" />
+                                <span>No disponibles</span>
+                            </label>
+                        </li>
+                    </ul>
                 </div>
 
-            </div>
-        }
 
+                <!-- Rango de precio -->
+                <div class="sidebar-panel">
+                    <p class="sidebar-panel-title">
+                        <i class="bi bi-tag-fill"></i> Rango de precio
+                    </p>
+                    <input type="range" class="price-slider" min="0" max="100000" value="100000" step="1000" id="priceRange" />
+                    <div class="price-range-inputs">
+                        <span>₡0</span>
+                        <span id="priceRangeVal">₡100.000</span>
+                    </div>
+                </div>
+
+                <!-- Ordenar por -->
+                <div class="sidebar-panel">
+                    <p class="sidebar-panel-title">
+                        <i class="bi bi-sort-down"></i> Ordenar por
+                    </p>
+                    <select class="filter-select">
+                        <option value="nombre">Nombre A-Z</option>
+                        <option value="precio_asc">Menor precio</option>
+                        <option value="precio_desc">Mayor precio</option>
+                    </select>
+                </div>
+
+                <!-- CTA especial -->
+                <div class="sidebar-cta">
+                    <span class="sidebar-cta-icon">🎁</span>
+                    <h6>¿Combo personalizado?</h6>
+                    <p>Armamos el tuyo a medida.</p>
+                    <a asp-controller="Home" asp-action="Contact" class="btn-sidebar-cta">
+                        Contáctanos <i class="bi bi-heart-fill"></i>
+                    </a>
+                </div>
+
+            </aside>
+
+            <!--  ÁREA DE GRID  -->
+            <div class="catalog-grid-area">
+
+                <!-- Barra superior -->
+                <div class="catalog-topbar">
+                    <p class="catalog-count mb-0">
+                        Mostrando <strong>@Model.Count()</strong> combos
+                    </p>
+                    <div class="catalog-view-toggle">
+                        <span>Ver:</span>
+                        <button class="btn-view active" id="btnGrid" title="Vista grilla">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                        </button>
+                        <button class="btn-view" id="btnList" title="Vista lista">
+                            <i class="bi bi-list-ul"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @if (!Model.Any())
+                {
+                    <div class="catalog-empty">
+                        <i class="bi bi-gift"></i>
+                        <p>Por el momento no hay combos disponibles. Vuelve pronto.</p>
+                    </div>
+                }
+                else
+                {
+                    <!-- Grid de combos -->
+                    <div class="row g-3" id="productGrid">
+                        @foreach (var item in Model)
+                        {
+                            var hasSecondImage = !string.IsNullOrWhiteSpace(item.Imagen2);
+                            var carouselId = $"carousel-combo-{item.IdCombo}";
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <div class="catalog-card animate-on-scroll">
+
+                                    <!-- Imagen / Carrusel -->
+                                    <div class="catalog-card-img @(hasSecondImage ? "" : "single-image")">
+                                        <div id="@carouselId" class="carousel slide"
+                                             data-bs-ride="@(hasSecondImage ? "carousel" : "false")"
+                                             data-bs-interval="3500">
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active">
+                                                    <img src="@item.Imagen1" alt="@item.Nombre">
+                                                </div>
+                                                @if (hasSecondImage)
+                                                {
+                                                    <div class="carousel-item">
+                                                        <img src="@item.Imagen2" alt="@item.Nombre">
+                                                    </div>
+                                                }
+                                            </div>
+                                            @if (hasSecondImage)
+                                            {
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon"></span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon"></span>
+                                                </button>
+                                                <div class="carousel-indicators">
+                                                    <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="0" class="active"></button>
+                                                    <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="1"></button>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <!-- Badge estado -->
+                                        @if (item.Estado)
+                                        {
+                                            <span class="catalog-card-badge is-available">
+                                                <i class="bi bi-check-circle me-1"></i>Disponible
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="catalog-card-badge is-unavailable">
+                                                <i class="bi bi-x-circle me-1"></i>Inactivo
+                                            </span>
+                                        }
+
+                                        <!-- Botón corazón flotante -->
+                                        <button class="btn-wishlist" title="Guardar en favoritos">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Cuerpo -->
+                                    <div class="catalog-card-body">
+                                        <h5>@item.Nombre</h5>
+                                        <p class="catalog-card-price">₡@item.Precio.ToString("N2")</p>
+                                    </div>
+
+                                    <!-- Footer -->
+                                    <div class="catalog-card-footer">
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.IdCombo"
+                                           class="btn-catalog">
+                                            Ver detalle <i class="bi bi-heart ms-1"></i>
+                                        </a>
+                                        <button class="btn-wishlist-footer" title="Favorito">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                     <!-- Paginación -->
+                    <nav class="catalog-pagination" aria-label="Paginación de combos">
+                        <a href="#" class="page-btn disabled" aria-label="Anterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                        <a href="#" class="page-btn active">1</a>
+                        <a href="#" class="page-btn" aria-label="Siguiente">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </nav>
+                }
+
+            </div>
+            <!-- /catalog-grid-area -->
+
+        </div>
+        <!-- /catalog-layout -->
     </div>
-</div>
+</section>
+
+@section Scripts {
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ── Animate on scroll ──
+    const cards = document.querySelectorAll('.animate-on-scroll');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+    cards.forEach(c => observer.observe(c));
+
+    // ── Toggle vista grilla / lista ──
+    const btnGrid = document.getElementById('btnGrid');
+    const btnList = document.getElementById('btnList');
+    const grid    = document.getElementById('productGrid');
+
+    btnGrid?.addEventListener('click', () => {
+        btnGrid.classList.add('active');
+        btnList.classList.remove('active');
+        grid.querySelectorAll('[class*="col-"]').forEach(col => {
+            col.className = 'col-lg-4 col-md-6 col-sm-6';
+        });
+    });
+
+    btnList?.addEventListener('click', () => {
+        btnList.classList.add('active');
+        btnGrid.classList.remove('active');
+        grid.querySelectorAll('[class*="col-"]').forEach(col => {
+            col.className = 'col-12';
+        });
+    });
+
+    // ── Rango de precio ──
+    const priceRange = document.getElementById('priceRange');
+    const priceVal   = document.getElementById('priceRangeVal');
+    priceRange?.addEventListener('input', () => {
+        priceVal.textContent = '₡' + Number(priceRange.value).toLocaleString('es-CR');
+    });
+
+    // ── Botones de favorito (toggle) ──
+    document.querySelectorAll('.btn-wishlist, .btn-wishlist-footer').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            this.classList.toggle('active');
+        });
+    });
+    initCatalogFiltros({ endpoint: '/Combo/Filtrar', idField: 'idCombo', detailUrlBase: '/Combo/Details', tipo: 'combo' });
+});
+
+</script>
+}

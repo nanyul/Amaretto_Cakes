@@ -1,57 +1,107 @@
-﻿@model Amaretto.Application.DTOs.CocinaOrdenDTO
-
-
+﻿@using Amaretto.Application.DTOs
+@model List<Amaretto.Application.DTOs.CocinaOrdenDTO>
 @{
     ViewData["Title"] = "Detalle Proceso";
 
-    string nombreProducto = "";
+    var primerPaso = Model.FirstOrDefault();
+    if (primerPaso == null) return;
 
-    if (Model.IdDetalleNavigation?.IdProductoNavigation != null)
+    string nombreProducto = "";
+    string? imagenProducto = null;
+    if (primerPaso.IdDetalleNavigation?.IdProductoNavigation != null)
     {
-        nombreProducto =
-            Model.IdDetalleNavigation.IdProductoNavigation.Nombre;
+        nombreProducto = primerPaso.IdDetalleNavigation.IdProductoNavigation.Nombre;
+        imagenProducto = primerPaso.IdDetalleNavigation.IdProductoNavigation.Imagen1;
     }
-    else if (Model?.IdDetalleNavigation?.IdComboNavigation != null)
+    else if (primerPaso.IdDetalleNavigation?.IdComboNavigation != null)
     {
-        nombreProducto =
-            Model.IdDetalleNavigation.IdComboNavigation.Nombre;
+        nombreProducto = primerPaso.IdDetalleNavigation.IdComboNavigation.Nombre;
+        imagenProducto = primerPaso.IdDetalleNavigation.IdComboNavigation.Imagen1;
     }
 }
+<section class="process-detail-section">
+    <div class="container">
+        <div class="process-detail-header">
+            <h1 class="process-detail-title">
+                <span class="process-detail-flourish"><i class="bi bi-stars"></i></span>
+                Detalle Proceso de Preparación
+                <span class="process-detail-flourish"><i class="bi bi-stars"></i></span>
+            </h1>
+        </div>
 
-<div class="container">
+        <div class="process-detail-card">
+            <div class="process-detail-product">
+                <div class="process-detail-product-thumb">
+                    @if (!string.IsNullOrEmpty(imagenProducto))
+                    {
+                        <img src="@imagenProducto" alt="@nombreProducto" />
+                    }
+                    else
+                    {
 
-    <h1>Detalle Proceso de Preparación</h1>
+                        <i class="bi bi-cake2"></i>
+                    }
+                </div>
+                <div class="process-detail-product-info">
+                    <span class="process-detail-product-label">Pedido #@primerPaso.IdDetalle</span>
+                    <h3>@nombreProducto</h3>
+                </div>
+            </div>
 
-    <hr />
+            <div class="process-table-wrap mt-4">
+                <table class="process-table">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-list-check"></i> Orden</th>
+                            <th><i class="bi bi-flower1"></i> Estación</th>
+                            <th><i class="bi bi-heart-fill"></i> Estado</th>
+                            <th><i class="bi bi-clock"></i> Tiempo de Preparación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var paso in Model.OrderBy(p => p.OrdenPaso))
+                        {
+                            <tr>
+                                <td data-label="Orden"><span class="process-order-badge">@paso.OrdenPaso</span></td>
+                                <td data-label="Estación">
+                                    <strong class="process-station-name">@paso.IdEstacionNavigation.Nombre</strong>
+                                </td>
+                                <td data-label="Estado">
+                                    @if (paso.Estado == "Completado")
+                                    {
+                                        <span class="process-status-badge is-completed"><i class="bi bi-check-circle-fill"></i> Completado</span>
+                                    }
+                                    else if (paso.Estado == "En Proceso")
+                                    {
+                                        <span class="process-status-badge is-progress"><i class="bi bi-clock-fill"></i> En Proceso</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="process-status-badge" style="background-color: #e9ecef; color: #6c757d;">
+                                            <i class="bi bi-hourglass-split"></i> Pendiente
+                                        </span>
+                                    }
+                                </td>
+                                <td data-label="Tiempo">
+                                    @if (paso.FechaInicio != null && paso.FechaFin != null)
+                                    {
+                                        var duracion = (paso.FechaFin.Value - paso.FechaInicio.Value).TotalMinutes;
+                                        <span class="fw-bold text-success">@Math.Round(duracion, 0) min</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-    <div class="mb-4">
-        <h4>Producto</h4>
-        <p>@nombreProducto</p>
+            <a asp-action="Index" class="btn-volver-proceso mt-4">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
     </div>
-
-    <h4>Estaciones del Proceso</h4>
-
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Orden</th>
-                <th>Estación</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-
-        <tbody>
-                <tr>
-                    <td>@Model?.OrdenPaso</td>
-                    <td>@Model?.IdEstacionNavigation.Nombre</td>
-                    <td>@Model?.Estado</td>
-                </tr>
-        </tbody>
-    </table>
-
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Volver
-    </a>
-
-</div>
+</section>

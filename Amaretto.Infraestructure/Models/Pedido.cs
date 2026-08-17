@@ -27,6 +27,10 @@ public partial class Pedido
 
     public DateTime FechaPedido { get; set; }
 
+    public int? IdEncargado { get; set; }
+
+    public virtual Usuario? IdEncargadoNavigation { get; set; }
+
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 
     public virtual ICollection<Pago> Pago { get; set; } = new List<Pago>();

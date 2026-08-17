@@ -1,43 +1,122 @@
 ﻿@model List<Amaretto.Application.DTOs.MenuComboDTO>
-
 @{
     ViewData["Title"] = "Menus";
 }
+<section class="menu-list-section">
+    <div class="container">
+        <div class="menu-list-header-row">
+            <h2 class="menu-list-title">Menús de Combos</h2>
+            <a asp-action="Create" class="btn-create-combo">
+                <i class="bi bi-plus-circle"></i> Crear nuevo
+            </a>
+        </div>
 
-<div class="container">
+        <!-- Filtro por estado -->
+        <div class="menu-filter-bar">
+            <button type="button" class="filter-pill active" data-filter="todos">
+                Todos
+            </button>
+            <button type="button" class="filter-pill" data-filter="disponible">
+                <i class="bi bi-check-circle-fill"></i> Disponibles
+            </button>
+            <button type="button" class="filter-pill" data-filter="no-disponible">
+                <i class="bi bi-x-circle-fill"></i> No disponibles
+            </button>
+        </div>
 
-    <h1 class="mb-4">Menús de Combos</h1>
+        <div class="menu-list-card">
+            <table class="menu-table" id="menuTable">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Fecha Limite</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var menu in Model.OrderByDescending(x => x.FechaInicio))
+                    {
+                        <tr data-estado="@(menu.Estado ? "disponible" : "no-disponible")">
+                            <td data-label="Nombre">
+                                <div class="menu-table-name">
+                                    <span class="menu-table-thumb">
+                                        <i class="bi bi-box-seam"></i>
+                                    </span>
+                                    @menu.Nombre
+                                </div>
+                            </td>
+                            <td data-label="Descripción">
+                                <span class="menu-table-desc">@menu.Descripcion</span>
+                            </td>
+                            <td data-label="Fecha">
+                                <span class="menu-table-date">
+                                    <i class="bi bi-calendar-event"></i>
+                                    @menu.FechaFin.ToString("dd/MM/yyyy")
+                                </span>
+                            </td>
+                            <td data-label="Estado">
+                                @if (menu.Estado)
+                                {
+                                    <span class="product-status-badge is-available"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                                }
+                                else
+                                {
+                                    <span class="product-status-badge is-unavailable"><i class="bi bi-x-circle-fill"></i> No disponible</span>
+                                }
+                            </td>
+                            <td data-label="Acciones">
+                                <div class="table-actions">
+                                    <a class="btn-ver-menu"
+                                       asp-controller="MenuCombo" asp-action="Details" asp-route-id="@menu.IdMenuCombo">
+                                        Ver menú <i class="bi bi-arrow-right-short"></i>
+                                    </a>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@menu.IdMenuCombo"
+                                       class="btn-table-action btn-edit"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="menu-empty d-none" id="menuEmptyState">
+                <i class="bi bi-cup-hot"></i>
+                <p>No hay menús que coincidan con este filtro.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th></th>
-            </tr>
-        </thead>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const filterButtons = document.querySelectorAll('.menu-filter-bar .filter-pill');
+            const rows = document.querySelectorAll('#menuTable tbody tr');
+            const emptyState = document.getElementById('menuEmptyState');
 
-        <tbody>
-            @foreach (var menu in Model.OrderByDescending(x => x.FechaInicio))
-            {
-                <tr>
-                    <td>@menu.Nombre</td>
-                    <td>@menu.Descripcion</td>
-                    <td>@menu.FechaFin.ToString("dd/MM/yyyy")</td>
-                    <td>
-                        @(menu.Estado ? "Disponible" : "No disponible")
-                    </td>
-                    <td>
-                        <a class="btn btn-primary btn-sm"
-                           href="@Url.Action("Details", "MenuCombo", new { id = menu.IdMenuCombo })">
-                            Ver menú
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            filterButtons.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    filterButtons.forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
 
-</div>
+                    const filtro = btn.getAttribute('data-filter');
+                    let visibles = 0;
+
+                    rows.forEach(function (row) {
+                        const estado = row.getAttribute('data-estado');
+                        const mostrar = filtro === 'todos' || estado === filtro;
+                        row.style.display = mostrar ? '' : 'none';
+                        if (mostrar) visibles++;
+                    });
+
+                    emptyState.classList.toggle('d-none', visibles > 0);
+                });
+            });
+        });
+    </script>
+}

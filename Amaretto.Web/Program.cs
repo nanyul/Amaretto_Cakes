@@ -1,21 +1,27 @@
 using Amaretto.Application;
 using Amaretto.Application.Profiles;
+using Amaretto.Application.Services;
 using Amaretto.Application.Services.Implementations;
 using Amaretto.Application.Services.Interfaces;
 using Amaretto.Infraestructure.Data;
+using Amaretto.Infraestructure.Repositories;
 using Amaretto.Infraestructure.Repository.Implementations;
 using Amaretto.Infraestructure.Repository.Interfaces;
 using Amaretto.Web.Middleware;
+using Amaretto.Web.Scheduling;
 using Libreria.Application.Config;
-using Libreria.Application.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Licencia de QuestPDF
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 // Mapeo de la clase AppConfig para leer appsettings.json
 builder.Services.Configure<AppConfig>(builder.Configuration);
@@ -23,6 +29,14 @@ builder.Services.Configure<AppConfig>(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 //***************************
 //Configurar D.I.
 //Repository
@@ -32,6 +46,13 @@ builder.Services.AddTransient<IRepositoryCategoria, RepositoryCategoria>();
 builder.Services.AddTransient<IRepositoryMenuProducto, RepositoryMenuProducto>();
 builder.Services.AddTransient<IRepositoryMenuCombo, RepositoryMenuCombo>();
 builder.Services.AddTransient<IRepositoryCocinaOrden, RepositoryCocinaOrden>();
+builder.Services.AddTransient<IRepositoryEstacion, RepositoryEstacion>();
+builder.Services.AddTransient<IRepositoryUsuario, RepositoryUsuario>();
+builder.Services.AddTransient<IRepositoryIngrediente, RepositoryIngrediente>();
+builder.Services.AddScoped<IRepositoryPedidoDetalle, RepositoryPedidoDetalle>();
+builder.Services.AddScoped<IRepositoryTareaMenuVencido, RepositoryTareaMenuVencido>();
+builder.Services.AddScoped<IRepositoryPedido, RepositoryPedido>();
+builder.Services.AddScoped<IRepositoryNotificacion, RepositoryNotificacion>();
 
 
 //Services
@@ -41,6 +62,26 @@ builder.Services.AddTransient<IServiceCategoria, ServiceCategoria>();
 builder.Services.AddTransient<IServiceMenuProducto, ServiceMenuProducto>();
 builder.Services.AddTransient<IServiceMenuCombo, ServiceMenuCombo>();
 builder.Services.AddTransient<IServiceCocinaOrden, ServiceCocinaOrden>();
+builder.Services.AddTransient<IServiceEstacion, ServiceEstacion>();
+builder.Services.AddTransient<IServiceUsuario, UsuarioService>();
+builder.Services.AddTransient<IServiceIngrediente, ServiceIngrediente>();
+builder.Services.AddScoped<IServicePedidoDetalle, ServicePedidoDetalle>();
+builder.Services.AddScoped<IServicioDesactivacionMenus, ServicioDesactivacionMenus>();
+builder.Services.AddScoped<IServiceCarrito, ServiceCarrito>();
+builder.Services.AddScoped<IServiceUsuarioActual, ServiceUsuarioActual>();
+builder.Services.AddScoped<IServicePedido, ServicePedido>();
+builder.Services.AddScoped<IServicePersonalizacion, ServicePersonalizacion>();
+builder.Services.AddScoped<IServiceNotificacion, ServiceNotificacion>();
+builder.Services.AddScoped<IServiceCocina, ServiceCocina>();
+
+// Estado en memoria para mostrar el resultado en el panel /TareaProgramada.
+// Debe ser Singleton: tiene que sobrevivir entre las distintas ejecuciones del BackgroundService
+// y ser el mismo objeto que lee el controlador cuando alguien visita la pï¿½gina.
+builder.Services.AddSingleton<ITareaProgramadaEstado, TareaProgramadaEstado>();
+
+// El "programador": se registra como Hosted Service para que arranque junto con la app.
+builder.Services.AddHostedService<DesactivacionMenusBackgroundService>();
+
 
 //Seguridad
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -68,8 +109,13 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile<MenuDetalleProductoProfile>();
     config.AddProfile<MenuComboProfile>();
     config.AddProfile<CocinaOrdenProfile>();
+    config.AddProfile<IngredienteProfile>();
+    config.AddProfile<ProductoIngredienteProfile>();
+    config.AddProfile<EstacionProfile>();
+    config.AddProfile<UsuarioProfile>();
+    config.AddProfile<PedidoDetalleProfile>();
 });
-// Configuar Conexión a la Base de Datos SQL
+// Configuar Conexiï¿½n a la Base de Datos SQL
 builder.Services.AddDbContext<AmarettoContext>(options =>
 {
     // it read appsettings.json file
@@ -78,13 +124,13 @@ builder.Services.AddDbContext<AmarettoContext>(options =>
     if (builder.Environment.IsDevelopment())
         options.EnableSensitiveDataLogging();
 });
-//Configuración Serilog
+//Configuraciï¿½n Serilog
 // Logger. P.E. Verbose = muestra SQl Statement
 var logger = new LoggerConfiguration()
-                    // Limitar la información de depuración
+                    // Limitar la informaciï¿½n de depuraciï¿½n
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
                     .Enrich.FromLogContext()
-                    // Log LogEventLevel.Verbose muestra mucha información, pero no es necesaria solo para el proceso de depuración
+                    // Log LogEventLevel.Verbose muestra mucha informaciï¿½n, pero no es necesaria solo para el proceso de depuraciï¿½n
                     .WriteTo.Console(LogEventLevel.Information)
                     .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Information).WriteTo.File(@"Logs\Info-.log", shared: true, encoding: Encoding.ASCII, rollingInterval: RollingInterval.Day))
                     .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Debug).WriteTo.File(@"Logs\Debug-.log", shared: true, encoding: System.Text.Encoding.ASCII, rollingInterval: RollingInterval.Day))
@@ -116,6 +162,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 // Activar Antiforgery 
@@ -127,3 +177,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+

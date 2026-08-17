@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Libreria.Application.Services.Implementations
+namespace Amaretto.Application.Services.Implementations
 {
     public class ServiceCategoria : IServiceCategoria
     {

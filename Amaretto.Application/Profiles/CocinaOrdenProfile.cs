@@ -14,10 +14,8 @@ namespace Amaretto.Application.Profiles
         public CocinaOrdenProfile()
         {
             CreateMap<CocinaOrden, CocinaOrdenDTO>().ReverseMap();
-            CreateMap<PedidoDetalleDTO, PedidoDetalle>().ReverseMap();
-            CreateMap<EstacionCocinaDTO, EstacionCocina>().ReverseMap();
-            CreateMap<ProductoDTO, Producto>().ReverseMap();
-            CreateMap<ComboDTO, Combo>().ReverseMap();
+            CreateMap<EstacionCocina, EstacionCocinaDTO>().ReverseMap();
+
         }
     }
 }

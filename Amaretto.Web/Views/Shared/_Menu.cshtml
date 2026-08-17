@@ -1,84 +1,290 @@
-﻿<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href=@Url.Action("Index","Home")>Librería</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+﻿@inject Amaretto.Application.Services.Interfaces.IServiceUsuarioActual UsuarioActual
+@{
+    // Roles: 1 Administrador, 2 Cliente, 3 Cocinero, 4 Encargado
+    var esAdministrador = UsuarioActual.EstaAutenticado && UsuarioActual.IdRol == 1;
+    var esCocinero = UsuarioActual.EstaAutenticado && UsuarioActual.IdRol == 3;
+    var esEncargado = UsuarioActual.EstaAutenticado && UsuarioActual.IdRol == 4;
+    var esAdminOEncargado = esAdministrador || esEncargado;
+}
+
+<nav class="navbar navbar-expand-lg navbar-amaretto">
+    <div class="container">
+
+        <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+            <img src="~/images/logo-amaretto.png" class="navbar-logo" alt="Amaretto Cakes">
+        </a>
+
+        <!-- TOGGLER MOBILE -->
+        <button class="navbar-toggler navbar-toggler-amaretto"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain"
+                aria-controls="navbarMain"
+                aria-expanded="false"
+                aria-label="Abrir menú">
+            <span></span>
+            <span></span>
+            <span></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fs-4 bi-wrench"></i> Catalogos
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-controller="Combo" asp-action="Catalogo" class="dropdown-item"> Combos </a></li>
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-lg-1">
 
-                        <li><a asp-controller="Producto" asp-action="Catalogo" class="dropdown-item">Productos </a></li>
+                <!-- Catálogos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+                        Catálogos
+                    </a>
+                    <ul class="dropdown-menu dropdown-amaretto">
+                        <li>
+                            <a asp-controller="Combo" asp-action="Catalogo" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-box-seam me-2"></i> Combos
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Producto" asp-action="Catalogo" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-cake2 me-2"></i> Productos
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
+                        <li>
+                            <a asp-controller="MenuProducto" asp-action="Catalogo" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-cake2-fill me-2"></i> Menú Producto
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="MenuCombo" asp-action="Catalogo" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-box-fill me-2"></i> Menú Combo
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
+                <!-- Cocina -->
+                @if (esCocinero || esAdminOEncargado)
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Cocina" asp-action="Index" class="nav-link nav-link-amaretto">
+                            <span class="nav-icon"><i class="bi bi-fire"></i></span>
+                            Cocina
+                        </a>
+                    </li>
+                }
+
+                <!-- Mantenimiento -->
+                @if (esAdminOEncargado)
+                {
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fs-4 bi-wrench"></i> Menús
+                    <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span class="nav-icon"><i class="bi bi-tools"></i></span>
+                        Mantenimiento
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-controller="MenuProducto" asp-action="Index" class="dropdown-item"> Menu Producto </a></li>
-
-                        <li><a asp-controller="MenuCombo" asp-action="Index" class="dropdown-item">Menu Combo </a></li>
-
-                        <li><a asp-controller="CocinaOrden" asp-action="Index" class="dropdown-item">Ordenes </a></li>
+                    <ul class="dropdown-menu dropdown-amaretto">
+                        <li>
+                            <a asp-controller="Combo" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-box-seam me-2"></i> Combos
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Producto" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-cake2 me-2"></i> Productos
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Usuario" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-people-fill me-2"></i> Usuarios
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
+                        <li>
+                            <a asp-controller="MenuProducto" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-cake2-fill me-2"></i> Menú Producto
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="MenuCombo" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-box-fill me-2"></i> Menú Combo
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="CocinaOrden" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-fire me-2"></i> Órdenes
+                            </a>
+                        </li>
                     </ul>
                 </li>
+                }
 
-
+                <!-- Proceso -->
+                @if (esAdminOEncargado)
+                {
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fs-4 bi-wrench"></i> Mantenimiento
+                    <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span class="nav-icon"><i class="bi bi-gear-fill"></i></span>
+                        Proceso
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-controller="Combo" asp-action="Index" class="dropdown-item"> Combos </a></li>
-
-                        <li><a asp-controller="Producto" asp-action="Index" class="dropdown-item">Productos </a></li>
+                    <ul class="dropdown-menu dropdown-amaretto">
+                        <li>
+                            <a asp-controller="Combo" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-box-seam me-2"></i> Combos
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="TareaProgramada" asp-action="Index" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-clock me-2"></i> Tarea Programada
+                            </a>
+                        </li>
                     </ul>
                 </li>
+                }
+
+                <!-- Reportes -->
+                @if (esAdminOEncargado)
+                {
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fs-4 bi-gear-fill"></i> Proceso
+                    <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span class="nav-icon"><i class="bi bi-bar-chart-fill"></i></span>
+                        Reportes
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-controller="Combo" asp-action="Index" class="dropdown-item"> Combos </a></li>
+                    <ul class="dropdown-menu dropdown-amaretto">
+                        <li>
+                            <a asp-controller="Reporte" asp-action="Grafico" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-bar-chart-fill me-2"></i> Panel de Reportes
+                            </a>
+                        </li>
                     </ul>
                 </li>
+                }
+
+                <!-- Seguridad -->
+                @if (esAdministrador)
+                {
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fs-4 bi-bar-chart-fill"></i> Reportes
+                    <a class="nav-link nav-link-amaretto dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span class="nav-icon"><i class="bi bi-shield-lock-fill"></i></span>
+                        Seguridad
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-controller="Reporte" asp-action="GraficoVentas" class="dropdown-item"> Gráfico Ventas </a></li>
+                    <ul class="dropdown-menu dropdown-amaretto">
+                        <li>
+                            <a href="@Url.Action("Index", "Usuario")" class="dropdown-item dropdown-item-amaretto">
+                                <i class="bi bi-people-fill me-2"></i> Usuarios
+                            </a>
+                        </li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fs-4 bi-people"></i> Seguridad
-                    </a>
-                    @if(User.IsInRole("Admnistrador") == true )
-                    {
-                        <ul class="dropdown-menu">
-                            <li><a href="@Url.Action("Index", "Usuario")" class="dropdown-item"> Usuario </a></li>
+                }
+
+                <!-- Boton del traductor -->
+                <li class="nav-item">
+                    <button id="btnIdioma"
+                            class="lang-btn"
+                            type="button"
+                            onclick="toggleIdioma()"
+                            title="Cambiar idioma">
+                        <i class="bi bi-translate"></i>
+                        <span id="langText">ES</span>
+                    </button>
+
+                    <div id="google_translate_element" style="display:none;"></div>
+                </li>
+
+                <!-- Notificaciones -->
+                @if (UsuarioActual.EstaAutenticado)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-amaretto cart-link" href="#" role="button"
+                           id="campanaNotificaciones" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                           title="Notificaciones">
+                            <i class="bi bi-bell-fill"></i>
+                            <span id="notifBadge" class="cart-badge notif-badge d-none">0</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-amaretto dropdown-menu-end notif-panel">
+                            <li class="notif-panel-header">
+                                <span>Notificaciones</span>
+                                <button type="button" id="btnMarcarLeidas" class="notif-marcar">
+                                    Marcar como leídas
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
+                            <li>
+                                <div id="notifLista" class="notif-lista">
+                                    <p class="notif-vacio">Cargando...</p>
+                                </div>
+                            </li>
                         </ul>
-                    }
-                    
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img class="rounded-circle mx-2 mt-1" src="~/images/profile.png" alt=@User.Identity!.Name width="32px" height="32px" />
-                        <span class="d-none d-sm-inline mx-1">@User.Identity!.Name</span>
+                    </li>
+                }
+
+                <!-- Carrito -->
+                <li class="nav-item">
+                    <a asp-controller="Pedido"
+                       asp-action="Registrar"
+                       class="nav-link nav-link-amaretto cart-link"
+                       title="Ver pedido">
+                        <i class="bi bi-cart-fill"></i>
+                        <span id="cartBadge" class="cart-badge">0</span>
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-controller="Login" asp-action="LogOff">Salir</a></li>
-                    </ul>
                 </li>
+
+                <!-- Separador visual -->
+                <li class="nav-item d-none d-lg-block">
+                    <span class="navbar-separator"></span>
+                </li>
+
+                <!-- Usuario -->
+                @if (UsuarioActual.EstaAutenticado)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-amaretto nav-user dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle nav-avatar" style="font-size: 1.5rem; flex-shrink: 0;"></i>
+                            <span class="nav-username">@UsuarioActual.NombreCompleto</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-amaretto dropdown-menu-end">
+                            <li class="dropdown-user-info">
+                                <p class="dropdown-user-name">@UsuarioActual.NombreCompleto</p>
+                                <p class="dropdown-user-role">
+                                    <span class="badge" style="background: var(--moss-green);">@UsuarioActual.NombreRol</span>
+                                </p>
+                                <small class="text-muted">@UsuarioActual.Email</small>
+                                @if (UsuarioActual.Telefono != null)
+                                {
+                                    <br /><small class="text-muted"><i class="bi bi-telephone me-1"></i>@UsuarioActual.Telefono</small>
+                                }
+                                @if (UsuarioActual.Direccion != null)
+                                {
+                                    <br /><small class="text-muted"><i class="bi bi-geo-alt me-1"></i>@UsuarioActual.Direccion</small>
+                                }
+                            </li>
+                            <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
+                            <li>
+                                <a class="dropdown-item dropdown-item-amaretto"
+                                   asp-controller="Pedido" asp-action="Historial">
+                                    <i class="bi bi-clock-history me-2"></i>
+                                    @(UsuarioActual.IdRol == 1 || UsuarioActual.IdRol == 4
+                                        ? "Historial de pedidos"
+                                        : "Mis pedidos")
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider dropdown-divider-amaretto"></li>
+                            <li>
+                                <a class="dropdown-item dropdown-item-amaretto dropdown-item-danger"
+                                   asp-controller="Login" asp-action="LogOffGet">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-amaretto" asp-controller="Login" asp-action="Index">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar
+                        </a>
+                    </li>
+                }
+
             </ul>
         </div>
     </div>

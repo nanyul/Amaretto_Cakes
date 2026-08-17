@@ -1,97 +1,143 @@
-﻿@model Amaretto.Web.ViewModels.ViewModelLogin
+﻿@model Amaretto.Application.DTOs.LoginDTO
 @{
     Layout = null;
 }
 
 <!DOCTYPE html>
-
-<html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Libreria.Web</title>
-    <link rel="stylesheet" href="~/css/bootstrap-superhero.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Libreria.Web.styles.css" asp-append-version="true" />
-    <!-- Toast-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-    <!-- SweetAlert-->
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet">
-    <!-- Add Bootstrap Icons Support! -->
+    <title>Iniciar Sesión - Amaretto Cakes</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/amaretto.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    <link rel="stylesheet" href="~/css/sweetalert2.min.css" asp-append-version="true" />
 </head>
+<body class="login-page">
+    <!-- Partículas flotantes -->
+    <div class="login-confeti" aria-hidden="true">
+        @{
+            var pieces = new[] { "✦", "🌸", "✦", "🎂", "✦", "🍰", "✦", "🌸", "✦", "🎂", "✦", "🍰" };
+            var colors = new[] { "var(--moss-green)", "var(--rosy-brown)", "var(--beige)" };
+            var rnd = new Random();
+            for (int i = 0; i < pieces.Length; i++)
+            {
+                var left = rnd.Next(5, 95);
+                var top = rnd.Next(5, 95);
+                var size = (rnd.Next(8, 18) / 10.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+                var duration = rnd.Next(6, 10).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                var delay = (i * 0.4).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+                var color = colors[rnd.Next(colors.Length)];
+                var style = $"--fp-left:{left}%; --fp-top:{top}%; --fp-size:{size}rem; --fp-duration:{duration}s; --fp-delay:{delay}s; --fp-color:{color};";
+                <span class="float-piece" style="@style">@pieces[i]</span>
+            }
+        }
+    </div>
 
+    <main class="min-vh-100 d-flex align-items-center justify-content-center p-3">
+        <div class="w-100" style="max-width: 420px;">
+            <!-- Logo -->
+            <div class="text-center mb-4">
+                <img src="~/images/logo-amaretto.png" alt="Amaretto Cakes" class="login-logo" style="height: 80px;">
+            </div>
 
-<body>
-    <div class="container mt-5 pt-5">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 col-xl-4 ">
-                <div class="card">
-                    <div class="card-header">
-                        Iniciar Sesion
-                    </div>
-                    <div class="card-body">
+            <!-- Tarjeta Login -->
+            <div class="card login-card shadow-lg border-0">
+                <div class="card-body p-4 p-md-5">
+                    <header class="text-center mb-4">
+                        <h1 class="login-title">Iniciar Sesión</h1>
+                        <p class="login-subtitle">Bienvenido de nuevo a Amaretto Cakes</p>
+                    </header>
 
-                        <form asp-controller="Login" asp-action="LogIn" method="post" asp-antiforgery="true">
-                            <div class="form-group">
-                                <label asp-for="User" class="control-label" placeholder="Usuario"></label>
-                                <input asp-for="User" class="form-control" type="text" autocomplete="true" />
-                                <span asp-validation-for="User" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Password" class="control-label" placeholder="Contraseña"></label>
-                                <input asp-for="Password" class="form-control" type="password" autocomplete="true" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                            <div class="d-grid gap-2 mb-3 mt-2">
-                                <button class="btn btn-primary" type="submit" onclick="spinnerEffect()">Iniciar Sesion</button>
-                            </div>
+                    <form asp-controller="Login" asp-action="LogIn" method="post" asp-antiforgery="true" class="login-form">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                            <!-- Div para spinner -->
-                            <div id="loader"  class="loadingXXXX" style="width: 3rem; height: 3rem;" role="status">                               
-                            </div>
+                        <!-- Email -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" type="email" class="form-control login-input" 
+                                   placeholder="Correo Electrónico" autocomplete="email" required />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small d-block mb-3"></span>
 
-                            
-                            @if (@ViewBag.Message != null)
-                            {
-                                <div  class="form-group">
-                                    <div id="message"  class="alert alert-danger" role="alert">
-                                        @ViewBag.Message
-                                    </div>
-                                </div>
-                            }
-                        </form>
+                        <!-- Password -->
+                        <!-- Password -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input asp-for="Password" type="password" id="passwordInput" class="form-control login-input"
+                                   placeholder="Contraseña" autocomplete="current-password" required />
+                            <span class="input-group-text toggle-password" style="cursor: pointer;" onclick="togglePassword()">
+                                <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small d-block mb-4"></span>
+
+                        <!-- Submit -->
+                        <button type="submit" class="btn btn-pill btn-amaretto-main w-100 py-3 mb-3">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                        </button>
+                    </form>
+
+                    <div class="text-center login-footer">
+                        <p class="mb-2">¿No tienes cuenta?</p>
+                        <a asp-controller="Login" asp-action="Register" class="btn btn-pill btn-amaretto-outline">
+                            <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-     
 
-    <script type="text/javascript">
-        function spinnerEffect() {
-            console.log("spinnerEffect")
-            document.getElementById("loader").innerHTML=""
-            document.getElementById("loader").className = "loading";
-        }
-    </script>
+    
+        </div>
+    </main>
+
+    <!-- Ola inferior -->
+    <div class="wave-bottom login-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,40 C480,80 960,0 1440,50 L1440,80 L0,80 Z" fill="var(--dark-green)" />
+        </svg>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- Ajax unobtrusive-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js" integrity="sha512-f04GBpoqEZhbyjlRTuXeg8FIHDb+xfCJ0LVdqiN1fEl5B3jz3Z0SPe9IxDumOVdTeeXmKMcMJhb26VuGf1Laqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Toast-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <!-- SweetAlert-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-    @if (ViewBag.NotificationMessage != null)
+    @if (TempData["Mensaje"] != null)
     {
         <script>
-            @Html.Raw(@ViewBag.NotificationMessage);
+            (function () {
+                var originalFire = window.Swal.fire.bind(window.Swal);
+                var Swal = {
+                    fire: function (options) {
+                        var titulosToast = ['Bienvenido', 'Hasta pronto'];
+                        if (titulosToast.indexOf(options.title) !== -1) {
+                            options = Object.assign({
+                                toast: true,
+                                position: 'bottom-end',
+                                showConfirmButton: false,
+                                timer: 1800,
+                                timerProgressBar: true
+                            }, options);
+                        }
+                        return originalFire(options);
+                    }
+                };
+                @Html.Raw(TempData["Mensaje"])
+            })();
         </script>
     }
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('passwordInput');
+            const icon = document.getElementById('toggleIcon');
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            icon.classList.toggle('bi-eye-slash', !isPassword);
+            icon.classList.toggle('bi-eye', isPassword);
+        }
+    </script>
 </body>
 </html>

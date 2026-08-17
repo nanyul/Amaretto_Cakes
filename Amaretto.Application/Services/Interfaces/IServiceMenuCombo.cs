@@ -15,5 +15,9 @@ namespace Amaretto.Application.Services.Interfaces
         Task<MenuComboDTO> FindByIdAsync(int id);
 
         Task<MenuComboDTO?> ObtenerMenuDisponibleAsync();
+
+        Task<int> AddAsync(MenuComboDTO dto, string[] selectedCombos);
+
+        Task UpdateAsync(int id, MenuComboDTO dto, string[] selectedCombos);
     }
 }

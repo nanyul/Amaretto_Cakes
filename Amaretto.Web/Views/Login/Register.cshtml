@@ -1,0 +1,188 @@
+@model Amaretto.Application.DTOs.RegisterDTO
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crear Cuenta - Amaretto Cakes</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/amaretto.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/sweetalert2.min.css" asp-append-version="true" />
+</head>
+<body class="login-page">
+    <!-- Partículas flotantes -->
+    <div class="login-confeti" aria-hidden="true">
+        @{
+            var pieces = new[] { "✦", "🌸", "✦", "🎂", "✦", "🍰", "✦", "🌸", "✦", "🎂", "✦", "🍰" };
+            var colors = new[] { "var(--moss-green)", "var(--rosy-brown)", "var(--beige)" };
+            var rnd = new Random();
+            for (int i = 0; i < pieces.Length; i++)
+            {
+                var left = rnd.Next(5, 95);
+                var top = rnd.Next(5, 95);
+                var size = (rnd.Next(8, 18) / 10.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+                var duration = rnd.Next(6, 10).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                var delay = (i * 0.4).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+                var color = colors[rnd.Next(colors.Length)];
+                var style = $"--fp-left:{left}%; --fp-top:{top}%; --fp-size:{size}rem; --fp-duration:{duration}s; --fp-delay:{delay}s; --fp-color:{color};";
+                <span class="float-piece" style="@style">@pieces[i]</span>
+            }
+        }
+    </div>
+
+    <main class="min-vh-100 d-flex align-items-center justify-content-center p-3">
+        <div class="w-100" style="max-width: 460px;">
+            <!-- Logo -->
+            <div class="text-center mb-4">
+                <img src="~/images/logo-amaretto.png" alt="Amaretto Cakes" class="login-logo" style="height: 80px;">
+            </div>
+
+            <!-- Tarjeta Registro -->
+            <div class="card login-card shadow-lg border-0">
+                <div class="card-body p-4 p-md-5">
+                    <header class="text-center mb-4">
+                        <h1 class="login-title">Crear Cuenta</h1>
+                        <p class="login-subtitle">Únete a Amaretto Cakes</p>
+                    </header>
+
+                    <form asp-controller="Login" asp-action="Register" method="post" asp-antiforgery="true" class="login-form">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <!-- Nombre Completo -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input asp-for="NombreCompleto" type="text" class="form-control login-input" 
+                                   placeholder="Tu nombre completo" autocomplete="name" required />
+                        </div>
+                        <span asp-validation-for="NombreCompleto" class="text-danger small d-block mb-3"></span>
+
+                        <!-- Email -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" type="email" class="form-control login-input" 
+                                   placeholder="Correo Electrónico" autocomplete="email" required />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small d-block mb-3"></span>
+
+                        <!-- Teléfono -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                            <input asp-for="Telefono" type="tel" class="form-control login-input" 
+                                   placeholder="Teléfono (opcional)" autocomplete="tel" />
+                        </div>
+                        <span asp-validation-for="Telefono" class="text-danger small d-block mb-3"></span>
+
+                        <!-- Dirección -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                            <textarea asp-for="Direccion" class="form-control login-input" 
+                                      placeholder="Dirección (opcional)" rows="2" style="height: auto;"></textarea>
+                        </div>
+                        <span asp-validation-for="Direccion" class="text-danger small d-block mb-3"></span>
+
+                        <!-- Sexo -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
+                            <select asp-for="Sexo" class="form-select login-input" autocomplete="off">
+                                <option value="">Seleccionar</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                                <option value="O">Otro</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Sexo" class="text-danger small d-block mb-3"></span>
+
+                        <!-- Password -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input asp-for="Password" type="password" class="form-control login-input" 
+                                   placeholder="Contraseña (mín. 6 caracteres)" autocomplete="new-password" required minlength="6" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small d-block mb-3"></span>
+
+                        <!-- Confirm Password -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control login-input" 
+                                   placeholder="Confirmar Contraseña" autocomplete="new-password" required />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small d-block mb-4"></span>
+
+                        <!-- Submit -->
+                        <button type="submit" class="btn btn-pill btn-amaretto-main w-100 py-3 mb-3">
+                            <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                        </button>
+                    </form>
+
+                    <div class="text-center login-footer">
+                        <p class="mb-2">¿Ya tienes cuenta?</p>
+                        <a asp-controller="Login" asp-action="Index" class="btn btn-pill btn-amaretto-outline">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="text-center mt-4 text-muted small">
+                <p class="mb-0">© 2026 Amaretto Cakes. Todos los derechos reservados.</p>
+            </footer>
+        </div>
+    </main>
+
+    <!-- Ola inferior -->
+    <div class="wave-bottom login-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,40 C480,80 960,0 1440,50 L1440,80 L0,80 Z" fill="var(--dark-green)" />
+        </svg>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <script>
+            @Html.Raw(TempData["Mensaje"])
+        </script>
+    }
+
+    <script>
+        // Validación personalizada para confirmar contraseña
+        $(function () {
+            $('form').on('submit', function (e) {
+                var pass = $('#Password').val();
+                var confirm = $('#ConfirmPassword').val();
+                if (pass !== confirm) {
+                    e.preventDefault();
+                    $('#ConfirmPassword').addClass('is-invalid');
+                    if (!$('#ConfirmPassword').next('.invalid-feedback').length) {
+                        $('#ConfirmPassword').after('<div class="invalid-feedback">Las contraseñas no coinciden</div>');
+                    }
+                } else {
+                    $('#ConfirmPassword').removeClass('is-invalid');
+                }
+            });
+
+            $('#ConfirmPassword, #Password').on('input', function () {
+                var pass = $('#Password').val();
+                var confirm = $('#ConfirmPassword').val();
+                if (confirm && pass === confirm) {
+                    $('#ConfirmPassword').removeClass('is-invalid').addClass('is-valid');
+                } else if (confirm && pass !== confirm) {
+                    $('#ConfirmPassword').removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    $('#ConfirmPassword').removeClass('is-valid is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

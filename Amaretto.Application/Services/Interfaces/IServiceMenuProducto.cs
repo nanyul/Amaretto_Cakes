@@ -15,5 +15,9 @@ namespace Amaretto.Application.Services.Interfaces
         Task<MenuProductoDTO> FindByIdAsync(int id);
 
         Task<MenuProductoDTO?> ObtenerMenuDisponibleAsync();
+
+        Task<int> AddAsync(MenuProductoDTO dto, string[] selectedProductos);
+
+        Task UpdateAsync(int id, MenuProductoDTO dto, string[] selectedProductos);
     }
 }

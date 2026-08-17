@@ -1,0 +1,130 @@
+@using Amaretto.Application.DTOs
+@{
+    ViewData["Title"] = "Crear Proceso de Preparación";
+    var pedidosDetalle = (ICollection<PedidoDetalleDTO>)ViewBag.ListPedidoDetalle;
+    var estaciones = (ICollection<EstacionCocinaDTO>)ViewBag.ListEstaciones;
+}
+
+<section class="product-form-section">
+    <div class="container">
+        <div class="product-form-header-row">
+            <h1 class="product-form-title">Crear Proceso de Preparación</h1>
+            <p class="product-form-subtitle">Selecciona el producto y las estaciones que componen su proceso.</p>
+            <nav class="product-breadcrumb">
+                <a asp-controller="Home" asp-action="Index" class="breadcrumb-link"><i class="bi bi-house-door-fill"></i></a>
+                <span class="breadcrumb-sep">›</span>
+                <a asp-action="Index" class="breadcrumb-link">Órdenes</a>
+                <span class="breadcrumb-sep">›</span>
+                <span class="breadcrumb-current">Crear nuevo</span>
+            </nav>
+        </div>
+
+        <form asp-action="Create" method="post" class="product-form-card" id="formProceso">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="form-section-title"><i class="bi bi-bag-check"></i> Producto</h5>
+
+            <div class="form-field">
+                <label class="form-label-custom">Selecciona un producto existente <span class="required-mark">*</span></label>
+                <small class="field-hint">Solo se muestran pedidos que aún no tienen un proceso de preparación asignado.</small>
+                <select name="idDetalle" class="form-control-amaretto">
+                    <option value="">Seleccionar producto</option>
+                    @foreach (var pd in pedidosDetalle)
+                    {
+                        <option value="@pd.IdDetalle">Pedido #@pd.IdPedido - @pd.NombreProductoOCombo </option>
+                    }
+                </select>
+            </div>
+
+            <h5 class="form-section-title mt-4"><i class="bi bi-diagram-3"></i> Estaciones del Proceso <span class="required-mark">*</span></h5>
+            <small class="field-hint d-block mb-3">Marca las estaciones que componen el proceso. El número de orden se asigna automáticamente según el orden de selección, pero puedes ajustarlo.</small>
+
+            <div class="estacion-list" id="estacionList">
+                @foreach (var est in estaciones)
+                {
+                    <div class="estacion-row">
+                        <label class="estacion-row-label">
+                            <input type="checkbox" class="estacion-checkbox" name="estacionIds" value="@est.IdEstacion" />
+                            <span>@est.Nombre</span>
+                        </label>
+                        <div class="estacion-orden-wrap">
+                            <span class="estacion-orden-tag">Orden</span>
+                            <input type="number" name="ordenPasos" min="1" class="estacion-orden-input" value="1" disabled />
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="product-form-footer">
+                <a asp-action="Index" class="btn-form-cancel">Cancelar</a>
+                <div class="footer-actions-right">
+                    <button type="submit" class="btn-form-submit"><i class="bi bi-save"></i> Guardar proceso</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const formProceso = document.getElementById('formProceso');
+
+        function actualizarFilaEstacion(checkbox) {
+            const row = checkbox.closest('.estacion-row');
+            const ordenInput = row.querySelector('.estacion-orden-input');
+            row.classList.toggle('is-active', checkbox.checked);
+
+            if (checkbox.checked) {
+                ordenInput.disabled = false;
+                const seleccionados = document.querySelectorAll('.estacion-checkbox:checked').length;
+                ordenInput.value = seleccionados;
+            } else {
+                ordenInput.disabled = true;
+            }
+        }
+
+        document.querySelectorAll('.estacion-checkbox').forEach(cb => {
+            cb.addEventListener('change', function () {
+                actualizarFilaEstacion(this);
+            });
+        });
+
+        formProceso.addEventListener('submit', function (e) {
+            const idDetalle = formProceso.querySelector('[name="idDetalle"]').value;
+            const checksMarcados = Array.from(document.querySelectorAll('.estacion-checkbox:checked')); // <-- faltaba esto
+            const marcados = checksMarcados.length;
+
+            if (!idDetalle) {
+                e.preventDefault();
+                Swal.fire({ icon: 'warning', title: 'Falta el producto', text: 'Debes seleccionar un producto/pedido.' });
+                return;
+            }
+
+            if (marcados === 0) {
+                e.preventDefault();
+                Swal.fire({ icon: 'warning', title: 'Faltan estaciones', text: 'Debes seleccionar al menos una estación del proceso.' });
+                return;
+            }
+
+            const valoresOrden = checksMarcados.map(cb => {
+                const row = cb.closest('.estacion-row');
+                return parseInt(row.querySelector('.estacion-orden-input').value, 10);
+            });
+
+            const duplicados = new Set(valoresOrden).size !== valoresOrden.length;
+            if (duplicados) {
+                e.preventDefault();
+                Swal.fire({ icon: 'error', title: 'Orden duplicado', text: 'Las estaciones no pueden tener el mismo número de orden.' });
+                return;
+            }
+
+            const fueraDeRango = valoresOrden.some(val => val < 1 || val > marcados);
+            if (fueraDeRango) {
+                e.preventDefault();
+                Swal.fire({ icon: 'error', title: 'Orden fuera de rango', text: `El número de orden debe estar entre 1 y ${marcados} (la cantidad de estaciones seleccionadas).` });
+                return;
+            }
+        });
+    </script>
+}

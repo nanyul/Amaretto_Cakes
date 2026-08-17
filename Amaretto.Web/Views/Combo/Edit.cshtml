@@ -1,0 +1,419 @@
+﻿@model Amaretto.Application.DTOs.ComboDTO
+@using Amaretto.Application.DTOs
+
+@{
+    ViewData["Title"] = "Editar Combo";
+    var productos = (ICollection<ProductoDTO>)ViewBag.ListProductos;
+    var seleccionados = (List<string>)ViewBag.SelectedProductos;
+}
+
+<section class="product-form-section">
+    <div class="container">
+        <div class="product-form-header-row">
+            <h1 class="product-form-title">Editar Combo</h1>
+            <p class="product-form-subtitle">Actualiza la información de @Model.Nombre.</p>
+            <nav class="product-breadcrumb">
+                <a asp-controller="Home" asp-action="Index" class="breadcrumb-link"><i class="bi bi-house-door-fill"></i></a>
+                <span class="breadcrumb-sep">›</span>
+                <a asp-action="Index" class="breadcrumb-link">Combos</a>
+                <span class="breadcrumb-sep">›</span>
+                <span class="breadcrumb-current">Editar</span>
+            </nav>
+        </div>
+
+        <form asp-action="Edit" asp-route-id="@Model.IdCombo" method="post" enctype="multipart/form-data" class="product-form-card" id="formCombo">
+            <input type="hidden" asp-for="IdCombo" />
+            <input type="hidden" asp-for="Imagen1" />
+            <input type="hidden" asp-for="Imagen2" />
+
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <h5 class="form-section-title"><i class="bi bi-stars"></i> Información del combo</h5>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-7 form-field">
+                            <label asp-for="Nombre" class="form-label-custom">Nombre del combo <span class="required-mark">*</span></label>
+                            <input asp-for="Nombre" class="form-control-amaretto" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-5 form-field">
+                            <label asp-for="Precio" class="form-label-custom">Precio <span class="required-mark">*</span></label>
+                            <div class="price-input-wrap">
+                                <span class="price-symbol">₡</span>
+                                <input asp-for="Precio" type="number" step="0.01" min="0" class="form-control-amaretto price-input" />
+                            </div>
+                            <span asp-validation-for="Precio" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-field mt-3">
+                        <label asp-for="Descripcion" class="form-label-custom">Descripción</label>
+                        <textarea asp-for="Descripcion" class="form-control-amaretto" maxlength="500" id="descripcionTxt"></textarea>
+                        <div class="char-counter"><span id="charCount">@(Model.Descripcion?.Length ?? 0)</span>/500</div>
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-field mt-3">
+                        <label class="form-label-custom">Productos del combo <span class="required-mark">*</span></label>
+                        <small class="field-hint">Selecciona los <strong>productos</strong> que incluirá este combo.</small>
+
+                        <div class="producto-search-wrap">
+                            <i class="bi bi-search producto-search-icon"></i>
+                            <input type="text" id="buscarProductos" class="form-control-amaretto producto-search-input" placeholder="Buscar productos..." />
+                        </div>
+
+                        <div class="producto-checklist" id="productoChecklist">
+                            @foreach (var p in productos)
+                            {
+                                bool marcado = seleccionados.Contains(p.IdProducto);
+                                <label class="producto-row @(marcado ? "row-active" : "")" data-nombre="@p.Nombre.ToLower()">
+                                    <input type="checkbox" name="selectedProductos" value="@p.IdProducto" checked="@marcado" />
+                                    <img src="@p.Imagen1" alt="@p.Nombre" class="producto-row-img" />
+                                    <span class="producto-row-info">
+                                        <span class="producto-row-nombre">@p.Nombre</span>
+                                        <span class="producto-row-desc">@p.Descripcion</span>
+                                    </span>
+                                    <span class="producto-row-precio">₡@p.Precio.ToString("N2")</span>
+                                </label>
+                            }
+                        </div>
+                        <span id="productosError" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-field mt-3">
+                        <label class="form-label-custom">Estado del combo</label>
+                        <small class="field-hint">Define si el combo aparece disponible en el catálogo.</small>
+                        <div class="status-toggle-wrap">
+                            <label class="switch-toggle">
+                                <input type="checkbox" asp-for="Estado" id="estadoToggle" />
+                                <span class="switch-slider"></span>
+                            </label>
+                            <span class="status-toggle-label" id="estadoLabel"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <h5 class="form-section-title"><i class="bi bi-image"></i> Imágenes del combo</h5>
+                    <small class="field-hint d-block mb-2">Sube nuevas imágenes solo si deseas reemplazarlas, o elimina alguna actual con el botón ✕.</small>
+
+                    <label for="imagenesInput" class="image-dropzone" id="dropzone">
+                        <i class="bi bi-cloud-arrow-up dropzone-icon"></i>
+                        <span class="dropzone-title">Arrastra tus imágenes aquí</span>
+                        <span class="dropzone-sub">o haz clic para seleccionar (máx. 2)</span>
+                        <span class="dropzone-hint">Formatos recomendados: JPG, PNG<br />Tamaño máximo: 5MB c/u</span>
+                    </label>
+                    <input type="file" id="imagenesInput" accept="image/png, image/jpeg" multiple class="d-none" />
+
+                    <!-- Inputs reales que espera el controlador; los llena el script de abajo -->
+                    <input type="file" id="imagenFile" name="imagenFile" accept="image/png, image/jpeg" class="d-none" />
+                    <input type="file" id="imagenFile2" name="imagenFile2" accept="image/png, image/jpeg" class="d-none" />
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-6">
+                            <label class="form-label-custom">Vista previa 1</label>
+                            <div class="image-preview-box" id="previewBox1" data-has-initial="@(!string.IsNullOrEmpty(Model.Imagen1) ? "true" : "false")">
+                                @if (!string.IsNullOrEmpty(Model.Imagen1))
+                                {
+                                    <img id="previewImg1" src="@Model.Imagen1" alt="Vista previa 1" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-cake2 preview-icon"></i>
+                                    <span class="preview-text">Imagen 1</span>
+                                    <img id="previewImg1" src="" alt="Vista previa 1" class="d-none" />
+                                }
+                                <button type="button" class="btn-remove-image @(string.IsNullOrEmpty(Model.Imagen1) ? "d-none" : "")" id="removeImg1" title="Eliminar imagen">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label-custom">Vista previa 2</label>
+                            <div class="image-preview-box" id="previewBox2" data-has-initial="@(!string.IsNullOrEmpty(Model.Imagen2) ? "true" : "false")">
+                                @if (!string.IsNullOrEmpty(Model.Imagen2))
+                                {
+                                    <img id="previewImg2" src="@Model.Imagen2" alt="Vista previa 2" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-cake2 preview-icon"></i>
+                                    <span class="preview-text">Imagen 2</span>
+                                    <img id="previewImg2" src="" alt="Vista previa 2" class="d-none" />
+                                }
+                                <button type="button" class="btn-remove-image @(string.IsNullOrEmpty(Model.Imagen2) ? "d-none" : "")" id="removeImg2" title="Eliminar imagen">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-form-footer">
+                <a asp-action="Index" class="btn-form-cancel">Cancelar</a>
+                <div class="footer-actions-right">
+                    <button type="submit" class="btn-form-submit"><i class="bi bi-save"></i> Guardar cambios</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+<style>
+    .producto-search-wrap {
+        position: relative;
+        margin-top: .5rem;
+    }
+
+    .producto-search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: .55;
+    }
+
+    .producto-search-input {
+        padding-left: 40px;
+    }
+
+    .producto-checklist {
+        margin-top: .75rem;
+        max-height: 260px;
+        overflow-y: auto;
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 10px;
+    }
+
+    .producto-row {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        padding: .6rem .9rem;
+        border-bottom: 1px solid rgba(0,0,0,.06);
+        cursor: pointer;
+        transition: background-color .15s ease;
+    }
+
+        .producto-row:last-child {
+            border-bottom: none;
+        }
+
+        .producto-row:hover {
+            background-color: rgba(0,0,0,.03);
+        }
+
+        .producto-row.row-active {
+            background-color: rgba(70,110,80,.08);
+        }
+
+        .producto-row input[type="checkbox"] {
+            flex: 0 0 auto;
+        }
+
+    .producto-row-img {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        object-fit: cover;
+        flex: 0 0 auto;
+    }
+
+    .producto-row-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .producto-row-nombre {
+        font-weight: 600;
+    }
+
+    .producto-row-desc {
+        font-size: .8rem;
+        opacity: .65;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .producto-row-precio {
+        flex: 0 0 auto;
+        font-weight: 600;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        const descripcionTxt = document.getElementById('descripcionTxt');
+        const charCount = document.getElementById('charCount');
+        descripcionTxt.addEventListener('input', function () {
+            charCount.textContent = this.value.length;
+        });
+
+        const buscarProductos = document.getElementById('buscarProductos');
+        const filas = document.querySelectorAll('#productoChecklist .producto-row');
+        buscarProductos.addEventListener('input', function () {
+            const term = this.value.toLowerCase().trim();
+            filas.forEach(fila => {
+                const nombre = fila.dataset.nombre || '';
+                fila.style.display = nombre.includes(term) ? '' : 'none';
+            });
+        });
+
+        document.querySelectorAll('.producto-row input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', function () {
+                this.closest('.producto-row').classList.toggle('row-active', this.checked);
+            });
+        });
+
+        const imagenesInput = document.getElementById('imagenesInput');
+        const dropzone = document.getElementById('dropzone');
+        const formCombo = document.getElementById('formCombo');
+
+        // Cada "slot" representa una de las dos imágenes; hiddenField guarda la ruta ya
+        // existente en el servidor (Imagen1 / Imagen2) para poder "eliminarla" al enviar.
+        const slots = [
+            {
+                input: document.getElementById('imagenFile'),
+                previewBox: document.getElementById('previewBox1'),
+                previewImg: document.getElementById('previewImg1'),
+                removeBtn: document.getElementById('removeImg1'),
+                hiddenField: document.getElementById('Imagen1'),
+                hasFile: document.getElementById('previewBox1').dataset.hasInitial === 'true'
+            },
+            {
+                input: document.getElementById('imagenFile2'),
+                previewBox: document.getElementById('previewBox2'),
+                previewImg: document.getElementById('previewImg2'),
+                removeBtn: document.getElementById('removeImg2'),
+                hiddenField: document.getElementById('Imagen2'),
+                hasFile: document.getElementById('previewBox2').dataset.hasInitial === 'true'
+            }
+        ];
+
+        slots.forEach(slot => {
+            slot.previewIcon = slot.previewBox.querySelector('.preview-icon');
+            slot.previewText = slot.previewBox.querySelector('.preview-text');
+        });
+
+        function showPreview(slot, src) {
+            slot.previewImg.src = src;
+            slot.previewImg.classList.remove('d-none');
+            if (slot.previewIcon) slot.previewIcon.classList.add('d-none');
+            if (slot.previewText) slot.previewText.classList.add('d-none');
+            slot.removeBtn.classList.remove('d-none');
+        }
+
+        function clearSlot(slot) {
+            slot.input.value = '';
+            if (slot.hiddenField) slot.hiddenField.value = '';
+            slot.hasFile = false;
+            slot.previewImg.src = '';
+            slot.previewImg.classList.add('d-none');
+            if (slot.previewIcon) slot.previewIcon.classList.remove('d-none');
+            if (slot.previewText) slot.previewText.classList.remove('d-none');
+            slot.removeBtn.classList.add('d-none');
+        }
+
+        function assignFileToSlot(slot, file) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            slot.input.files = dt.files;
+            slot.hasFile = true;
+            const reader = new FileReader();
+            reader.onload = e => showPreview(slot, e.target.result);
+            reader.readAsDataURL(file);
+        }
+
+        // Reparte los archivos elegidos entre los slots vacíos; si no hay slots vacíos
+        // (ambos ya tienen imagen, nueva o existente), sobreescribe empezando por el slot 1.
+        function assignFilesToSlots(fileList) {
+            const files = Array.from(fileList).slice(0, slots.length);
+            if (files.length === 0) return;
+
+            let targets = slots.filter(s => !s.hasFile);
+            if (targets.length === 0) targets = slots;
+
+            files.forEach((file, i) => {
+                if (i < targets.length) assignFileToSlot(targets[i], file);
+            });
+        }
+
+        imagenesInput.addEventListener('change', function () {
+            if (this.files && this.files.length) assignFilesToSlots(this.files);
+            this.value = ''; // permite volver a elegir el mismo archivo más adelante
+        });
+
+        ['dragover', 'dragleave', 'drop'].forEach(evt => {
+            dropzone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                if (evt === 'dragover') dropzone.classList.add('dragging');
+                else dropzone.classList.remove('dragging');
+                if (evt === 'drop' && e.dataTransfer.files.length) {
+                    assignFilesToSlots(e.dataTransfer.files);
+                }
+            });
+        });
+
+        slots.forEach(slot => {
+            slot.removeBtn.addEventListener('click', () => clearSlot(slot));
+        });
+
+        // Validación: cada slot debe tener imagen (nueva o existente) antes de guardar
+        formCombo.addEventListener('submit', function (e) {
+            const seleccionados = document.querySelectorAll('#productoChecklist input[type="checkbox"]:checked');
+            const errorSpan = document.getElementById('productosError');
+            let bloquear = false;
+
+            if (seleccionados.length === 0) {
+                errorSpan.textContent = 'Debes seleccionar al menos un producto para el combo.';
+                bloquear = true;
+            } else {
+                errorSpan.textContent = '';
+            }
+
+            const faltanImagenes = slots.some(s => !s.hasFile);
+            if (faltanImagenes) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Faltan imágenes',
+                    text: 'El combo debe tener 2 imágenes. Sube una nueva o conserva la existente.'
+                });
+                return;
+            }
+
+            if (bloquear) {
+                e.preventDefault();
+            }
+        });
+
+        const estadoToggle = document.getElementById('estadoToggle');
+        const estadoLabel = document.getElementById('estadoLabel');
+
+        function actualizarEstadoLabel() {
+            if (estadoToggle.checked) {
+                estadoLabel.textContent = 'Disponible';
+                estadoLabel.classList.remove('is-no-disponible');
+                estadoLabel.classList.add('is-disponible');
+            } else {
+                estadoLabel.textContent = 'No disponible';
+                estadoLabel.classList.remove('is-disponible');
+                estadoLabel.classList.add('is-no-disponible');
+            }
+        }
+
+        estadoToggle.addEventListener('change', actualizarEstadoLabel);
+        actualizarEstadoLabel();
+    </script>
+}

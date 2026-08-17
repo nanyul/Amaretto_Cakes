@@ -1,74 +1,113 @@
 ﻿@model Amaretto.Application.DTOs.MenuComboDTO
-
 @{
     ViewData["Title"] = Model.Nombre;
 }
+<section class="menu-detail-section">
+    <div class="container">
 
-<div class="container">
+        <!-- Volver al listado -->
+        <a asp-controller="MenuCombo" asp-action="Index" class="btn-back-catalog mb-4">
+            <i class="bi bi-arrow-left"></i> Volver a menús
+        </a>
 
-    <!-- Encabezado del menú -->
-    <div class="text-center mb-5">
-        <h1>@Model.Nombre</h1>
+        <!-- Encabezado del menú -->
+        <div class="menu-detail-header">
+            <h1 class="menu-detail-title">
+                <span class="menu-detail-flourish">
+                    <i class="bi bi-stars"></i>
+                </span>
+                @Model.Nombre
+                <span class="menu-detail-flourish">
+                    <i class="bi bi-stars"></i>
+                </span>
+            </h1>
+            <p class="menu-detail-subtitle">@Model.Descripcion</p>
+        </div>
 
-        <p class="lead">
-            @Model.Descripcion
-        </p>
-    </div>
-
-    <!-- Disponibilidad -->
-    <div class="alert alert-info text-center mb-4">
-
-        <strong>Disponibilidad:</strong>
-        @Model.DiasDisponibles
-
-        <br />
-
-        <strong>Fechas:</strong>
-        @Model.FechaInicio.ToString("dd/MM/yyyy")
-        -
-        @Model.FechaFin.ToString("dd/MM/yyyy")
-
-    </div>
-
-    <!-- Combos -->
-    <div class="mb-5">
-
-        <h2 class="border-bottom pb-2">
-            Combos
-        </h2>
-
-        @foreach (var item in Model.MenuDetalleCombo
-                .Where(x => x.IdComboNavigation != null))
-        {
-            <div class="row mb-3">
-
-                <!-- Información del combo -->
-                <div class="col-md-9">
-
-                    <strong>
-                        @item.IdComboNavigation.Nombre
-                    </strong>
-
-                    <br />
-
-                    <small class="text-muted">
-                        @item.IdComboNavigation.Descripcion
-                    </small>
-
+        <!-- Disponibilidad -->
+        <div class="menu-detail-info-bar">
+            <div class="menu-detail-info-item">
+                <span class="menu-detail-info-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </span>
+                <div>
+                    <span class="menu-detail-info-label">Disponibilidad</span>
+                    <span class="menu-detail-info-value">@Model.DiasDisponibles días</span>
                 </div>
-
-                <!-- Precio -->
-                <div class="col-md-3 text-end">
-
-                    <strong>
-                        ₡@item.IdComboNavigation.Precio.ToString("N2")
-                    </strong>
-
-                </div>
-
             </div>
-        }
+            <span class="menu-detail-info-sep">
+                <i class="bi bi-heart-fill"></i>
+            </span>
+            <div class="menu-detail-info-item">
+                <span class="menu-detail-info-icon">
+                    <i class="bi bi-calendar-range"></i>
+                </span>
+                <div>
+                    <span class="menu-detail-info-label">Fechas</span>
+                    <span class="menu-detail-info-value">
+                        @Model.FechaInicio.ToString("dd/MM/yyyy") - @Model.FechaFin.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combos -->
+        <div class="menu-category-grid">
+            <div class="menu-category-box">
+                <div class="menu-category-header">
+                    <span class="menu-category-icon-left"><i class="bi bi-flower1"></i></span>
+                    <h2>Combos</h2>
+                    <span class="menu-category-icon-right"><i class="bi bi-flower1"></i></span>
+                </div>
+
+                <div class="menu-product-list">
+                    @{
+                        var combos = Model.MenuDetalleCombo
+                        .Where(x => x.IdComboNavigation != null)
+                        .ToList();
+                    }
+                    @foreach (var item in combos)
+                    {
+                        <div class="menu-product-row">
+                            <div class="menu-product-thumb">
+                                @if (!string.IsNullOrEmpty(item.IdComboNavigation.Imagen1))
+                                {
+                                    <img src="@item.IdComboNavigation.Imagen1" alt="@item.IdComboNavigation.Nombre" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-box-seam"></i>
+                                }
+                            </div>
+                            <div class="menu-product-info">
+                                <strong>@item.IdComboNavigation.Nombre</strong>
+                                <small>@item.IdComboNavigation.Descripcion</small>
+                            </div>
+                            <div class="menu-product-price">
+                                ₡@item.IdComboNavigation.Precio.ToString("N2")
+                            </div>
+                        </div>
+                        @if (item != combos.Last())
+                        {
+                            <div class="menu-product-divider">
+                                <i class="bi bi-heart-fill"></i>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner de calidad -->
+        <div class="menu-quality-banner">
+            <span class="menu-quality-icon">
+                <i class="bi bi-cupcake"></i>
+            </span>
+            <div class="menu-quality-text">
+                <p>Todos nuestros combos son elaborados con ingredientes de la más alta calidad</p>
+                <p class="menu-quality-emphasis">Hecho con amor para endulzar tus momentos <i class="bi bi-heart-fill"></i></p>
+            </div>
+        </div>
 
     </div>
-
-</div>
+</section>

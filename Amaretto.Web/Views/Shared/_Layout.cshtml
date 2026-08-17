@@ -1,61 +1,165 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Librería</title>
-    @* https://bootswatch.com/ *@
-    <link href="~/css/bootstrap-superhero.css" rel="stylesheet" />
-    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Libreria.Web.styles.css" asp-append-version="true" />
-    <!-- Bootstrap Icons -->
+    <title>@ViewData["Title"] - Amaretto Cakes</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/amaretto.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!--SweetAlert-->
+    <link rel="stylesheet" href="~/css/sweetalert2.min.css" asp-append-version="true" />
     <!-- Multi-select -->
     @* https://davidstutz.github.io/bootstrap-multiselect/ *@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.2/css/bootstrap-multiselect.css" rel="stylesheet" />
     <!--JQuery UI CSS-->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <!-- SweetAlert-->
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet">
-  
     
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header>
-        @await Html.PartialAsync("_Menu")
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <!--  NAVBAR  -->
+    <partial name="_Menu" />
+    <main>
+        @RenderBody()
+    </main>
+
+    <!--  FOOTER  -->
+    <footer class="footer-amaretto">
         <div class="container">
-            &copy; 2024 - Libreria.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row gy-4 py-4">
+
+                <div class="col-lg-3 col-md-6">
+                    <img src="~/images/logo-amaretto.png" alt="Amaretto Cakes" style="height:80px;" class="mb-3">
+                    <p class="footer-desc">
+                        Pastelería artesanal hecha con amor para endulzar tus mejores momentos.
+                    </p>
+                    <div class="mt-3">
+                        <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <!-- Enlaces -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="footer-heading">Enlaces</h6>
+                    <ul class="footer-links">
+                        <li><a href="@Url.Action("Index", "Home")">Inicio</a></li>
+                        <li><a asp-controller="Producto" asp-action="Catalogo">Nosotros</a></li>
+                        <li><a asp-controller="Producto" asp-action="Catalogo">Productos</a></li>
+                        <li><a asp-controller="Combo" asp-action="Catalogo">Personalizados</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+
+                <!-- Información -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="footer-heading">Información</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">Preguntas frecuentes</a></li>
+                        <li><a href="#">Políticas de entrega</a></li>
+                        <li><a href="#">Términos y condiciones</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contacto -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="footer-heading">Contacto</h6>
+                    <ul class="footer-links footer-contact">
+                        <li><i class="bi bi-telephone-fill"></i> +506 8800 0000</li>
+                        <li><i class="bi bi-envelope-fill"></i> hola@amarettocakes.com</li>
+                        <li><i class="bi bi-geo-alt-fill"></i> San José, Costa Rica</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <hr class="footer-divider">
+
+            <div class="text-center py-2">
+                <p class="mb-0 footer-copy">
+                    © 2026 Amaretto Cakes. Todos los derechos reservados.
+                </p>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Ajax unobtrusive-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js" integrity="sha512-f04GBpoqEZhbyjlRTuXeg8FIHDb+xfCJ0LVdqiN1fEl5B3jz3Z0SPe9IxDumOVdTeeXmKMcMJhb26VuGf1Laqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Multi-select -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.2/js/bootstrap-multiselect.min.js"></script>
-    <!-- JQuery UI Autocomplete -->
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <!-- SweetAlert-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-    
-    @* Notificaciones con SweetAlert *@
-    @if (ViewBag.NotificationMessage != null)
-    {
-    <script>
-        @Html.Raw(@ViewBag.NotificationMessage);
-    </script>
-    }
+    <!--SweetAlert2 (JS) - cargado globalmente para que TempData["Mensaje"] funcione en cualquier página -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
+    <script src="~/js/catalog-filtros.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <script>
+            (function () {
+                var originalFire = window.Swal.fire.bind(window.Swal);
+                var Swal = {
+                    fire: function (options) {
+                        var titulosToast = ['Bienvenido', 'Hasta pronto'];
+                        if (titulosToast.indexOf(options.title) !== -1) {
+                            options = Object.assign({
+                                toast: true,
+                                position: 'bottom-end',
+                                showConfirmButton: false,
+                                timer: 1800,
+                                timerProgressBar: true
+                            }, options);
+                        }
+                        return originalFire(options);
+                    }
+                };
+                @Html.Raw(TempData["Mensaje"])
+            })();
+        </script>
+    }
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'es',
+                includedLanguages: 'es,en',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function idiomaActual() {
+            const cookie = document.cookie.match(/googtrans=\/es\/([a-z]+)/);
+            return cookie ? cookie[1] : "es";
+        }
+
+        function actualizarBoton() {
+            const idioma = idiomaActual();
+            document.getElementById("langText").textContent = idioma.toUpperCase();
+        }
+
+        function toggleIdioma() {
+
+            let nuevoIdioma = idiomaActual() === "es"
+                ? "en"
+                : "es";
+
+            document.cookie = "googtrans=/es/" + nuevoIdioma + ";path=/";
+            document.cookie = "googtrans=/es/" + nuevoIdioma + ";domain=" + location.hostname + ";path=/";
+
+            location.reload();
+        }
+
+        window.onload = function () {
+
+            if (!document.cookie.includes("googtrans")) {
+                document.cookie = "googtrans=/es/es;path=/";
+            }
+            actualizarBoton();
+        };
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

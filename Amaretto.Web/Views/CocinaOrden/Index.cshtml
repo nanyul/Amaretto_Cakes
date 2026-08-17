@@ -1,46 +1,103 @@
 ﻿@model List<Amaretto.Application.DTOs.CocinaOrdenDTO>
-
 @{
-    ViewData["Title"] = "Menus";
+    ViewData["Title"] = "Listado de Órdenes";
+
+    string ObtenerNombre(Amaretto.Application.DTOs.CocinaOrdenDTO m)
+    {
+        if (m.IdDetalleNavigation?.IdProductoNavigation != null)
+            return m.IdDetalleNavigation.IdProductoNavigation.Nombre;
+        else if (m.IdDetalleNavigation?.IdComboNavigation != null)
+            return m.IdDetalleNavigation.IdComboNavigation.Nombre;
+        return string.Empty;
+    }
+
+    string? ObtenerImagen(Amaretto.Application.DTOs.CocinaOrdenDTO m)
+    {
+        if (m.IdDetalleNavigation?.IdProductoNavigation != null)
+            return m.IdDetalleNavigation.IdProductoNavigation.Imagen1;
+        else if (m.IdDetalleNavigation?.IdComboNavigation != null)
+            return m.IdDetalleNavigation.IdComboNavigation.Imagen1;
+        return null;
+    }
+
+    var grupos = Model.GroupBy(m => m.IdDetalle).ToList();
 }
+<section class="cocina-order-section">
+    <div class="container">
+        <div class="cocina-order-header-row">
+            <div class="cocina-order-heading">
+                <h1 class="cocina-order-title">
+                    <span class="cocina-order-flourish"><i class="bi bi-stars"></i></span>
+                    Listado de Órdenes
+                    <span class="cocina-order-flourish"><i class="bi bi-stars"></i></span>
+                </h1>
+                <p class="cocina-order-subtitle">
+                    <i class="bi bi-heart-fill"></i> Sigue cada preparación con detalle y amor <i class="bi bi-heart-fill"></i>
+                </p>
+                <span class="cocina-order-count">@grupos.Count() proceso@(grupos.Count() == 1 ? "" : "s")</span>
+            </div>
+            <a asp-action="Create" class="btn-create-combo">
+                <i class="bi bi-plus-circle"></i> Crear proceso
+            </a>
+        </div>
 
-<div class="container">
+        <div class="cocina-order-card">
+            <table class="cocina-order-table">
+                <thead>
+                    <tr>
+                        <th><i class="bi bi-cup-hot"></i> Producto / Combo</th>
+                        <th><i class="bi bi-list-check"></i> Cantidad de Estaciones</th>
+                        <th><i class="bi bi-heart-fill"></i> Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var grupo in grupos)
+                    {
+                        var primerPaso = grupo.First();
+                        var nombreGrupo = ObtenerNombre(primerPaso);
+                        var imagenGrupo = ObtenerImagen(primerPaso);
+                        var idDetalleGrupo = grupo.Key;
+                        var cantidadPasos = grupo.Count();
 
-    <h1 class="mb-4">Menús de Combos</h1>
+                        <tr>
+                            <td data-label="Nombre">
+                                <div class="cocina-order-name">
+                                    <span class="cocina-order-thumb">
+                                        @if (!string.IsNullOrEmpty(imagenGrupo))
+                                        {
+                                            <img src="@imagenGrupo" alt="@nombreGrupo" />
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-cake2"></i>
+                                        }
+                                    </span>
+                                    <span>@nombreGrupo (Pedido #@primerPaso.IdDetalleNavigation.IdPedido)</span>
+                                </div>
+                            </td>
+                            <td data-label="Cantidad de Estaciones">@cantidadPasos estaciones</td>
+                            <td data-label="Detalles">
+                                <div class="cocina-order-actions">
+                                    <a class="btn-ver-orden" asp-controller="CocinaOrden" asp-action="Details" asp-route-id="@idDetalleGrupo">
+                                        <i class="bi bi-eye-fill"></i> Ver detalles
+                                    </a>
+                                    <a class="btn-editar-orden" asp-controller="CocinaOrden" asp-action="Edit" asp-route-id="@idDetalleGrupo">
+                                        <i class="bi bi-pencil-fill"></i> Editar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Cantidad de Pasos</th>
-                <th>Detalles</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var menu in Model)
+            @if (!Model.Any())
             {
-                <tr>
-                    <td>
-                         @if (menu.IdDetalleNavigation.IdProductoNavigation != null)
-                        {
-                            @menu.IdDetalleNavigation.IdProductoNavigation.Nombre
-                        }
-                        else if (menu.IdDetalleNavigation.IdComboNavigation != null)
-                        {
-                            @menu.IdDetalleNavigation.IdComboNavigation.Nombre
-                        } 
-                    </td>
-                    <td>@menu.OrdenPaso</td>
-                    <td>
-                        <a class="btn btn-primary btn-sm"
-                           href="@Url.Action("Details", "CocinaOrden", new { id = menu.IdCocinaOrden })">
-                            Ver menú
-                        </a>
-                    </td>
-                </tr>
+                <div class="cocina-order-empty">
+                    <i class="bi bi-cup-hot"></i>
+                    <p>Todavía no hay órdenes de cocina registradas.</p>
+                </div>
             }
-        </tbody>
-    </table>
-
-</div>
+        </div>
+    </div>
+</section>

@@ -1,6 +1,5 @@
 ﻿using Amaretto.Application.DTOs;
 using Amaretto.Infraestructure.Models;
-using Amaretto.Infraestructure.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
@@ -39,12 +38,7 @@ namespace Amaretto.Application.DTOs
         [ValidateNever]
        public virtual CategoriaDTO IdCategoriaNavigation { get; set; } = null!;
 
-        // public virtual List<MenuDetalleProductoDTO> MenuDetalleProducto { get; set; } = new List<MenuDetalleProductoDTO>();
-
-        //// public virtual List<PedidoDetalleDTO> PedidoDetalle { get; set; } = new List<PedidoDetalle>();
-
         public virtual List<ProductoIngredienteDTO> ProductoIngrediente { get; set; } = new List<ProductoIngredienteDTO>();
 
-        // public virtual List<ComboProductoDTO> ComboProductos { get; set; } = new();
     }
 }

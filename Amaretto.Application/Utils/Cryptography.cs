@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Libreria.Application.Utils
 {
-    internal class Cryptography
+    public class Cryptography
     {
         public static string Encrypt(string texto, string secret)
         {
@@ -33,6 +33,28 @@ namespace Libreria.Application.Utils
             }
             //return string encrypt
             return Convert.ToBase64String(encryptedBytes);
+        }
+
+        public static string Decrypt(string cipherText, string secret)
+        {
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            string hash = ComputeHash(secret.Substring(0, 32));
+            byte[] key = Encoding.UTF8.GetBytes(hash); // 32 bytes        
+            byte[] iv = [33, 24, 31, 46, 75, 64, 97, 18, 89, 10, 111, 132, 131, 144, 145, 250]; //16 bytes
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.IV = iv;
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+
+                using (ICryptoTransform decryptor = aes.CreateDecryptor())
+                {
+                    byte[] plainBytes = decryptor.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
+                    return Encoding.UTF8.GetString(plainBytes);
+                }
+            }
         }
 
         private static string ComputeHash(string input)

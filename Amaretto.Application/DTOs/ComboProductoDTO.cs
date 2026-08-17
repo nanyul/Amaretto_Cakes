@@ -18,12 +18,6 @@ namespace Amaretto.Application.DTOs
         [ValidateNever]
         public string IdProducto { get; set; } = null!;
 
-        [Display(Name = "Combo")]
-        [ValidateNever]
-        public virtual ComboDTO IdComboNavigation { get; set; } = null!;
-
-        [Display(Name = "Producto")]
-        [ValidateNever]
-        public virtual ProductoDTO IdProductoNavigation { get; set; } = null!;
+        
     }
 }

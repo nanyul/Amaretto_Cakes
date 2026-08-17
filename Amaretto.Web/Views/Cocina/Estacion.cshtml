@@ -1,0 +1,172 @@
+@model Amaretto.Application.DTOs.CocinaEstacionViewModel
+@{
+    ViewData["Title"] = $"Estación: {Model.Nombre}";
+
+    var orden = new Dictionary<string, int> { ["En Proceso"] = 0, ["Pendiente"] = 1, ["Completado"] = 2 };
+    var tareas = Model.Tareas
+        .OrderBy(t => orden.TryGetValue(t.Estado, out var o) ? o : 3)
+        .ThenBy(t => t.FechaPedido)
+        .ToList();
+}
+
+<section class="historial-section">
+    <div class="container">
+
+        <div class="historial-header-row">
+            <div class="historial-heading">
+                <h1 class="historial-title">
+                    <span class="historial-flourish"><i class="bi bi-fire"></i></span>
+                    @Model.Nombre
+                    <span class="historial-flourish"><i class="bi bi-fire"></i></span>
+                </h1>
+                <p class="historial-subtitle">@Model.Descripcion</p>
+                <span class="historial-count">
+                    @Model.Pendientes pendientes · @Model.EnProceso en proceso · @Model.Completadas listas
+                </span>
+            </div>
+
+            <a asp-action="Index" class="btn-volver-historial">
+                <i class="bi bi-arrow-left"></i> Otras estaciones
+            </a>
+        </div>
+
+        <div class="historial-card">
+            <div class="historial-table-wrap">
+                <table class="historial-table">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-hash"></i> Pedido</th>
+                            <th><i class="bi bi-cake2"></i> Producto</th>
+                            <th><i class="bi bi-123"></i> Cant.</th>
+                            <th><i class="bi bi-list-ol"></i> Paso</th>
+                            <th><i class="bi bi-flag-fill"></i> Estado</th>
+                            <th><i class="bi bi-clock"></i> Tiempo</th>
+                            <th><i class="bi bi-play-circle"></i> Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in tareas)
+                        {
+                            <tr>
+                                <td data-label="Pedido">
+                                    <span class="historial-pedido-num">#@t.IdPedido</span>
+                                    <span class="historial-hora">@t.FechaPedido.ToString("dd/MM/yyyy")</span>
+                                </td>
+                                <td data-label="Producto">
+                                    <div class="historial-linea-nombre">
+                                        <span class="historial-linea-thumb">
+                                            @if (!string.IsNullOrEmpty(t.Imagen))
+                                            {
+                                                <img src="@t.Imagen" alt="@t.Producto" />
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-cake2"></i>
+                                            }
+                                        </span>
+                                        <div>
+                                            <strong>@t.Producto</strong>
+                                            @if (t.Personalizado)
+                                            {
+                                                <span class="historial-tag-personalizado">
+                                                    <i class="bi bi-stars"></i> Personalizado
+                                                </span>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(t.Observaciones))
+                                            {
+                                                <span class="historial-linea-obs">
+                                                    <i class="bi bi-chat-left-text"></i> @t.Observaciones
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-label="Cantidad">@t.Cantidad</td>
+                                <td data-label="Paso"><span class="process-order-badge">@t.OrdenPaso</span></td>
+                                <td data-label="Estado">
+                                    @if (t.Estado == "Completado")
+                                    {
+                                        <span class="historial-estado-badge is-entregado">
+                                            <i class="bi bi-check-circle-fill"></i> Completado
+                                        </span>
+                                    }
+                                    else if (t.Estado == "En Proceso")
+                                    {
+                                        <span class="historial-estado-badge is-preparacion">
+                                            <i class="bi bi-fire"></i> En proceso
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="historial-estado-badge is-pendiente">
+                                            <i class="bi bi-hourglass-split"></i> Pendiente
+                                        </span>
+                                    }
+                                </td>
+                                <td data-label="Tiempo">
+                                    @if (t.FechaInicio != null && t.FechaFin != null)
+                                    {
+                                        <span class="cocina-tiempo">
+                                            @Math.Round((t.FechaFin.Value - t.FechaInicio.Value).TotalMinutes, 0) min
+                                        </span>
+                                    }
+                                    else if (t.FechaInicio != null)
+                                    {
+                                        <span class="cocina-tiempo">
+                                            desde @t.FechaInicio.Value.ToString("hh:mm tt")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td data-label="Acción">
+                                    @if (t.Estado == "Completado")
+                                    {
+                                        <span class="text-muted">Sin pendientes</span>
+                                    }
+                                    else if (t.Bloqueada)
+                                    {
+                                        <span class="cocina-bloqueada">
+                                            <i class="bi bi-lock-fill"></i> Esperando @t.EstacionAnterior
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Avanzar" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="idCocinaOrden" value="@t.IdCocinaOrden" />
+                                            <input type="hidden" name="idEstacion" value="@Model.IdEstacion" />
+                                            <input type="hidden" name="nuevoEstado"
+                                                   value="@(t.Estado == "En Proceso" ? "Completado" : "En Proceso")" />
+                                            <button type="submit" class="btn-cocina-accion">
+                                                @if (t.Estado == "En Proceso")
+                                                {
+                                                    <i class="bi bi-check-lg"></i><text> Completar</text>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-play-fill"></i><text> Iniciar</text>
+                                                }
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (!tareas.Any())
+            {
+                <div class="historial-empty">
+                    <i class="bi bi-emoji-smile"></i>
+                    <p>Esta estación no tiene trabajo asignado.</p>
+                </div>
+            }
+        </div>
+
+    </div>
+</section>

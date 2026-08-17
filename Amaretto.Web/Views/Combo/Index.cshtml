@@ -1,63 +1,237 @@
 ﻿@model IEnumerable<Amaretto.Application.DTOs.ComboDTO>
-
+@using Amaretto.Application.DTOs
 @{
     ViewData["Title"] = "Listado de Combos";
+    var categorias = (ICollection<CategoriaDTO>)ViewBag.ListCategorias;
+    string? filtroNombre = ViewBag.FiltroNombre;
+    int? filtroCategoriaId = ViewBag.FiltroCategoriaId;
+    string? filtroEstado = ViewBag.FiltroEstado;
 }
+<section class="combo-list-section">
+    <div class="container">
+        <div class="combo-list-header">
+            <div class="combo-list-heading">
+                <h1 class="combo-list-title">Listado de Combos</h1>
+                <span class="combo-list-count">@Model.Count() combo@(Model.Count() == 1 ? "" : "s")</span>
+            </div>
+            <a asp-action="Create" class="btn-create-combo">
+                <i class="bi bi-plus-circle"></i> Crear nuevo
+            </a>
+        </div>
 
-<h1>Listado de Combos</h1>
+        <form method="get" asp-action="Index" class="list-filter-bar">
+            <div class="filter-field">
+                <label class="filter-label">Nombre</label>
+                <input type="text" name="nombre" value="@filtroNombre" class="form-control-amaretto" placeholder="Buscar por nombre..." />
+            </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Crear nuevo</a>
-</p>
+            <div class="filter-field">
+                <label class="filter-label">Estado</label>
+                <select name="estado" class="filter-select">
+                    <option value="">Todos</option>
+                    <option value="disponible" selected="@(filtroEstado == "disponible")">Activo</option>
+                    <option value="inactivo" selected="@(filtroEstado == "inactivo")">Inactivo</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn-filter-apply"><i class="bi bi-funnel"></i> Filtrar</button>
+                <a asp-action="Index" class="btn-filter-clear"><i class="bi bi-x-circle"></i> Limpiar</a>
+            </div>
+        </form>
 
-<table class="table table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Estado</th>
-            <th>Imagen</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
+        <div class="combo-list-card">
+            <table class="combo-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="product-list-empty">
+                                <i class="bi bi-search"></i>
+                                No se encontraron combos con esos filtros.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="Nombre">
+                                <div class="combo-table-name">
+                                    <span class="combo-table-thumb">
+                                        @if (!string.IsNullOrEmpty(item.Imagen1))
+                                        {
+                                            <img src="@item.Imagen1" alt="@item.Nombre" />
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-image"></i>
+                                        }
+                                    </span>
+                                    @item.Nombre
+                                </div>
+                            </td>
+                            <td data-label="Descripción">
+                                <span class="combo-table-desc" title="@item.Descripcion">@item.Descripcion</span>
+                            </td>
+                            <td data-label="Precio">
+                                <span class="combo-table-price">&#x20A1;@item.Precio</span>
+                            </td>
+                            <td data-label="Estado">
+                                @if (item.Estado)
+                                {
+                                    <span class="product-status-badge is-available"><i class="bi bi-check-circle-fill"></i> Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="product-status-badge is-unavailable"><i class="bi bi-x-circle-fill"></i> Inactivo</span>
+                                }
+                            </td>
+                            <td data-label="Acciones">
+                                <div class="table-actions">
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.IdCombo"
+                                       class="btn-table-action btn-view"
+                                       title="Ver detalle">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
 
-                <td>
-                    <strong>@item.Nombre</strong>
-                </td>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.IdCombo"
+                                       class="btn-table-action btn-edit"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
 
-                <td style="max-width: 300px;">
-                    @item.Descripcion
-                </td>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
-                <td>
-                    ₡@item.Precio
-                </td>
+@* Estilos propios de la barra de filtros del listado.
+   Si prefieres, puedes mover este bloque a amaretto.css. *@
+<style>
+    .list-filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 16px;
+        background: var(--white);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(10,51,35,0.08);
+    }
 
-                <td>
-                    @(item.Estado ? "Activo" : "Inactivo")
-                </td>
+    .filter-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1 1 180px;
+        min-width: 160px;
+    }
 
-                <td style="width:120px;">
-                    <img src="@item.Imagen1"
-                         style="width:80px; height:80px; object-fit:cover; border-radius:8px;"
-                         alt="Combo imagen" />
-                </td>
+    .filter-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--moss-green);
+    }
 
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@item.IdCombo"
-                       class="btn btn-info btn-sm">
-                        Detalle
-                    </a>
-                </td>
+    .filter-actions {
+        display: flex;
+        gap: 10px;
+        flex: 0 0 auto;
+    }
 
-            </tr>
+    .btn-filter-apply {
+        background: var(--dark-green);
+        color: var(--beige);
+        border: none;
+        border-radius: 50px;
+        padding: 10px 22px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+        .btn-filter-apply:hover {
+            background: var(--moss-green);
+            color: var(--white);
+            transform: translateY(-2px);
         }
-    </tbody>
-</table>
+
+    .btn-filter-clear {
+        background: transparent;
+        color: var(--midnight-green);
+        border: 1.5px solid rgba(131,153,88,0.35);
+        border-radius: 50px;
+        padding: 10px 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+        .btn-filter-clear:hover {
+            border-color: var(--rosy-brown);
+            color: var(--rosy-brown);
+        }
+
+    .product-list-empty {
+        text-align: center;
+        padding: 56px 16px !important;
+        color: var(--midnight-green);
+        opacity: 0.7;
+        font-style: italic;
+    }
+
+        .product-list-empty i {
+            display: block;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+            font-style: normal;
+        }
+
+    @@media (max-width: 768px) {
+        .list-filter-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-actions {
+            justify-content: flex-end;
+        }
+
+        .combo-list-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .combo-list-header .btn-create-combo {
+                justify-content: center;
+            }
+    }
+</style>

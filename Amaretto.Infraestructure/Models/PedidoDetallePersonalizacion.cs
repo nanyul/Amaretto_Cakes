@@ -9,27 +9,23 @@ public partial class PedidoDetallePersonalizacion
 
     public int IdDetalle { get; set; }
 
-    public int? IdPersonalizacionTamano { get; set; }
+    public string Tamano { get; set; } = null!;
 
-    public int? IdPersonalizacionSabor { get; set; }
+    public int MedidaCm { get; set; }
 
-    public int? IdPersonalizacionRelleno { get; set; }
+    public string SaborBizcocho { get; set; } = null!;
 
-    public int? IdPersonalizacionDecoracion { get; set; }
+    public string TipoRelleno { get; set; } = null!;
+
+    public string TipoDecoracion { get; set; } = null!;
+
+    public string? DecoracionDetalle { get; set; }
 
     public string? RutaImagenReferencia { get; set; }
 
-    public string? Mensaje { get; set; }
-
-    public int? TiempoEst { get; set; }
+    public string Dedicatoria { get; set; } = null!;
 
     public decimal PrecioExtra { get; set; }
-
-    public int? MedidaCm { get; set; }
-
-    public string? Imagen1 { get; set; }
-
-    public string? Imagen2 { get; set; }
 
     public virtual PedidoDetalle IdDetalleNavigation { get; set; } = null!;
 }

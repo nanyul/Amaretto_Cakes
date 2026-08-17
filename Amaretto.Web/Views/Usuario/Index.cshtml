@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Amaretto.Application.DTOs.UsuarioDTO>
+@{
+    ViewData["Title"] = "Listado de Usuarios";
+}
+
+<section class="user-list-section">
+    <div class="container">
+        <h2 class="user-list-title">Listado de Usuarios</h2>
+
+        <a asp-action="Create" class="btn-create-combo">
+            <i class="bi bi-plus-circle"></i> Crear nuevo
+        </a>
+
+        <div class="user-list-card">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Id Usuario</th>
+                        <th>Nombre</th>
+                        <th>Rol</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        var roleClass = u.NombreRol.ToLower() switch
+                        {
+                            "administrador" => "role-admin",
+                            "encargado" => "role-encargado",
+                            "cocinero" => "role-cocinero",
+                            _ => ""
+                        };
+
+                        <tr>
+                            <td data-label="Id"><span class="user-table-id">@u.IdUsuario</span></td>
+                            <td data-label="Nombre">
+                                <div class="user-table-name">
+                                    <span class="user-table-avatar"><i class="bi bi-person-fill"></i></span>
+                                    @u.NombreCompleto
+                                </div>
+                            </td>
+                            <td data-label="Rol"><span class="user-role-badge @roleClass">@u.NombreRol</span></td>
+                            <td data-label="Email"><span class="user-table-email">@u.Email</span></td>
+                            <td data-label="Teléfono">@(u.Telefono ?? "—")</td>
+                            <td data-label="Estado">
+                                <span class="usuario-estado-badge @(u.Estado ? "is-activo" : "is-inactivo")">
+                                    <i class="bi @(u.Estado ? "bi-check-circle-fill" : "bi-slash-circle-fill")"></i>
+                                    @(u.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td data-label="Acciones">
+                                <div class="usuario-acciones">
+                                    <a asp-action="Details"
+                                       asp-route-id="@u.IdUsuario"
+                                       class="btn-table-action btn-view"
+                                       title="Ver detalle">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@u.IdUsuario"
+                                       class="btn-table-action btn-edit"
+                                       title="Editar usuario">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

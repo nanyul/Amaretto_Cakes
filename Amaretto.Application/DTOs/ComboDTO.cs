@@ -22,12 +22,12 @@ namespace Amaretto.Application.DTOs
         [Required(ErrorMessage = "{0} es un dato requerido")]
         public string Descripcion { get; set; } = null!;
 
-
         [Display(Name = "Precio")]
         [Range(0, 999999999, ErrorMessage = "El valor mínimo es {0}")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C0}")]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         [Required(ErrorMessage = "{0} es un dato requerido")]
         public decimal Precio { get; set; }
+
 
         public bool Estado { get; set; }
 
@@ -40,10 +40,6 @@ namespace Amaretto.Application.DTOs
         [Display(Name = "Imagen2 Combo")]
         [Required(ErrorMessage = "{0} es un dato requerido")]
         public string Imagen2 { get; set; } = null!;
-
-        //public virtual List<MenuDetalleCombo> MenuDetalleCombo { get; set; } = new List<MenuDetalleCombo>();
-
-        //public virtual List<PedidoDetalle> PedidoDetalle { get; set; } = new List<PedidoDetalle>();
 
         [Display(Name = "Productos")]
         [ValidateNever]
