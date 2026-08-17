@@ -1,0 +1,192 @@
+@model Amaretto.Application.DTOs.ReporteViewModel
+@{
+    ViewData["Title"] = "Reporte de Pedidos";
+
+    string ClaseEstado(string estado) => estado switch
+    {
+        "Pagado" => "is-pagado",
+        "Entregado" => "is-entregado",
+        "En Preparacion" => "is-preparacion",
+        "Listo para retirar" => "is-listo",
+        "Listo para enviar" => "is-listo",
+        "Cancelado" => "is-cancelado",
+        _ => "is-pendiente"
+    };
+
+    string IconoEstado(string estado) => estado switch
+    {
+        "Pagado" => "bi-cash-coin",
+        "Entregado" => "bi-check-circle-fill",
+        "En Preparacion" => "bi-fire",
+        "Listo para retirar" => "bi-bag-check-fill",
+        "Listo para enviar" => "bi-truck",
+        "Cancelado" => "bi-x-circle-fill",
+        _ => "bi-hourglass-split"
+    };
+}
+
+<section class="historial-section">
+    <div class="container">
+
+        <div class="historial-header">
+            <h1 class="historial-title">
+                <span class="historial-flourish"><i class="bi bi-bar-chart-fill"></i></span>
+                Reporte de Pedidos
+                <span class="historial-flourish"><i class="bi bi-bar-chart-fill"></i></span>
+            </h1>
+            <p class="historial-subtitle">
+                <i class="bi bi-heart-fill"></i> Todos los pedidos de la pastelería <i class="bi bi-heart-fill"></i>
+            </p>
+        </div>
+
+        <!-- Filtros -->
+        <form asp-action="ReportePedidos" method="get" class="historial-filtros">
+            <div class="historial-filtro-campo">
+                <label for="cliente"><i class="bi bi-person-fill"></i> Cliente</label>
+                <input type="text" id="cliente" name="cliente" class="historial-filtro-input"
+                       placeholder="Nombre o correo" autocomplete="off" value="@Model.Cliente" />
+            </div>
+
+            <div class="historial-filtro-campo">
+                <label for="fechaDesde"><i class="bi bi-calendar-event"></i> Desde</label>
+                <input type="date" id="fechaDesde" name="fechaDesde" class="historial-filtro-input"
+                       value="@(Model.FechaDesde?.ToString("yyyy-MM-dd"))" />
+            </div>
+
+            <div class="historial-filtro-campo">
+                <label for="fechaHasta"><i class="bi bi-calendar-check"></i> Hasta</label>
+                <input type="date" id="fechaHasta" name="fechaHasta" class="historial-filtro-input"
+                       value="@(Model.FechaHasta?.ToString("yyyy-MM-dd"))" />
+            </div>
+
+            <div class="historial-filtro-campo">
+                <label for="estado"><i class="bi bi-flag-fill"></i> Estado</label>
+                <select id="estado" name="estado" class="historial-filtro-input">
+                    <option value="">Todos los estados</option>
+                    @foreach (var e in Model.EstadosDisponibles)
+                    {
+                        <option value="@e" selected="@(e == Model.Estado)">@e</option>
+                    }
+                </select>
+            </div>
+
+            <div class="historial-filtro-acciones">
+                <button type="submit" class="btn-filtrar-historial">
+                    <i class="bi bi-funnel-fill"></i> Filtrar
+                </button>
+                @if (Model.HayFiltrosAplicados)
+                {
+                    <a asp-action="ReportePedidos" class="btn-limpiar-historial">
+                        <i class="bi bi-arrow-counterclockwise"></i> Limpiar
+                    </a>
+                }
+            </div>
+        </form>
+
+        <!-- Totales del reporte -->
+        <div class="historial-detalle-grid">
+            <div class="historial-detalle-box">
+                <h6 class="historial-box-label"><i class="bi bi-receipt"></i> Pedidos</h6>
+                <p class="historial-box-main">@Model.CantidadPedidos</p>
+            </div>
+            <div class="historial-detalle-box">
+                <h6 class="historial-box-label"><i class="bi bi-bag-fill"></i> Artículos</h6>
+                <p class="historial-box-main">@Model.CantidadArticulos</p>
+            </div>
+            <div class="historial-detalle-box">
+                <h6 class="historial-box-label"><i class="bi bi-cash-stack"></i> Monto total</h6>
+                <p class="historial-box-main">₡@Model.MontoTotal.ToString("N2")</p>
+            </div>
+            <div class="historial-detalle-box">
+                <h6 class="historial-box-label"><i class="bi bi-calculator"></i> Promedio por pedido</h6>
+                <p class="historial-box-main">₡@Model.PromedioPorPedido.ToString("N2")</p>
+            </div>
+        </div>
+
+        <!-- Detalle -->
+        <div class="historial-card mt-4">
+            <div class="historial-table-wrap">
+                <table class="historial-table">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-hash"></i> Pedido</th>
+                            <th><i class="bi bi-calendar3"></i> Fecha</th>
+                            <th><i class="bi bi-person-fill"></i> Cliente</th>
+                            <th><i class="bi bi-person-badge-fill"></i> Encargado</th>
+                            <th><i class="bi bi-truck"></i> Entrega</th>
+                            <th><i class="bi bi-bag-fill"></i> Artículos</th>
+                            <th><i class="bi bi-flag-fill"></i> Estado</th>
+                            <th><i class="bi bi-cash"></i> Total</th>
+                            <th><i class="bi bi-heart-fill"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pedido in Model.Pedidos)
+                        {
+                            <tr>
+                                <td data-label="Pedido">
+                                    <span class="historial-pedido-num">#@pedido.IdPedido</span>
+                                </td>
+                                <td data-label="Fecha">
+                                    <span class="historial-fecha">@pedido.FechaPedido.ToString("dd/MM/yyyy")</span>
+                                    <span class="historial-hora">@pedido.FechaPedido.ToString("hh:mm tt")</span>
+                                </td>
+                                <td data-label="Cliente">
+                                    <span class="historial-fecha">@pedido.NombreCliente</span>
+                                    <span class="historial-hora">@pedido.EmailCliente</span>
+                                </td>
+                                <td data-label="Encargado">
+                                    @(string.IsNullOrWhiteSpace(pedido.NombreEncargado) ? "En línea" : pedido.NombreEncargado)
+                                </td>
+                                <td data-label="Entrega">@pedido.MetodoEntrega</td>
+                                <td data-label="Artículos">@pedido.CantidadArticulos</td>
+                                <td data-label="Estado">
+                                    <span class="historial-estado-badge @ClaseEstado(pedido.Estado)">
+                                        <i class="bi @IconoEstado(pedido.Estado)"></i> @pedido.Estado
+                                    </span>
+                                </td>
+                                <td data-label="Total">
+                                    <strong class="historial-total">₡@pedido.Total.ToString("N2")</strong>
+                                </td>
+                                <td data-label="Acciones">
+                                    <a class="btn-ver-detalle" asp-controller="Pedido" asp-action="Detalle" asp-route-id="@pedido.IdPedido">
+                                        <i class="bi bi-eye-fill"></i> Ver factura
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (!Model.Pedidos.Any())
+            {
+                <div class="historial-empty">
+                    <i class="bi bi-search"></i>
+                    <p>
+                        @if (Model.HayFiltrosAplicados)
+                        {
+                            @:No hay pedidos que coincidan con los filtros seleccionados.
+                        }
+                        else
+                        {
+                            @:Todavía no hay pedidos registrados.
+                        }
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="historial-resumen-wrap">
+                    <div class="historial-totales-box">
+                        <div><span>Pedidos incluidos</span><strong>@Model.CantidadPedidos</strong></div>
+                        <div><span>Artículos vendidos</span><strong>@Model.CantidadArticulos</strong></div>
+                        <hr />
+                        <div class="historial-total-final"><span>MONTO TOTAL</span><strong>₡@Model.MontoTotal.ToString("N2")</strong></div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+</section>

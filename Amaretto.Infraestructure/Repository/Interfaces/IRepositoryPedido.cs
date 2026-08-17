@@ -8,7 +8,7 @@ namespace Amaretto.Infraestructure.Repository.Interfaces
     {
         Task<Pedido> CrearAsync(Pedido pedido);
 
-        Task<ICollection<Pedido>> ListarHistorialAsync(int? idCliente, DateTime? fechaDesde, DateTime? fechaHasta, string? estado);
+        Task<ICollection<Pedido>> ListarHistorialAsync(int? idCliente, DateTime? fechaDesde, DateTime? fechaHasta, string? estado, string? cliente = null);
 
         Task<Pedido?> FindByIdAsync(int idPedido);
 

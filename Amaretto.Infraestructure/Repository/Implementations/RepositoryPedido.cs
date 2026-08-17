@@ -21,15 +21,12 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
         public async Task<Pedido> CrearAsync(Pedido pedido)
         {
-            // Al agregar el Pedido con sus colecciones de PedidoDetalle y Pago ya
-            // pobladas, EF inserta el padre primero y luego los hijos en un solo
-            // SaveChanges, respetando el orden de FKs automáticamente.
             _context.Pedido.Add(pedido);
             await _context.SaveChangesAsync();
             return pedido;
         }
 
-        public async Task<ICollection<Pedido>> ListarHistorialAsync(int? idCliente, DateTime? fechaDesde, DateTime? fechaHasta, string? estado)
+        public async Task<ICollection<Pedido>> ListarHistorialAsync(int? idCliente, DateTime? fechaDesde, DateTime? fechaHasta, string? estado, string? cliente = null)
         {
             var query = _context.Pedido
                 .AsNoTracking()
@@ -52,6 +49,10 @@ namespace Amaretto.Infraestructure.Repository.Implementations
 
             if (!string.IsNullOrWhiteSpace(estado))
                 query = query.Where(p => p.Estado == estado);
+
+            if (!string.IsNullOrWhiteSpace(cliente))
+                query = query.Where(p => p.IdUsuarioNavigation.NombreCompleto.Contains(cliente)
+                                      || p.IdUsuarioNavigation.Email.Contains(cliente));
 
             return await query
                 .OrderByDescending(p => p.FechaPedido)
