@@ -270,11 +270,11 @@
             const ultimosDigitos = document.getElementById('ultimosDigitos').value.trim();
 
             if (!nombreTitular) {
-                Swal.fire({ icon: 'warning', title: 'Indicá el nombre del titular' });
+                Swal.fire({ icon: 'warning', title: 'Debe indicar el nombre del titular' });
                 return false;
             }
             if (nombreTitular.length < 3 || !/^[A-Za-zÁÉÍÓÚÑáéíóúñ\s.'-]+$/.test(nombreTitular)) {
-                Swal.fire({ icon: 'warning', title: 'Nombre del titular inválido', text: 'Ingresá un nombre válido (solo letras).' });
+                Swal.fire({ icon: 'warning', title: 'Nombre del titular inválido', text: 'Ingrese un nombre válido (solo letras).' });
                 return false;
             }
             if (!/^\d{4}$/.test(ultimosDigitos)) {
@@ -288,7 +288,7 @@
             const monto = parseFloat(montoInput.value);
 
             if (montoInput.value.trim() === '' || isNaN(monto) || monto <= 0) {
-                Swal.fire({ icon: 'warning', title: 'Indicá el monto recibido' });
+                Swal.fire({ icon: 'warning', title: 'Indique el monto recibido' });
                 return false;
             }
             if (monto < totalActual()) {
@@ -302,16 +302,16 @@
 
     document.getElementById('btnGuardarPedido').addEventListener('click', function () {
         if (!detalleBody.querySelector('tr[data-linea]')) {
-            Swal.fire({ icon: 'warning', title: 'Agregá al menos un producto o combo' });
+            Swal.fire({ icon: 'warning', title: 'Debe de agregar al menos un producto o combo' });
             return;
         }
         const idCliente = document.getElementById('idCliente').value;
         if (!idCliente) {
-            Swal.fire({ icon: 'warning', title: 'Seleccioná un cliente' });
+            Swal.fire({ icon: 'warning', title: 'Seleccione un cliente' });
             return;
         }
         if (metodoEntregaActual() === 'Domicilio' && !document.getElementById('direccionEntrega').value.trim()) {
-            Swal.fire({ icon: 'warning', title: 'Indicá la dirección de entrega' });
+            Swal.fire({ icon: 'warning', title: 'Ingrese la dirección de entrega' });
             return;
         }
         new bootstrap.Modal(document.getElementById('modalPago')).show();

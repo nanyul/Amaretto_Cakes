@@ -41,7 +41,7 @@
 
         const dedicatoria = document.getElementById('dedicatoriaInput').value.trim();
         document.getElementById('txtDedicatoriaResumen').textContent =
-            dedicatoria ? `"${dedicatoria}"` : 'Escribí tu dedicatoria arriba.';
+            dedicatoria ? `"${dedicatoria}"` : 'Escribe tu dedicatoria arriba.';
     }
 
     document.querySelectorAll('input[name="Tamano"]').forEach(r => {

@@ -63,10 +63,14 @@
                         <span asp-validation-for="Email" class="text-danger small d-block mb-3"></span>
 
                         <!-- Password -->
+                        <!-- Password -->
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                            <input asp-for="Password" type="password" class="form-control login-input" 
+                            <input asp-for="Password" type="password" id="passwordInput" class="form-control login-input"
                                    placeholder="Contraseña" autocomplete="current-password" required />
+                            <span class="input-group-text toggle-password" style="cursor: pointer;" onclick="togglePassword()">
+                                <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                            </span>
                         </div>
                         <span asp-validation-for="Password" class="text-danger small d-block mb-4"></span>
 
@@ -125,5 +129,15 @@
             })();
         </script>
     }
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('passwordInput');
+            const icon = document.getElementById('toggleIcon');
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            icon.classList.toggle('bi-eye-slash', !isPassword);
+            icon.classList.toggle('bi-eye', isPassword);
+        }
+    </script>
 </body>
 </html>

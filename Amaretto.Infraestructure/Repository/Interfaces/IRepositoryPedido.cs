@@ -1,4 +1,6 @@
 using Amaretto.Infraestructure.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Amaretto.Infraestructure.Repository.Interfaces
 {
@@ -11,5 +13,9 @@ namespace Amaretto.Infraestructure.Repository.Interfaces
         Task<Pedido?> FindByIdAsync(int idPedido);
 
         Task<ICollection<string>> ListarEstadosAsync();
+
+        Task<List<(string Nombre, int Cantidad)>> ObtenerTop3ItemsAsync(DateTime fechaDesde, DateTime fechaHasta);
+
+        Task<Dictionary<string, int>> ObtenerPedidosPorEstadoAsync(DateTime fechaDesde, DateTime fechaHasta);
     }
 }
