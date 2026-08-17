@@ -219,19 +219,42 @@ namespace Amaretto.Application.Services.Implementations
                 EstadosDisponibles = esAdminOEncargado
                     ? (await _repoPedido.ListarEstadosAsync()).ToList()
                     : new List<string>(),
-                Pedidos = pedidos.Select(p => new PedidoHistorialDTO
-                {
-                    IdPedido = p.IdPedido,
-                    FechaPedido = p.FechaPedido,
-                    Estado = p.Estado,
-                    MetodoEntrega = p.MetodoEntrega,
-                    NombreCliente = p.IdUsuarioNavigation?.NombreCompleto ?? "-",
-                    NombreEncargado = p.IdEncargadoNavigation?.NombreCompleto,
-                    CantidadArticulos = p.PedidoDetalle.Sum(d => d.Cantidad),
-                    Total = p.Total
-                }).ToList()
+                Pedidos = pedidos.Select(MapearFila).ToList()
             };
         }
+
+        public async Task<ReporteViewModel> ObtenerReporteAsync(string? cliente, DateTime? fechaDesde, DateTime? fechaHasta, string? estado)
+        {
+            var pedidos = await _repoPedido.ListarHistorialAsync(
+                idCliente: null,
+                fechaDesde: fechaDesde,
+                fechaHasta: fechaHasta,
+                estado: estado,
+                cliente: cliente);
+
+            return new ReporteViewModel
+            {
+                Cliente = cliente,
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta,
+                Estado = estado,
+                EstadosDisponibles = (await _repoPedido.ListarEstadosAsync()).ToList(),
+                Pedidos = pedidos.Select(MapearFila).ToList()
+            };
+        }
+
+        private static PedidoHistorialDTO MapearFila(Pedido p) => new()
+        {
+            IdPedido = p.IdPedido,
+            FechaPedido = p.FechaPedido,
+            Estado = p.Estado,
+            MetodoEntrega = p.MetodoEntrega,
+            NombreCliente = p.IdUsuarioNavigation?.NombreCompleto ?? "-",
+            EmailCliente = p.IdUsuarioNavigation?.Email ?? "-",
+            NombreEncargado = p.IdEncargadoNavigation?.NombreCompleto,
+            CantidadArticulos = p.PedidoDetalle.Sum(d => d.Cantidad),
+            Total = p.Total
+        };
 
         public async Task<PedidoDetalleCompletoDTO?> ObtenerDetalleAsync(int idPedido)
         {
@@ -242,7 +265,8 @@ namespace Amaretto.Application.Services.Implementations
             if (pedido == null)
                 return null;
 
-            if (!esAdminOEncargado && pedido.IdUsuario != usuario.IdUsuario)
+            if (!esAdminOEncargado && pedido.IdUsuario != usuario.IdUsuario)  
+                //esta validación permite que no se vean otros pedidos ajenos
                 throw new UnauthorizedAccessException("El pedido no pertenece al usuario en sesión.");
 
             return MapearDetalle(pedido, esAdminOEncargado);

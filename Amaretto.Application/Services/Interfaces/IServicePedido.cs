@@ -16,5 +16,7 @@ namespace Amaretto.Application.Services.Interfaces
         Task<PedidoHistorialViewModel> ObtenerHistorialAsync(DateTime? fechaDesde, DateTime? fechaHasta, string? estado);
 
         Task<PedidoDetalleCompletoDTO?> ObtenerDetalleAsync(int idPedido);
+
+        Task<ReporteViewModel> ObtenerReporteAsync(string? cliente, DateTime? fechaDesde, DateTime? fechaHasta, string? estado);
     }
 }
