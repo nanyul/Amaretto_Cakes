@@ -197,18 +197,21 @@
                                     <!-- Cuerpo -->
                                     <div class="catalog-card-body">
                                         <h5>@item.Nombre</h5>
-                                        <p class="catalog-card-price">₡@item.Precio.ToString("N2")</p>
+                                        <p class="catalog-card-price">₡@item.Precio.ToString("N0")</p>
                                     </div>
 
-                                    <!-- Footer -->
+<!-- Footer -->
                                     <div class="catalog-card-footer">
                                         <a asp-action="Details"
                                            asp-route-id="@item.IdProducto"
                                            class="btn-catalog">
-                                            Ver detalle <i class="bi bi-heart ms-1"></i>
-                                        </a>
-                                        <button class="btn-wishlist-footer" title="Favorito">
-                                            <i class="bi bi-heart"></i>
+                                             Ver detalle <i class="bi bi-heart ms-1"></i>
+                                         </a>
+                                        <button type="button" class="btn-add-cart-catalog nav-link-amaretto cart-link"
+                                                data-id="@item.IdProducto"
+                                                data-tipo="producto"
+                                                title="Agregar al carrito">
+                                            <i class="bi bi-cart-fill"></i>
                                         </button>
                                     </div>
 
@@ -278,6 +281,40 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     initCatalogFiltros({ endpoint: '/Producto/Filtrar', idField: 'id', detailUrlBase: '/Producto/Details', tipo: 'producto' });
+
+    // Botones Agregar al Carrito desde catálogo
+    document.querySelectorAll('.btn-add-cart-catalog').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (this.disabled) return;
+
+            const id = this.dataset.id;
+            const tipo = this.dataset.tipo;
+            const endpoint = tipo === 'producto' ? '/Carrito/AgregarProducto' : '/Carrito/AgregarCombo';
+            const paramName = tipo === 'producto' ? 'idProducto' : 'idCombo';
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `${paramName}=${encodeURIComponent(id)}&cantidad=1`
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    window.actualizarContadorCarrito?.();
+                    const ToastCarrito = Swal.mixin({
+                        toast: true, position: 'top-end',
+                        showConfirmButton: false, timer: 1600, timerProgressBar: true,
+                        didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
+                    });
+                    ToastCarrito.fire({ icon: 'success', title: 'Agregado al pedido' });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'No se pudo agregar', text: data.mensaje || '' });
+                }
+            })
+            .catch(() => Swal.fire({ icon: 'error', title: 'Error de conexión' }));
+        });
+    });
 });
 </script>
 }
